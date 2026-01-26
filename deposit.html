@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trust ZedFund | Deposit</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">TrustVault</div>
+  <nav>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="#" id="logoutBtn">Logout</a>
+  </nav>
+</header>
+
+<section class="features">
+  <h2>Make a Deposit</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>MTN Mobile Money</h3>
+      <p>Send to: 097XXXXXXX</p>
+    </div>
+    <div class="card">
+      <h3>Airtel Money</h3>
+      <p>Send to: 096XXXXXXX</p>
+    </div>
+    <div class="card">
+      <h3>Zamtel Kwacha</h3>
+      <p>Send to: 095XXXXXXX</p>
+    </div>
+  </div>
+
+  <form class="card" style="max-width:400px;margin:50px auto" id="depositForm">
+    <h3>Upload Payment Proof</h3>
+    <input type="number" id="amount" placeholder="Amount ZMW" required/>
+    <select id="network">
+      <option value="">Select Network</option>
+      <option value="MTN">MTN</option>
+      <option value="Airtel">Airtel</option>
+      <option value="Zamtel">Zamtel</option>
+    </select>
+    <input type="file" id="proof" accept="image/*" required/>
+    <button type="submit">Submit Deposit</button>
+    <p id="msg"></p>
+  </form>
+</section>
+
+<script type="module" src="firebase.js"></script>
+<script type="module">
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+  import { doc, getDoc, collection, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+  import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
+
+  const depositForm = document.getElementById("depositForm");
+  const msg = document.getElementById("msg");
+
+  let currentUser;
+
+  onAuthStateChanged(auth, user => {
+    if (!user) location.href = "login.html";
+    currentUser = user;
+  });
+
+  depositForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    const amount = parseFloat(document.getElementById("amount").value);
+    const network = document.getElementById("network").value;
+    const file = document.getElementById("proof").files[0];
+
+    if (!amount || !network || !file) {
+      msg.innerText = "All fields are required!";
+      return;
+    }
+
+    try {
+      const storageRef = ref(storage, `deposits/${currentUser.uid}/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const proofURL = await getDownloadURL(storageRef);
+
+      await addDoc(collection(db, "deposits"), {
+        userId: currentUser.uid,
+        amount,
+        network,
+        proofURL,
+        status: "Pending",
+        createdAt: new Date()
+      });
+
+      msg.innerText = "Deposit submitted! Await admin approval.";
+      depositForm.reset();
+    } catch (err) {
+      msg.innerText = err.message;
+    }
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    auth.signOut().then(() => location.href = "login.html");
+  });
+</script>
+</body>
+</html>
