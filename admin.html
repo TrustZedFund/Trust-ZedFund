@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TrustVault | Admin Panel</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { font-family: sans-serif; padding: 20px; background:#f0f4f8; }
+    h2 { text-align:center; color:#0b5; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 50px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align:center; }
+    th { background: #0b5; color:white; }
+    button { padding:5px 10px; margin:2px; cursor:pointer; border:none; border-radius:4px; }
+    .approve { background: #4caf50; color:white; }
+    .reject { background: #f44336; color:white; }
+    .admin-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 5px 15px var(--shadow);
+  margin-bottom: 40px;
+  transition: all 0.3s ease;
+}
+
+.admin-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px var(--shadow);
+}
+  </style>
+</head>
+<body>
+
+<h2>TrustVault Admin Panel</h2>
+
+<section>
+  <h3>Pending Deposits</h3>
+  <table id="depositsTable">
+    <thead>
+      <tr>
+        <th>User Email</th>
+        <th>Amount</th>
+        <th>Network</th>
+        <th>Proof</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<section>
+  <h3>Pending Withdrawals</h3>
+  <table id="withdrawalsTable">
+    <thead>
+      <tr>
+        <th>User Email</th>
+        <th>Amount</th>
+        <th>Network</th>
+        <th>Phone</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<script type="module" src="firebase.js"></script>
+<script type="module">
+  import { collection, query, where, getDocs, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+  const depositsTable = document.getElementById("depositsTable").querySelector("tbody");
+  const withdrawalsTable = document.getElementById("withdrawalsTable").querySelector("tbody");
+
+  // Replace with your admin email(s)
+  const adminEmails = ["youremail@example.com"];
+
+  auth.onAuthStateChanged(async user => {
+    if (!user || !adminEmails.includes(user.email)) {
+      alert("Access denied. Admin only.");
+      location.href = "login.html";
+    } else {
+      loadDeposits();
+      loadWithdrawals();
+    }
+  });
+
+  // --- LOAD DEPOSITS ---
+  async function loadDeposits() {
+    depositsTable.innerHTML = "";
+    const q = query(collection(db, "deposits"), where("status", "==", "Pending"));
+    const snap = await getDocs(q);
+
+    snap.forEach(async d => {
+      const deposit = d.data();
+      const userSnap = await getDoc(doc(db, "users", deposit.userId));
+      const userEmail = userSnap.data().email;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${userEmail}</td>
+        <td>${deposit.amount}</td>
+        <td>${deposit.network}</td>
+        <td><a href="${deposit.proofURL}" target="_blank">View</a></td>
+        <td>${deposit.status}</td>
+        <td>
+          <button class="approve" onclick="approveDeposit('${d.id}', ${deposit.amount}, '${deposit.userId}')">Approve</button>
+          <button class="reject" onclick="rejectDeposit('${d.id}')">Reject</button>
+        </td>
+      `;
+      depositsTable.appendChild(tr);
+    });
+  }
+
+  // --- APPROVE DEPOSIT ---
+  window.approveDeposit = async (depositId, amount, userId) => {
+    await updateDoc(doc(db, "deposits", depositId), { status: "Approved" });
+
+    // Update user's balance
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+    const userData = userSnap.data();
+    await updateDoc(userRef, { balance: (userData.balance || 0) + amount });
+
+    // Handle referral bonus if first deposit
+    if (userData.referredBy) {
+      const refQuery = query(collection(db, "users"), where("referralCode", "==", userData.referredBy));
+      const refSnap = await getDocs(refQuery);
+      refSnap.forEach(async r => {
+        const refData = r.data();
+        const refRef = doc(db, "users", r.id);
+        await updateDoc(refRef, { balance: (refData.balance || 0) + 10 });
+      });
+    }
+
+    loadDeposits();
+  }
+
+  window.rejectDeposit = async (depositId) => {
+    await updateDoc(doc(db, "deposits", depositId), { status: "Rejected" });
+    loadDeposits();
+  }
+
+  // --- LOAD WITHDRAWALS ---
+  async function loadWithdrawals() {
+    withdrawalsTable.innerHTML = "";
+    const q = query(collection(db, "withdrawals"), where("status", "==", "Pending"));
+    const snap = await getDocs(q);
+
+    snap.forEach(async d => {
+      const withdrawal = d.data();
+      const userSnap = await getDoc(doc(db, "users", withdrawal.userId));
+      const userEmail = userSnap.data().email;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${userEmail}</td>
+        <td>${withdrawal.amount}</td>
+        <td>${withdrawal.network}</td>
+        <td>${withdrawal.phone}</td>
+        <td>${withdrawal.status}</td>
+        <td>
+          <button class="approve" onclick="approveWithdrawal('${d.id}', ${withdrawal.amount}, '${withdrawal.userId}')">Approve</button>
+          <button class="reject" onclick="rejectWithdrawal('${d.id}')">Reject</button>
+        </td>
+      `;
+      withdrawalsTable.appendChild(tr);
+    });
+  }
+
+  window.approveWithdrawal = async (withdrawalId, amount, userId) => {
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+    const userData = userSnap.data();
+
+    if ((userData.balance || 0) < amount) {
+      alert("User balance insufficient!");
+      return;
+    }
+import { db } from "./firebase.js";
+    import {
+      ref,
+      get,
+      update
+    } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+    const list = document.getElementById("list");
+
+    async function load() {
+      const snap = await get(ref(db, "withdrawalRequests"));
+      if (!snap.exists()) return;
+
+      const data = snap.val();
+      Object.entries(data).forEach(([id, w]) => {
+        if (w.status === "pending") {
+          const div = document.createElement("div");
+          div.innerHTML = `
+            <p>
+              ${w.uid} — ZMK ${w.amount} — ${w.provider}<br>
+              ${w.phone}
+              <button onclick="approve('${id}', '${w.uid}', ${w.amount})">Approve</button>
+            </p>
+          `;
+          list.appendChild(div);
+        }
+      });
+    }
+
+    window.approve = async (id, uid, amount) => {
+      await update(ref(db, `withdrawalRequests/${id}`), { status: "approved" });
+      await update(ref(db, `users/${uid}/withdrawals/${id}`), { status: "approved" });
+      alert("Approved");
+      location.reload();
+    };
+
+    load();
+    // Deduct balance
+    await updateDoc(userRef, { balance: (userData.balance || 0) - amount });
+    await updateDoc(doc(db, "withdrawals", withdrawalId), { status: "Approved" });
+    loadWithdrawals();
+  }
+
+  window.rejectWithdrawal = async (withdrawalId) => {
+    await updateDoc(doc(db, "withdrawals", withdrawalId), { status: "Rejected" });
+    loadWithdrawals();
+  }
+</script>
+
+</body>
+</html>
