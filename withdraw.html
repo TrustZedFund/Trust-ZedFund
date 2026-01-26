@@ -2,30 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Withdraw | AfriLeap</title>
+  <title>Withdraw | Trust ZedFund</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <script type="module">
-    // Firebase SDK imports
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-auth.js";
-
-    // Your Firebase config
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-
-    window.firebaseData = { db, auth };
-  </script>
 
   <style>
     body {
@@ -35,13 +13,24 @@
       padding: 0;
       color: #222;
     }
+
     .wallet-container {
       max-width: 500px;
       margin: auto;
       padding: 20px;
     }
-    h2 { text-align: center; margin-bottom: 5px; }
-    .subtext { text-align: center; color: #777; margin-bottom: 20px; }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .subtext {
+      text-align: center;
+      color: #777;
+      margin-bottom: 20px;
+    }
+
     .card {
       background: #fff;
       border-radius: 12px;
@@ -49,47 +38,87 @@
       margin-bottom: 15px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
-    .card h3 { margin-top: 0; font-size: 18px; }
-    input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px; font-size: 15px; }
-    button { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; margin-top: 12px; }
-    .btn-primary { background: #006400; color: #fff; }
+
+    .card h3 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      margin-top: 10px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+
+    .btn-primary { background: #2e7dff; color: #fff; }
     .btn-airtel { background: #e60000; color: #fff; }
     .btn-mtn { background: #ffcc00; color: #000; }
-    .provider-buttons { display: flex; gap: 10px; margin-top: 15px; }
+
+    .provider-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
     .provider-buttons button { flex: 1; }
+
     .hidden { display: none; }
     .center { text-align: center; }
-    .amount { font-size: 22px; font-weight: bold; }
-    .list-item { padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+
+    .list-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    .amount {
+      font-size: 22px;
+      font-weight: bold;
+    }
   </style>
 </head>
 
 <body>
-  <div class="wallet-container">
-    <h2>Withdraw Funds</h2>
-    <div class="subtext">Manage your earnings and referral bonuses</div>
 
-    <!-- BALANCES -->
+  <div class="wallet-container">
+
+    <h2>Withdraw Funds</h2>
+    <div class="subtext">Request payout from your earnings wallet</div>
+
+    <!-- BALANCE -->
     <div class="card">
       <h3>Earnings Wallet</h3>
       <div class="amount" id="earningsBalance">ZMK 0.00</div>
       <small>Available to withdraw</small>
     </div>
 
-    <div class="card">
-      <h3>Referral Bonuses</h3>
-      <div class="amount" id="referralBalance">ZMK 0.00</div>
-    </div>
-
     <!-- WITHDRAW FORM -->
     <div class="card">
       <h3>Withdraw Funds</h3>
-      <input type="number" id="withdrawAmount" placeholder="Enter amount to withdraw"/>
-      <button class="btn-primary" id="chooseProviderBtn">Continue</button>
+
+      <input type="number" id="withdrawAmount" placeholder="Enter amount in ZMK"/>
+
+      <button class="btn-primary" id="chooseProviderBtn">
+        Continue
+      </button>
 
       <!-- PROVIDER SELECTION -->
       <div id="providerSection" class="hidden center">
         <p><strong>Select your Mobile Wallet Provider:</strong></p>
+
         <div class="provider-buttons">
           <button class="btn-airtel" id="airtelBtn">Airtel Money</button>
           <button class="btn-mtn" id="mtnBtn">MTN Mobile Money</button>
@@ -99,161 +128,38 @@
       <!-- PAYMENT DETAILS -->
       <div id="paymentDetails" class="hidden">
         <h4 id="selectedProviderTitle"></h4>
-        <p><strong>Send To:</strong></p>
-        <p id="payToNumber"></p>
-        <p><strong>Amount:</strong></p>
+
+        <p><strong>You will receive:</strong></p>
         <p id="payAmount"></p>
-        <input type="text" id="recipientNumber" placeholder="Enter your mobile number"/>
-        <button class="btn-primary" id="confirmWithdrawBtn">Confirm Withdrawal</button>
+
+        <input type="text" id="receiverNumber" placeholder="Enter your mobile number"/>
+
+        <button class="btn-primary" id="confirmWithdrawBtn">
+          Confirm Withdrawal
+        </button>
       </div>
+
     </div>
 
-    <!-- ACTIVE WITHDRAWALS -->
+    <!-- PENDING WITHDRAWALS -->
     <div class="card">
-      <h3>Active Withdrawals</h3>
-      <div id="activeWithdrawalsList"><p class="subtext">No pending withdrawals yet</p></div>
+      <h3>Pending Withdrawals</h3>
+      <div id="activeWithdrawalsList">
+        <p class="subtext">No pending withdrawals</p>
+      </div>
     </div>
 
     <!-- TRANSACTION HISTORY -->
     <div class="card">
       <h3>Transaction History</h3>
-      <div id="transactionHistoryList"><p class="subtext">No withdrawals yet</p></div>
+      <div id="transactionHistoryList">
+        <p class="subtext">No transactions yet</p>
+      </div>
     </div>
+
   </div>
 
-  <script type="module">
-    import { db, auth } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-auth.js";
-
-    const chooseBtn = document.getElementById("chooseProviderBtn");
-    const providerSection = document.getElementById("providerSection");
-    const paymentDetails = document.getElementById("paymentDetails");
-    const airtelBtn = document.getElementById("airtelBtn");
-    const mtnBtn = document.getElementById("mtnBtn");
-    const selectedProviderTitle = document.getElementById("selectedProviderTitle");
-    const payToNumber = document.getElementById("payToNumber");
-    const payAmount = document.getElementById("payAmount");
-    const withdrawAmount = document.getElementById("withdrawAmount");
-    const recipientNumber = document.getElementById("recipientNumber");
-    const earningsBalance = document.getElementById("earningsBalance");
-    const referralBalance = document.getElementById("referralBalance");
-    const activeWithdrawalsList = document.getElementById("activeWithdrawalsList");
-    const transactionHistoryList = document.getElementById("transactionHistoryList");
-
-    let userData = null;
-    let currentUserId = null;
-
-    onAuthStateChanged(auth, async (user) => {
-      if(user){
-        currentUserId = user.uid;
-        const userRef = doc(db, "users", currentUserId);
-        const docSnap = await getDoc(userRef);
-
-        if(docSnap.exists()){
-          userData = docSnap.data();
-          earningsBalance.textContent = `ZMK ${userData.earnings || 0}`;
-          referralBalance.textContent = `ZMK ${userData.referral || 0}`;
-          renderActiveWithdrawals(userData.withdrawals || []);
-          renderTransactionHistory(userData.transactions || []);
-        } else {
-          console.log("User data not found, creating...");
-          await setDoc(userRef, { earnings:0, referral:0, withdrawals:[], transactions:[] });
-          earningsBalance.textContent = "ZMK 0.00";
-          referralBalance.textContent = "ZMK 0.00";
-        }
-      } else {
-        alert("Please login first!");
-        window.location.href = "index.html";
-      }
-    });
-
-    function renderActiveWithdrawals(withdrawals){
-      if(withdrawals.length === 0){
-        activeWithdrawalsList.innerHTML = `<p class="subtext">No pending withdrawals yet</p>`;
-      } else {
-        activeWithdrawalsList.innerHTML = "";
-        withdrawals.forEach(w => {
-          const div = document.createElement("div");
-          div.classList.add("list-item");
-          div.textContent = `${w.amount} ZMK → ${w.provider} (${w.status})`;
-          activeWithdrawalsList.appendChild(div);
-        });
-      }
-    }
-
-    function renderTransactionHistory(transactions){
-      if(transactions.length === 0){
-        transactionHistoryList.innerHTML = `<p class="subtext">No withdrawals yet</p>`;
-      } else {
-        transactionHistoryList.innerHTML = "";
-        transactions.forEach(t => {
-          const div = document.createElement("div");
-          div.classList.add("list-item");
-          div.textContent = `${t.amount} ZMK → ${t.provider} (${t.date})`;
-          transactionHistoryList.appendChild(div);
-        });
-      }
-    }
-
-    chooseBtn.addEventListener("click", () => {
-      if(withdrawAmount.value && withdrawAmount.value > 0){
-        if(Number(withdrawAmount.value) > (userData.earnings || 0)){
-          alert("Insufficient balance!");
-          return;
-        }
-        providerSection.classList.remove("hidden");
-      } else {
-        alert("Enter a valid amount");
-      }
-    });
-
-    function prepareWithdrawal(provider){
-      selectedProviderTitle.textContent = `${provider} Withdrawal`;
-      payToNumber.textContent = recipientNumber.value || "Your Wallet";
-      payAmount.textContent = `ZMK ${withdrawAmount.value}`;
-      paymentDetails.classList.remove("hidden");
-    }
-
-    airtelBtn.addEventListener("click", ()=> prepareWithdrawal("Airtel Money"));
-    mtnBtn.addEventListener("click", ()=> prepareWithdrawal("MTN Mobile Money"));
-
-    document.getElementById("confirmWithdrawBtn").addEventListener("click", async ()=>{
-      const amount = Number(withdrawAmount.value);
-      const provider = selectedProviderTitle.textContent.split(" ")[0];
-      const recipient = recipientNumber.value || "Unknown";
-
-      if(amount <=0 || amount > (userData.earnings || 0)){
-        alert("Invalid amount");
-        return;
-      }
-
-      const date = new Date().toLocaleString();
-
-      // Update Firestore
-      const userRef = doc(db, "users", currentUserId);
-
-      await updateDoc(userRef, {
-        earnings: (userData.earnings - amount),
-        withdrawals: arrayUnion({ amount, provider, recipient, status: "Pending", date }),
-        transactions: arrayUnion({ amount, provider, recipient, date })
-      });
-
-      // Update local UI
-      userData.earnings -= amount;
-      renderActiveWithdrawals(userData.withdrawals.concat([{ amount, provider, recipient, status:"Pending", date }]));
-      renderTransactionHistory(userData.transactions.concat([{ amount, provider, recipient, date }]));
-      earningsBalance.textContent = `ZMK ${userData.earnings}`;
-
-      alert(`Withdrawal of ZMK ${amount} requested!`);
-
-      // Reset form
-      withdrawAmount.value = "";
-      recipientNumber.value = "";
-      providerSection.classList.add("hidden");
-      paymentDetails.classList.add("hidden");
-    });
-  </script>
+ <script type="module" src="withdraw.js"></script>
 
 </body>
 </html>
