@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TrustVault — Login</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">TrustVault</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="register.html">Create Account</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Welcome Back</h1>
+  <p>Login to continue your TrustVault journey.</p>
+</section>
+
+<div class="auth-wrapper">
+  <form id="loginForm" class="auth-card reveal">
+    <h2>Login</h2>
+
+    <input class="input" id="loginEmail" type="email" placeholder="Email Address" required />
+    <input class="input" id="loginPassword" type="password" placeholder="Password" required />
+
+    <div id="loginError" class="error-text"></div>
+
+    <button class="btn-primary" type="submit">
+      <span id="loginText">Login</span>
+      <span id="loginLoader" style="display:none;">Logging in...</span>
+    </button>
+
+    <p class="auth-switch">
+      Don't have an account? <a href="register.html">Create one</a>
+    </p>
+  </form>
+</div>
+
+<footer>
+  <p>© 2026 TrustVault. All rights reserved.</p>
+  <p class="disclaimer">TrustVault is an educational savings platform.</p>
+</footer>
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="auth.js"></script>
+
+</body>
+</html>
