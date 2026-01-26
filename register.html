@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TrustVault — Create Account</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">TrustVault</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Build Your Financial Future</h1>
+  <p>Create a TrustVault account to learn, save and grow smartly.</p>
+</section>
+
+<div class="auth-wrapper">
+  <form id="signupForm" class="auth-card reveal">
+    <h2>Create Account</h2>
+
+    <input class="input" id="name" placeholder="Full Name" required />
+    <input class="input" id="email" type="email" placeholder="Email Address" required />
+    <input class="input" id="password" type="password" placeholder="Password (min 6 chars)" required />
+    <input class="input" id="referral" placeholder="Referral Code (optional)" />
+
+    <div id="signupError" class="error-text"></div>
+
+    <button class="btn-primary" type="submit">
+      <span id="signupText">Create Account</span>
+      <span id="signupLoader" style="display:none;">Creating...</span>
+    </button>
+
+    <p class="auth-switch">
+      Already have an account? <a href="login.html">Login</a>
+    </p>
+  </form>
+</div>
+
+<footer>
+  <p>© 2026 TrustVault. All rights reserved.</p>
+  <p class="disclaimer">TrustVault is an educational savings platform.</p>
+</footer>
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="auth.js"></script>
+
+</body>
+</html>
