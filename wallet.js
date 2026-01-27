@@ -1,17 +1,10 @@
-// wallet.js
 import { auth, db } from "./firebase.js";
-import {
-  ref,
-  get,
-  set,
-  update
-} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import { ref, get, set, push, update, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-// DOM Elements
+// Elements
 const depositBalanceEl = document.getElementById("depositBalance");
 const referralBalanceEl = document.getElementById("referralBalance");
-
 const depositAmountInput = document.getElementById("depositAmount");
 const chooseProviderBtn = document.getElementById("chooseProviderBtn");
 
@@ -31,7 +24,6 @@ const confirmDepositBtn = document.getElementById("confirmDepositBtn");
 const activeDepositsList = document.getElementById("activeDepositsList");
 const transactionHistoryList = document.getElementById("transactionHistoryList");
 
-// State
 let selectedProvider = "";
 let currentDepositAmount = 0;
 let currentUserId = null;
@@ -39,7 +31,7 @@ let depositBalance = 0;
 let referralBalance = 0;
 
 /* =========================
-   AUTH + LOAD BALANCES
+   AUTH + INIT
 ========================= */
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -48,22 +40,29 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   currentUserId = user.uid;
-  await loadBalances();
-  await loadActiveDeposits();
-  await loadTransactionHistory();
+
+  // Real-time listeners
+  setupRealtimeBalances();
+  setupRealtimeDeposits();
+  setupRealtimeTransactions();
 });
 
 /* =========================
-   LOAD BALANCES
+   REAL-TIME BALANCES
 ========================= */
-async function loadBalances() {
-  const depositSnap = await get(ref(db, `users/${currentUserId}/depositWallet`));
-  depositBalance = depositSnap.exists() ? Number(depositSnap.val()) : 0;
+function setupRealtimeBalances() {
+  const depositRef = ref(db, `users/${currentUserId}/depositWallet`);
+  const referralRef = ref(db, `users/${currentUserId}/referralWallet`);
 
-  const referralSnap = await get(ref(db, `users/${currentUserId}/referralWallet`));
-  referralBalance = referralSnap.exists() ? Number(referralSnap.val()) : 0;
+  onValue(depositRef, (snap) => {
+    depositBalance = snap.exists() ? Number(snap.val()) : 0;
+    updateBalances();
+  });
 
-  updateBalances();
+  onValue(referralRef, (snap) => {
+    referralBalance = snap.exists() ? Number(snap.val()) : 0;
+    updateBalances();
+  });
 }
 
 function updateBalances() {
@@ -72,7 +71,8 @@ function updateBalances() {
 }
 
 /* =========================
-   CONTINUE BUTTON
+   CONTINUE BUTTON LOGIC
+   (UNCHANGED)
 ========================= */
 chooseProviderBtn.addEventListener("click", () => {
   const amount = parseFloat(depositAmountInput.value);
@@ -93,13 +93,9 @@ function showPaymentDetails(provider) {
   selectedProvider = provider;
   selectedProviderTitle.textContent = provider;
   payAmount.textContent = `ZMK ${currentDepositAmount.toFixed(2)}`;
-
-  if (provider === "Airtel Money") {
-    payToNumber.textContent = "Send to: 0978 000 111 (Trust ZedFund)";
-  } else {
-    payToNumber.textContent = "Send to: 0966 000 222 (Trust ZedFund)";
-  }
-
+  payToNumber.textContent = provider === "Airtel Money"
+    ? "Send to: 0978 000 111 (Trust ZedFund)"
+    : "Send to: 0966 000 222 (Trust ZedFund)";
   paymentDetails.classList.remove("hidden");
 }
 
@@ -116,7 +112,6 @@ confirmDepositBtn.addEventListener("click", async () => {
   }
 
   const depositId = "d_" + Date.now();
-
   const depositData = {
     uid: currentUserId,
     amount: currentDepositAmount,
@@ -128,20 +123,13 @@ confirmDepositBtn.addEventListener("click", async () => {
   };
 
   try {
-    // Save deposit to user
+    // 1. Save deposit to user
     await set(ref(db, `users/${currentUserId}/deposits/${depositId}`), depositData);
 
-    // Optionally update deposit balance in real time (if you want to show total including pending)
-    depositBalance += currentDepositAmount;
-    await update(ref(db, `users/${currentUserId}`), { depositWallet: depositBalance });
-
-    // Update UI
-    addActiveDeposit(currentDepositAmount, selectedProvider);
-    addTransaction("Deposit", currentDepositAmount, selectedProvider);
+    // 2. Save deposit to admin queue
+    await set(ref(db, `depositRequests/${depositId}`), depositData);
 
     resetDepositFlow();
-    updateBalances();
-
     alert("Deposit submitted successfully. Pending confirmation.");
   } catch (err) {
     console.error(err);
@@ -150,58 +138,52 @@ confirmDepositBtn.addEventListener("click", async () => {
 });
 
 /* =========================
-   LOAD ACTIVE DEPOSITS
+   REAL-TIME ACTIVE DEPOSITS
 ========================= */
-async function loadActiveDeposits() {
-  const snap = await get(ref(db, `users/${currentUserId}/deposits`));
-  activeDepositsList.innerHTML = "";
-
-  if (!snap.exists()) {
-    activeDepositsList.innerHTML = `<p class="subtext">No active deposits yet</p>`;
-    return;
-  }
-
-  const data = snap.val();
-  Object.values(data).forEach(d => {
-    if (d.status === "pending") {
-      addActiveDeposit(d.amount, d.provider);
+function setupRealtimeDeposits() {
+  const depositsRef = ref(db, `users/${currentUserId}/deposits`);
+  onValue(depositsRef, (snap) => {
+    activeDepositsList.innerHTML = "";
+    if (!snap.exists()) {
+      activeDepositsList.innerHTML = `<p class="subtext">No active deposits yet</p>`;
+      return;
     }
+
+    const data = snap.val();
+    Object.values(data).forEach(d => {
+      const div = document.createElement("div");
+      div.className = "list-item";
+      div.textContent = `${d.provider} — ZMK ${d.amount.toFixed(2)} — ${d.status}`;
+      activeDepositsList.prepend(div);
+    });
   });
 }
 
 /* =========================
-   LOAD TRANSACTION HISTORY
+   REAL-TIME TRANSACTIONS
 ========================= */
-async function loadTransactionHistory() {
-  const snap = await get(ref(db, `users/${currentUserId}/deposits`));
-  transactionHistoryList.innerHTML = "";
+function setupRealtimeTransactions() {
+  const txRef = ref(db, `users/${currentUserId}/transactions`);
+  onValue(txRef, (snap) => {
+    transactionHistoryList.innerHTML = "";
+    if (!snap.exists()) {
+      transactionHistoryList.innerHTML = `<p class="subtext">No transactions yet</p>`;
+      return;
+    }
 
-  if (!snap.exists()) {
-    transactionHistoryList.innerHTML = `<p class="subtext">No transactions yet</p>`;
-    return;
-  }
-
-  const data = snap.val();
-  Object.values(data).forEach(d => addTransaction("Deposit", d.amount, d.provider));
+    const data = snap.val();
+    Object.values(data).forEach(t => {
+      const div = document.createElement("div");
+      div.className = "list-item";
+      div.textContent = `${t.type}: ZMK ${t.amount.toFixed(2)} via ${t.provider}`;
+      transactionHistoryList.prepend(div);
+    });
+  });
 }
 
 /* =========================
-   UI HELPERS
+   RESET DEPOSIT FORM
 ========================= */
-function addActiveDeposit(amount, provider) {
-  const div = document.createElement("div");
-  div.className = "list-item";
-  div.textContent = `${provider} — ZMK ${amount.toFixed(2)} — Pending`;
-  activeDepositsList.prepend(div);
-}
-
-function addTransaction(type, amount, provider) {
-  const div = document.createElement("div");
-  div.className = "list-item";
-  div.textContent = `${type}: ZMK ${amount.toFixed(2)} via ${provider}`;
-  transactionHistoryList.prepend(div);
-}
-
 function resetDepositFlow() {
   depositAmountInput.value = "";
   senderNumberInput.value = "";
