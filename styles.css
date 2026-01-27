@@ -952,37 +952,3 @@ table th, table td {
   padding: 10px;
   border-bottom: 1px solid #ddd;
 }
-
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 30px;
-  background-color: #0b3d2e; /* dark green */
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: white;
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-
-.logo img {
-  border-radius: 50%; /* makes the logo circular */
-}
-
-nav a {
-  margin-left: 20px;
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-nav a.btn-outline {
-  border: 1px solid white;
-  padding: 5px 15px;
-  border-radius: 5px;
-}
