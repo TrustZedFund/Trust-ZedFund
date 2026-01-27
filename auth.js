@@ -1,118 +1,140 @@
 import { auth, db } from "./firebase.js";
 import {
   createUserWithEmailAndPassword,
-  updateProfile
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import {
   ref,
-  set,
   get,
+  set,
   update,
-  child
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-// 🔹 Auto-fill referral from URL
-const params = new URLSearchParams(window.location.search);
-const urlReferral = params.get("ref");
-if (urlReferral) {
-  document.getElementById("referral").value = urlReferral;
-}
+/* =========================
+   SIGNUP HANDLER
+========================= */
 
 const signupForm = document.getElementById("signupForm");
-const signupError = document.getElementById("signupError");
-const signupText = document.getElementById("signupText");
-const signupLoader = document.getElementById("signupLoader");
 
-signupForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  signupError.textContent = "";
+if (signupForm) {
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const referralCode = document.getElementById("referral").value.trim();
+    const name = document.getElementById("name")?.value.trim();
+    const email = document.getElementById("email")?.value.trim();
+    const password = document.getElementById("password")?.value.trim();
+    const referralCode = document.getElementById("referral")?.value.trim();
 
-  signupText.style.display = "none";
-  signupLoader.style.display = "inline";
+    const errorEl = document.getElementById("signupError");
+    errorEl.textContent = "";
 
-  try {
-    // 1) Create user
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
-    const user = cred.user;
+    if (!name || !email || !password) {
+      errorEl.textContent = "All fields are required.";
+      return;
+    }
 
-    await updateProfile(user, { displayName: name });
+    if (password.length < 6) {
+      errorEl.textContent = "Password must be at least 6 characters.";
+      return;
+    }
 
-    // 2) Validate referral code (if provided)
-    let referredByUID = null;
+    try {
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCred.user;
 
-    if (referralCode) {
-      const usersRef = ref(db, "users");
-      const snapshot = await get(usersRef);
+      const myReferralCode = "TZF" + Math.floor(100000 + Math.random() * 900000);
 
-      if (snapshot.exists()) {
-        const users = snapshot.val();
+      const userData = {
+        name,
+        email,
+        referralCode: myReferralCode,
+        referredBy: referralCode || null,
+        balances: {
+          deposit: 0,
+          earnings: 0,
+          referral: 0
+        },
+        createdAt: serverTimestamp()
+      };
 
-        for (const uid in users) {
-          if (users[uid].referralCode === referralCode) {
-            referredByUID = uid;
-            break;
+      // Save user profile
+      await set(ref(db, `users/${user.uid}`), userData);
+
+      // If referral was used → credit referrer
+      if (referralCode) {
+        const usersRef = ref(db, "users");
+        const snap = await get(usersRef);
+
+        if (snap.exists()) {
+          const users = snap.val();
+
+          const referrerId = Object.keys(users).find(
+            uid => users[uid].referralCode === referralCode
+          );
+
+          if (referrerId) {
+            const balRef = ref(db, `users/${referrerId}/balances/referral`);
+            const balSnap = await get(balRef);
+            const current = balSnap.exists() ? Number(balSnap.val()) : 0;
+
+            await update(ref(db, `users/${referrerId}/balances`), {
+              referral: current + 5
+            });
           }
         }
       }
 
-      if (!referredByUID) {
-        signupText.style.display = "inline";
-        signupLoader.style.display = "none";
-        signupError.textContent = "Invalid referral code.";
-        return;
-      }
+      window.location.href = "dashboard.html";
+
+    } catch (err) {
+      console.error(err);
+      errorEl.textContent = err.message.replace("Firebase: ", "");
+    }
+  });
+}
+
+/* =========================
+   LOGIN HANDLER
+========================= */
+
+const loginForm = document.getElementById("loginForm");
+
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("loginEmail")?.value.trim();
+    const password = document.getElementById("loginPassword")?.value.trim();
+
+    const errorEl = document.getElementById("loginError");
+    errorEl.textContent = "";
+
+    if (!email || !password) {
+      errorEl.textContent = "Enter email and password.";
+      return;
     }
 
-    // 3) Generate referral code for new user
-    const newReferralCode = "TZF-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = "dashboard.html";
 
-    // 4) Save user record
-    const userData = {
-      uid: user.uid,
-      name,
-      email,
-      referralCode: newReferralCode,
-      referredBy: referralCode || null,
-      balance: 0,
-      referralEarnings: 0,
-      createdAt: Date.now()
-    };
-
-    await set(ref(db, "users/" + user.uid), userData);
-
-    // 5) Credit referrer (optional starter bonus logic)
-    if (referredByUID) {
-      const referrerRef = ref(db, "users/" + referredByUID);
-      const referrerSnap = await get(referrerRef);
-
-      if (referrerSnap.exists()) {
-        const current = referrerSnap.val().referralEarnings || 0;
-
-        await update(referrerRef, {
-          referralEarnings: current + 0, // 💡 set signup bonus later if needed
-        });
-
-        // Optional: Track referral tree
-        await set(ref(db, `referrals/${referredByUID}/${user.uid}`), {
-          email,
-          joinedAt: Date.now()
-        });
-      }
+    } catch (err) {
+      console.error(err);
+      errorEl.textContent = "Invalid email or password.";
     }
+  });
+}
 
-    // 6) Redirect
-    window.location.href = "dashboard.html";
+/* =========================
+   SESSION PROTECT (OPTIONAL)
+========================= */
 
-  } catch (err) {
-    signupError.textContent = err.message;
+onAuthStateChanged(auth, (user) => {
+  const path = window.location.pathname;
+
+  if (!user && path.includes("dashboard")) {
+    window.location.href = "login.html";
   }
-
-  signupText.style.display = "inline";
-  signupLoader.style.display = "none";
 });
