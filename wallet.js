@@ -1,12 +1,17 @@
-// wallet.js
+// withdraw.js
+import {
+  auth,
+  db,
+  onBalanceChange,
+  requestWithdrawal,
+  onUserWithdrawalsChange,
+  onUserTransactionsChange
+} from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-let depositBalance = 0;
-let referralBalance = 0;
-
-const depositBalanceEl = document.getElementById("depositBalance");
-const referralBalanceEl = document.getElementById("referralBalance");
-
-const depositAmountInput = document.getElementById("depositAmount");
+// UI Elements
+const earningsBalanceEl = document.getElementById("earningsBalance");
+const withdrawAmountInput = document.getElementById("withdrawAmount");
 const chooseProviderBtn = document.getElementById("chooseProviderBtn");
 
 const providerSection = document.getElementById("providerSection");
@@ -15,105 +20,164 @@ const mtnBtn = document.getElementById("mtnBtn");
 
 const paymentDetails = document.getElementById("paymentDetails");
 const selectedProviderTitle = document.getElementById("selectedProviderTitle");
-const payToNumber = document.getElementById("payToNumber");
 const payAmount = document.getElementById("payAmount");
 
-const senderNumberInput = document.getElementById("senderNumber");
-const transactionIdInput = document.getElementById("transactionId");
-const confirmDepositBtn = document.getElementById("confirmDepositBtn");
+const receiverNumberInput = document.getElementById("receiverNumber");
+const confirmWithdrawBtn = document.getElementById("confirmWithdrawBtn");
 
-const activeDepositsList = document.getElementById("activeDepositsList");
+const activeWithdrawalsList = document.getElementById("activeWithdrawalsList");
 const transactionHistoryList = document.getElementById("transactionHistoryList");
 
+// State
 let selectedProvider = "";
-let currentDepositAmount = 0;
+let currentWithdrawAmount = 0;
+let currentUserId = null;
+let earningsBalance = 0;
 
-// INIT UI
-updateBalances();
+/* =========================
+   AUTH + LOAD BALANCES
+========================= */
 
-chooseProviderBtn.addEventListener("click", () => {
-  const amount = parseFloat(depositAmountInput.value);
-
-  if (!amount || amount < 10) {
-    alert("Enter a valid deposit amount (minimum ZMK 10)");
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "index.html";
     return;
   }
 
-  currentDepositAmount = amount;
+  currentUserId = user.uid;
+
+  // Listen for real-time balance changes
+  onBalanceChange(currentUserId, (balances) => {
+    earningsBalance = balances.earnings || 0;
+    updateBalances();
+  });
+
+  // Load withdrawals and transactions
+  onUserWithdrawalsChange(currentUserId, (withdrawals) => {
+    renderActiveWithdrawals(withdrawals);
+  });
+
+  onUserTransactionsChange(currentUserId, (transactions) => {
+    renderTransactions(transactions);
+  });
+});
+
+/* =========================
+   UI HELPERS
+========================= */
+
+function updateBalances() {
+  earningsBalanceEl.textContent = `ZMK ${earningsBalance.toFixed(2)}`;
+}
+
+function renderActiveWithdrawals(withdrawals) {
+  activeWithdrawalsList.innerHTML = "";
+  const pending = Object.values(withdrawals || {}).filter(w => w.status === "pending");
+
+  if (!pending.length) {
+    activeWithdrawalsList.innerHTML = `<p class="subtext">No pending withdrawals</p>`;
+    return;
+  }
+
+  pending.forEach(w => {
+    const div = document.createElement("div");
+    div.className = "list-item";
+    div.textContent = `${w.provider} — ZMK ${w.amount.toFixed(2)} — Pending`;
+    activeWithdrawalsList.prepend(div);
+  });
+}
+
+function renderTransactions(transactions) {
+  transactionHistoryList.innerHTML = "";
+  const list = Object.values(transactions || {});
+
+  if (!list.length) {
+    transactionHistoryList.innerHTML = `<p class="subtext">No transactions yet</p>`;
+    return;
+  }
+
+  list.forEach(t => {
+    const div = document.createElement("div");
+    div.className = "list-item";
+    div.textContent = `Withdrawal: ZMK ${t.amount.toFixed(2)} via ${t.provider} — ${t.status}`;
+    transactionHistoryList.prepend(div);
+  });
+}
+
+/* =========================
+   CONTINUE BUTTON
+========================= */
+
+chooseProviderBtn.addEventListener("click", () => {
+  const amount = parseFloat(withdrawAmountInput.value);
+
+  if (!amount || amount < 10) {
+    alert("Enter a valid withdrawal amount (minimum ZMK 10)");
+    return;
+  }
+
+  if (amount > earningsBalance) {
+    alert("Insufficient earnings balance");
+    return;
+  }
+
+  currentWithdrawAmount = amount;
   providerSection.classList.remove("hidden");
 });
 
-airtelBtn.addEventListener("click", () => {
-  showPaymentDetails("Airtel Money");
-});
-
-mtnBtn.addEventListener("click", () => {
-  showPaymentDetails("MTN Mobile Money");
-});
+airtelBtn.addEventListener("click", () => showPaymentDetails("Airtel Money"));
+mtnBtn.addEventListener("click", () => showPaymentDetails("MTN Mobile Money"));
 
 function showPaymentDetails(provider) {
   selectedProvider = provider;
-
   selectedProviderTitle.textContent = provider;
-  payAmount.textContent = `ZMK ${currentDepositAmount.toFixed(2)}`;
-
-  if (provider === "Airtel Money") {
-    payToNumber.textContent = "Send to: 0978 000 111 (AfriLeap)";
-  } else {
-    payToNumber.textContent = "Send to: 0966 000 222 (AfriLeap)";
-  }
-
+  payAmount.textContent = `ZMK ${currentWithdrawAmount.toFixed(2)}`;
   paymentDetails.classList.remove("hidden");
 }
 
-confirmDepositBtn.addEventListener("click", () => {
-  const senderNumber = senderNumberInput.value.trim();
-  const txId = transactionIdInput.value.trim();
+/* =========================
+   CONFIRM WITHDRAWAL
+========================= */
 
-  if (!senderNumber || !txId) {
-    alert("Enter your mobile number and transaction ID");
+confirmWithdrawBtn.addEventListener("click", async () => {
+  const receiverNumber = receiverNumberInput.value.trim();
+
+  if (!receiverNumber) {
+    alert("Enter your mobile number");
     return;
   }
 
-  // Simulate backend confirmation
-  depositBalance += currentDepositAmount;
+  const withdrawData = {
+    uid: currentUserId,
+    amount: currentWithdrawAmount,
+    provider: selectedProvider,
+    phone: receiverNumber,
+    status: "pending",
+    timestamp: Date.now()
+  };
 
-  addActiveDeposit(currentDepositAmount, selectedProvider);
-  addTransaction("Deposit", currentDepositAmount, selectedProvider);
+  try {
+    await requestWithdrawal(currentUserId, withdrawData);
 
-  resetDepositFlow();
-  updateBalances();
-
-  alert("Deposit submitted successfully. Pending confirmation.");
+    resetWithdrawFlow();
+    alert("Withdrawal request submitted. Pending admin approval.");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to submit withdrawal. Try again.");
+  }
 });
 
-function updateBalances() {
-  depositBalanceEl.textContent = `ZMK ${depositBalance.toFixed(2)}`;
-  referralBalanceEl.textContent = `ZMK ${referralBalance.toFixed(2)}`;
-}
+/* =========================
+   RESET FLOW
+========================= */
 
-function addActiveDeposit(amount, provider) {
-  const div = document.createElement("div");
-  div.className = "list-item";
-  div.textContent = `${provider} — ZMK ${amount.toFixed(2)} — Pending`;
-  activeDepositsList.prepend(div);
-}
-
-function addTransaction(type, amount, provider) {
-  const div = document.createElement("div");
-  div.className = "list-item";
-  div.textContent = `${type}: ZMK ${amount.toFixed(2)} via ${provider}`;
-  transactionHistoryList.prepend(div);
-}
-
-function resetDepositFlow() {
-  depositAmountInput.value = "";
-  senderNumberInput.value = "";
-  transactionIdInput.value = "";
+function resetWithdrawFlow() {
+  withdrawAmountInput.value = "";
+  receiverNumberInput.value = "";
 
   providerSection.classList.add("hidden");
   paymentDetails.classList.add("hidden");
 
-  currentDepositAmount = 0;
+  currentWithdrawAmount = 0;
   selectedProvider = "";
 }
