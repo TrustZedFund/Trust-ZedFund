@@ -1,17 +1,8 @@
+// withdraw.js
 import { auth, db } from "./firebase.js";
-import {
-  ref,
-  get,
-  set,
-  update
-} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { ref, get, set, update, onValue, push } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-/* =========================
-   ELEMENTS
-========================= */
 const earningsBalanceEl = document.getElementById("earningsBalance");
 const withdrawAmountInput = document.getElementById("withdrawAmount");
 const chooseProviderBtn = document.getElementById("chooseProviderBtn");
@@ -30,9 +21,6 @@ const confirmWithdrawBtn = document.getElementById("confirmWithdrawBtn");
 const activeWithdrawalsList = document.getElementById("activeWithdrawalsList");
 const transactionHistoryList = document.getElementById("transactionHistoryList");
 
-/* =========================
-   STATE
-========================= */
 let selectedProvider = "";
 let currentWithdrawAmount = 0;
 let currentUserId = null;
@@ -49,18 +37,21 @@ onAuthStateChanged(auth, async (user) => {
 
   currentUserId = user.uid;
   await loadEarningsBalance();
-  await loadPendingWithdrawals();
+  loadPendingWithdrawals(); // real-time pending withdrawals
+  loadTransactionHistory(); // real-time transactions
 });
 
 /* =========================
-   LOAD BALANCE
+   LOAD EARNINGS BALANCE
 ========================= */
 async function loadEarningsBalance() {
   const balRef = ref(db, `users/${currentUserId}/balances/earnings`);
-  const snap = await get(balRef);
-
-  earningsBalance = snap.exists() ? Number(snap.val()) : 0;
-  updateBalances();
+  
+  // Real-time balance updates
+  onValue(balRef, (snap) => {
+    earningsBalance = snap.exists() ? Number(snap.val()) : 0;
+    updateBalances();
+  });
 }
 
 function updateBalances() {
@@ -87,13 +78,8 @@ chooseProviderBtn.addEventListener("click", () => {
   providerSection.classList.remove("hidden");
 });
 
-airtelBtn.addEventListener("click", () => {
-  showPaymentDetails("Airtel Money");
-});
-
-mtnBtn.addEventListener("click", () => {
-  showPaymentDetails("MTN Mobile Money");
-});
+airtelBtn.addEventListener("click", () => { showPaymentDetails("Airtel Money"); });
+mtnBtn.addEventListener("click", () => { showPaymentDetails("MTN Mobile Money"); });
 
 function showPaymentDetails(provider) {
   selectedProvider = provider;
@@ -103,18 +89,16 @@ function showPaymentDetails(provider) {
 }
 
 /* =========================
-   CONFIRM WITHDRAW
+   CONFIRM WITHDRAWAL
 ========================= */
 confirmWithdrawBtn.addEventListener("click", async () => {
   const receiverNumber = receiverNumberInput.value.trim();
-
   if (!receiverNumber) {
     alert("Enter your mobile number");
     return;
   }
 
   const withdrawId = "w_" + Date.now();
-
   const withdrawData = {
     uid: currentUserId,
     amount: currentWithdrawAmount,
@@ -125,25 +109,18 @@ confirmWithdrawBtn.addEventListener("click", async () => {
   };
 
   try {
-    // 1. Save to user's withdrawal history
+    // Save to user's withdrawal history
     await set(ref(db, `users/${currentUserId}/withdrawals/${withdrawId}`), withdrawData);
 
-    // 2. Save to global admin queue
+    // Save to global admin queue
     await set(ref(db, `withdrawalRequests/${withdrawId}`), withdrawData);
 
-    // 3. Deduct from earnings balance (HOLD funds)
-    earningsBalance -= currentWithdrawAmount;
+    // Deduct from earnings (hold funds)
     await update(ref(db, `users/${currentUserId}/balances`), {
-      earnings: earningsBalance
+      earnings: earningsBalance - currentWithdrawAmount
     });
 
-    // 4. Update UI
-    addActiveWithdrawal(currentWithdrawAmount, selectedProvider);
-    addTransaction("Withdrawal", currentWithdrawAmount, selectedProvider);
-
     resetWithdrawFlow();
-    updateBalances();
-
     alert("Withdrawal request submitted. Pending admin approval.");
   } catch (err) {
     console.error(err);
@@ -152,24 +129,36 @@ confirmWithdrawBtn.addEventListener("click", async () => {
 });
 
 /* =========================
-   LOAD PENDING WITHDRAWALS
+   LOAD PENDING WITHDRAWALS (REAL-TIME)
 ========================= */
-async function loadPendingWithdrawals() {
+function loadPendingWithdrawals() {
   const wRef = ref(db, `users/${currentUserId}/withdrawals`);
-  const snap = await get(wRef);
-
-  activeWithdrawalsList.innerHTML = "";
-
-  if (!snap.exists()) {
-    activeWithdrawalsList.innerHTML = `<p class="subtext">No pending withdrawals</p>`;
-    return;
-  }
-
-  const data = snap.val();
-  Object.values(data).forEach(w => {
-    if (w.status === "pending") {
-      addActiveWithdrawal(w.amount, w.provider);
+  onValue(wRef, (snap) => {
+    activeWithdrawalsList.innerHTML = "";
+    if (!snap.exists()) {
+      activeWithdrawalsList.innerHTML = `<p class="subtext">No pending withdrawals</p>`;
+      return;
     }
+    const data = snap.val();
+    Object.values(data).forEach(w => {
+      if (w.status === "pending") addActiveWithdrawal(w.amount, w.provider);
+    });
+  });
+}
+
+/* =========================
+   LOAD TRANSACTION HISTORY (REAL-TIME)
+========================= */
+function loadTransactionHistory() {
+  const tRef = ref(db, `users/${currentUserId}/withdrawals`);
+  onValue(tRef, (snap) => {
+    transactionHistoryList.innerHTML = "";
+    if (!snap.exists()) {
+      transactionHistoryList.innerHTML = `<p class="subtext">No transactions yet</p>`;
+      return;
+    }
+    const data = snap.val();
+    Object.values(data).forEach(t => addTransaction("Withdrawal", t.amount, t.provider));
   });
 }
 
@@ -193,10 +182,8 @@ function addTransaction(type, amount, provider) {
 function resetWithdrawFlow() {
   withdrawAmountInput.value = "";
   receiverNumberInput.value = "";
-
   providerSection.classList.add("hidden");
   paymentDetails.classList.add("hidden");
-
   currentWithdrawAmount = 0;
   selectedProvider = "";
 }
