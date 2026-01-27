@@ -7,59 +7,72 @@
   <link rel="stylesheet" href="styles.css"/>
   <style>
     /* Modal Styles */
-    .modal {
+    .modal-bg {
       display: none;
       position: fixed;
-      z-index: 1000;
-      left: 0; top: 0;
+      top: 0; left: 0;
       width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
       justify-content: center;
       align-items: center;
+      z-index: 1000;
     }
-    .modal-content {
+
+    .modal {
       background: #fff;
-      padding: 20px;
       border-radius: 12px;
-      width: 90%;
       max-width: 400px;
+      width: 90%;
+      padding: 20px;
+      position: relative;
       color: #222;
     }
-    .modal-header {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 12px;
+
+    .modal h3 {
+      margin-top: 0;
     }
+
+    .close-modal {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
     .modal input {
       width: 100%;
       padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 8px;
+      margin-top: 10px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-    }
-    .modal button {
-      width: 100%;
-      padding: 12px;
-      background: #2e7dff;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .modal .message {
-      margin-top: 8px;
       font-size: 14px;
     }
-    .close-modal {
-      float: right;
-      cursor: pointer;
+
+    .modal button {
+      margin-top: 12px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      background: #2e7dff;
+      color: #fff;
       font-weight: bold;
-      font-size: 18px;
+      cursor: pointer;
     }
+
+    .modal .message {
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .message.success { color: green; }
+    .message.error { color: red; }
   </style>
 </head>
-<body>
 
+<body>
 <header class="navbar">
   <div class="logo">Trust ZedFund</div>
   <nav>
@@ -82,85 +95,31 @@
 
     <div id="loginError" class="error-text"></div>
 
-    <button class="btn-primary" type="submit">
-      <span id="loginText">Login</span>
-      <span id="loginLoader" style="display:none;">Logging in...</span>
-    </button>
+    <button class="btn-primary" type="submit">Login</button>
 
     <p class="auth-switch">
-      Don't have an account? <a href="register.html">Create one</a>
-    </p>
-    <p class="auth-switch">
-      <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+      Don't have an account? <a href="register.html">Create one</a><br/>
+      <a href="#" id="forgotPasswordBtn">Forgot Password?</a>
     </p>
   </form>
 </div>
 
+<footer>
+  <p>© 2026 Trust ZedFund. All rights reserved.</p>
+  <p class="disclaimer">TrustVault is an educational savings platform.</p>
+</footer>
+
 <!-- Forgot Password Modal -->
-<div id="forgotModal" class="modal">
-  <div class="modal-content">
+<div class="modal-bg" id="forgotModal">
+  <div class="modal">
     <span class="close-modal" id="closeForgotModal">&times;</span>
-    <div class="modal-header">Reset Your Password</div>
-    <input type="email" id="resetEmail" placeholder="Enter your email" required />
+    <h3>Reset Password</h3>
+    <input type="email" id="resetEmail" placeholder="Enter your registered email" />
     <button id="sendResetEmailBtn">Send Reset Link</button>
     <div class="message" id="resetMessage"></div>
   </div>
 </div>
 
-<footer>
-  <p>© 2026 Trust ZedFund. All rights reserved.</p>
-  <p class="disclaimer">TrustVault is an educational savings & investment platform.</p>
-</footer>
-
-<script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
-
-<script type="module">
-import { auth } from "./firebase.js";
-import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-
-const forgotModal = document.getElementById("forgotModal");
-const forgotLink = document.getElementById("forgotPasswordLink");
-const closeModal = document.getElementById("closeForgotModal");
-const sendBtn = document.getElementById("sendResetEmailBtn");
-const resetEmailInput = document.getElementById("resetEmail");
-const resetMessage = document.getElementById("resetMessage");
-
-// Open Modal
-forgotLink.addEventListener("click", (e) => {
-  e.preventDefault();
-  resetMessage.textContent = "";
-  resetEmailInput.value = "";
-  forgotModal.style.display = "flex";
-});
-
-// Close Modal
-closeModal.addEventListener("click", () => forgotModal.style.display = "none");
-window.addEventListener("click", (e) => { if (e.target === forgotModal) forgotModal.style.display = "none"; });
-
-// Send Reset Email
-sendBtn.addEventListener("click", async () => {
-  const email = resetEmailInput.value.trim();
-  resetMessage.textContent = "";
-  if (!email) {
-    resetMessage.style.color = "red";
-    resetMessage.textContent = "Enter your email.";
-    return;
-  }
-
-  try {
-    await sendPasswordResetEmail(auth, email, {
-      url: window.location.origin + "/reset-password.html"
-    });
-    resetMessage.style.color = "green";
-    resetMessage.textContent = "Reset email sent! Check your inbox.";
-  } catch (err) {
-    console.error(err);
-    resetMessage.style.color = "red";
-    resetMessage.textContent = "Failed to send reset email. Check the email address.";
-  }
-});
-</script>
-
 </body>
 </html>
