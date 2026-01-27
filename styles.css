@@ -958,10 +958,11 @@ table th, table td {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
-  background-color: #ffffff; /* white background */
+  padding: 12px 30px;   /* increased from 20px */
+  background-color: #ffffff;
   border-bottom: 1px solid #e5e5e5;
   font-family: Arial, sans-serif;
+  box-sizing: border-box;  /* IMPORTANT: prevents overflow cut */
 }
 
 /* Logo section */
@@ -985,6 +986,8 @@ nav {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: nowrap;       /* keep in one line */
+  max-width: 100%;
 }
 
 /* Label-style buttons */
@@ -1013,7 +1016,10 @@ nav {
   border-color: #0b3d2e;
 }
 
-.get-started:hover {
-  background-color: #0f4f3a;
+.get-started {
+  background-color: #0b3d2e;
+  color: #ffffff;
+  border-color: #0b3d2e;
+  padding: 6px 14px;   /* slightly tighter so it never cuts */
 }
 
