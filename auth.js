@@ -121,40 +121,124 @@ if (loginForm) {
     }
   });
 }
-
 /* =========================
-   FORGOT PASSWORD MODAL
+   FORGOT PASSWORD FLOW INSIDE MODAL
 ========================= */
-const forgotPasswordLink = document.getElementById("forgotPasswordLink");
-const forgotPasswordModal = document.getElementById("forgotPasswordModal");
+
+const forgotLink = document.getElementById("forgotPasswordLink");
+const forgotModal = document.getElementById("forgotPasswordModal");
 const closeModal = document.getElementById("closeModal");
-const sendResetBtn = document.getElementById("sendResetBtn");
+
+const resetStepEmail = document.getElementById("resetStepEmail");
+const resetStepPassword = document.getElementById("resetStepPassword");
+
+const verifyEmailBtn = document.getElementById("verifyEmailBtn");
+const resetPasswordBtn = document.getElementById("resetPasswordBtn");
+
 const resetEmailInput = document.getElementById("resetEmail");
+const newPasswordInput = document.getElementById("newPassword");
+const confirmPasswordInput = document.getElementById("confirmPassword");
 
-forgotPasswordLink?.addEventListener("click", (e) => {
-  e.preventDefault();
-  forgotPasswordModal.classList.remove("hidden");
+const resetMessage = document.getElementById("resetMessage");
+
+let resetUser = null;
+
+// Open modal
+forgotLink.addEventListener("click", () => {
+  forgotModal.classList.remove("hidden");
+  resetMessage.textContent = "";
+  resetStepEmail.classList.remove("hidden");
+  resetStepPassword.classList.add("hidden");
+  resetEmailInput.value = "";
 });
 
-closeModal?.addEventListener("click", () => {
-  forgotPasswordModal.classList.add("hidden");
+// Close modal
+closeModal.addEventListener("click", () => {
+  forgotModal.classList.add("hidden");
 });
 
-sendResetBtn?.addEventListener("click", async () => {
+// Step 1: Verify email exists
+verifyEmailBtn.addEventListener("click", async () => {
   const email = resetEmailInput.value.trim();
+  resetMessage.textContent = "";
+
   if (!email) {
-    alert("Enter your email.");
+    resetMessage.style.color = "red";
+    resetMessage.textContent = "Enter your email.";
     return;
   }
 
   try {
-    await sendPasswordResetEmail(auth, email);
-    alert("Password reset email sent! Check your inbox.");
-    resetEmailInput.value = "";
-    forgotPasswordModal.classList.add("hidden");
+    // Check if user exists in Firebase
+    const usersSnap = await get(ref(db, "users"));
+    if (!usersSnap.exists()) {
+      throw new Error("No users found.");
+    }
+
+    const users = usersSnap.val();
+    const uid = Object.keys(users).find(u => users[u].email === email);
+
+    if (!uid) {
+      resetMessage.style.color = "red";
+      resetMessage.textContent = "Email not registered.";
+      return;
+    }
+
+    resetUser = { uid, email };
+    resetStepEmail.classList.add("hidden");
+    resetStepPassword.classList.remove("hidden");
+
   } catch (err) {
+    resetMessage.style.color = "red";
+    resetMessage.textContent = "Error verifying email.";
     console.error(err);
-    alert(err.message.replace("Firebase: ", ""));
+  }
+});
+
+// Step 2: Reset password
+resetPasswordBtn.addEventListener("click", async () => {
+  const newPass = newPasswordInput.value.trim();
+  const confirmPass = confirmPasswordInput.value.trim();
+
+  resetMessage.textContent = "";
+
+  if (!newPass || !confirmPass) {
+    resetMessage.style.color = "red";
+    resetMessage.textContent = "Enter all password fields.";
+    return;
+  }
+
+  if (newPass.length < 6) {
+    resetMessage.style.color = "red";
+    resetMessage.textContent = "Password must be at least 6 characters.";
+    return;
+  }
+
+  if (newPass !== confirmPass) {
+    resetMessage.style.color = "red";
+    resetMessage.textContent = "Passwords do not match.";
+    return;
+  }
+
+  try {
+    // Update password using Firebase Auth
+    await auth.updatePassword(await auth.signInWithEmailAndPassword(resetUser.email, newPass));
+    
+    resetMessage.style.color = "green";
+    resetMessage.textContent = "Password reset successful! You can now login.";
+    
+    // Clear inputs
+    newPasswordInput.value = "";
+    confirmPasswordInput.value = "";
+
+    setTimeout(() => {
+      forgotModal.classList.add("hidden");
+    }, 2000);
+
+  } catch (err) {
+    resetMessage.style.color = "red";
+    resetMessage.textContent = "Failed to reset password. Try again.";
+    console.error(err);
   }
 });
 
