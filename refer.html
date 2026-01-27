@@ -77,18 +77,11 @@
       transform: scale(0.97);
     }
 
-    .earnings {
-      font-size: 18px;
-      font-weight: bold;
-      text-align: center;
-      margin-top: 10px;
-      color: #1fa463;
-    }
-
     .share-buttons {
       display: flex;
       gap: 10px;
       margin-top: 15px;
+      flex-wrap: wrap;
     }
 
     .share-buttons button {
@@ -134,28 +127,10 @@
       font-size: 13px;
       color: #9aa3ad;
     }
-
-    /* Referred Friends List */
-    .friends-list {
-      margin-top: 15px;
-    }
-
-    .friend-item {
-      padding: 8px 10px;
-      border-bottom: 1px solid #243044;
-      display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-    }
-
-    .friend-item span.status {
-      font-weight: bold;
-    }
   </style>
 </head>
 
 <body>
-
 <div class="container">
 
   <div class="card">
@@ -163,28 +138,18 @@
     <p class="subtext">Invite friends and earn 5% of their deposits</p>
 
     <div class="referral-box">
-      <p><strong>Your Referral Code</strong></p>
+      <p><strong>Your Referral Link</strong></p>
       <div class="ref-code-row">
         <input type="text" id="referralLink" readonly />
-        <button class="btn-primary" onclick="copyReferral()">Copy Link</button>
-        <button class="btn-primary" onclick="copyRefCode()">Copy Code</button>
+        <button class="btn-primary" onclick="copyReferral()">Copy</button>
       </div>
-    </div>
-
-    <div class="earnings">
-      Total Earned: ZMK <span id="referralEarnings">0.00</span>
     </div>
 
     <div class="share-buttons">
       <button onclick="shareWhatsApp()">WhatsApp</button>
-      <button onclick="shareLink()">Share</button>
-    </div>
-
-    <div class="friends-list card" id="friendsListCard">
-      <h4>Referred Friends</h4>
-      <div id="friendsList">
-        <p class="subtext">No friends referred yet</p>
-      </div>
+      <button onclick="shareFacebook()">Facebook</button>
+      <button onclick="shareLinkedIn()">LinkedIn</button>
+      <button onclick="shareEmail()">Email</button>
     </div>
   </div>
 
@@ -194,8 +159,8 @@
     <div class="step">
       <div class="step-number">1</div>
       <div>
-        <strong>Share Your Code</strong>
-        <p>Send your referral code to friends</p>
+        <strong>Share Your Link</strong>
+        <p>Send your referral link to friends</p>
       </div>
     </div>
 
@@ -203,7 +168,7 @@
       <div class="step-number">2</div>
       <div>
         <strong>They Sign Up</strong>
-        <p>Friends join using your code</p>
+        <p>Friends join using your referral</p>
       </div>
     </div>
 
@@ -211,111 +176,13 @@
       <div class="step-number">3</div>
       <div>
         <strong>Earn Rewards</strong>
-        <p>Get 5% of their deposits</p>
+        <p>Receive 5% of their deposits</p>
       </div>
     </div>
   </div>
 
 </div>
 
-<script type="module">
-import { auth, db } from "./firebase.js";
-import { ref, get, child } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-
-let referralCode = "";
-let referralLink = "";
-
-const referralLinkInput = document.getElementById("referralLink");
-const referralEarningsEl = document.getElementById("referralEarnings");
-const friendsListEl = document.getElementById("friendsList");
-
-/* =========================
-   AUTH + LOAD REFERRAL DATA
-========================= */
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    alert("Please log in to view referral info.");
-    window.location.href = "index.html";
-    return;
-  }
-
-  const userId = user.uid;
-
-  try {
-    // Fetch referral code
-    const codeSnap = await get(ref(db, `users/${userId}/referralCode`));
-    if (codeSnap.exists()) {
-      referralCode = codeSnap.val();
-      referralLink = `${window.location.origin}/register.html?ref=${referralCode}`;
-      referralLinkInput.value = referralLink;
-    } else {
-      alert("Referral code not found.");
-    }
-
-    // Fetch total referral earnings
-    const earningsSnap = await get(ref(db, `users/${userId}/referralWallet`));
-    const totalEarnings = earningsSnap.exists() ? Number(earningsSnap.val()) : 0;
-    referralEarningsEl.textContent = totalEarnings.toFixed(2);
-
-    // Fetch referred friends
-    const friendsSnap = await get(ref(db, `referrals/${referralCode}`));
-    if (friendsSnap.exists()) {
-      const friendsData = friendsSnap.val();
-      friendsListEl.innerHTML = "";
-      Object.values(friendsData).forEach(f => {
-        const div = document.createElement("div");
-        div.className = "friend-item";
-        div.innerHTML = `
-          <span>${f.name || "Anonymous"}</span>
-          <span class="status">${f.hasDeposited ? "Deposited" : "Pending"}</span>
-        `;
-        friendsListEl.appendChild(div);
-      });
-    } else {
-      friendsListEl.innerHTML = `<p class="subtext">No friends referred yet</p>`;
-    }
-
-  } catch (err) {
-    console.error(err);
-    alert("Failed to load referral info.");
-  }
-});
-
-/* =========================
-   CLIPBOARD FUNCTIONS
-========================= */
-function copyReferral() {
-  if (!referralLink) return alert("Referral link not ready yet");
-  navigator.clipboard.writeText(referralLink).then(() => alert("Referral link copied!"));
-}
-
-function copyRefCode() {
-  if (!referralCode) return alert("Referral code not ready yet");
-  navigator.clipboard.writeText(referralCode).then(() => alert("Referral code copied!"));
-}
-
-/* =========================
-   SHARE FUNCTIONS
-========================= */
-function shareWhatsApp() {
-  if (!referralCode) return alert("Referral code not ready yet");
-  const text = `Join Trust ZedFund using my referral code: ${referralCode}\n${referralLink}`;
-  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-}
-
-function shareLink() {
-  if (!navigator.share) {
-    copyReferral();
-    alert("Your device does not support native share. Link copied to clipboard.");
-    return;
-  }
-  navigator.share({
-    title: "Trust ZedFund - Refer & Earn",
-    text: `Join using my referral code: ${referralCode}`,
-    url: referralLink
-  }).catch(err => console.error(err));
-}
-</script>
+<script type="module" src="referral.js"></script>
 </body>
 </html>
