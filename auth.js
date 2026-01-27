@@ -6,8 +6,8 @@ import {
 import {
   ref,
   set,
-  update,
   get,
+  update,
   push
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
@@ -24,7 +24,6 @@ if (refCode && document.getElementById("referral")) {
    SIGNUP
 ====================== */
 const signupForm = document.getElementById("signupForm");
-
 if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -43,11 +42,9 @@ if (signupForm) {
     loader.style.display = "inline";
 
     try {
-      // Create user
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const uid = cred.user.uid;
 
-      // Initialize user in Realtime DB
       await set(ref(db, "users/" + uid), {
         firstName: name,
         email,
@@ -79,7 +76,6 @@ if (signupForm) {
    LOGIN
 ====================== */
 const loginForm = document.getElementById("loginForm");
-
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -96,7 +92,12 @@ if (loginForm) {
     loader.style.display = "inline";
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const uid = cred.user.uid;
+
+      // Save UID in localStorage for wallet/dashboard
+      localStorage.setItem("tzf_uid", uid);
+
       window.location.href = "dashboard.html";
 
     } catch (err) {
@@ -111,51 +112,4 @@ if (loginForm) {
       loader.style.display = "none";
     }
   });
-}
-
-/* ======================
-   HANDLE DEPOSITS
-====================== */
-export async function handleDeposit(userId, depositAmount) {
-  const userSnap = await get(ref(db, "users/" + userId));
-  const userData = userSnap.val();
-
-  if (!userData) throw new Error("User not found");
-
-  // Update deposit wallet
-  const newDepositWallet = (userData.depositWallet || 0) + depositAmount;
-  await update(ref(db, "users/" + userId), {
-    depositWallet: newDepositWallet
-  });
-
-  // Add transaction record
-  await push(ref(db, `transactions/${userId}`), {
-    type: "deposit",
-    amount: depositAmount,
-    date: Date.now(),
-    status: "pending"
-  });
-
-  // Apply referral bonus
-  if (userData.referredBy) {
-    const refId = userData.referredBy;
-    const refSnap = await get(ref(db, "users/" + refId));
-    if (refSnap.exists()) {
-      const refUser = refSnap.val();
-      const bonusPercent = 0.05; // 5%
-      const bonus = depositAmount * bonusPercent;
-
-      await update(ref(db, "users/" + refId), {
-        referralWallet: (refUser.referralWallet || 0) + bonus
-      });
-
-      // Log referral bonus
-      await push(ref(db, `referrals/${refId}`), {
-        from: userId,
-        amount: depositAmount,
-        bonus,
-        date: Date.now()
-      });
-    }
-  }
 }
