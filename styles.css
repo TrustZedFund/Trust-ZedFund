@@ -1544,64 +1544,7 @@ nav .cta-row {
     --radius-sm: 6px;
 }
 
-body {
-    font-family: 'Open Sans', sans-serif;
-    line-height: 1.6;
-    color: var(--dark);
-    background: var(--light);
-}
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    line-height: 1.2;
-}
-
-h1 {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-}
-
-h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0.75rem;
-}
-
-p {
-    margin-bottom: 1rem;
-    color: var(--gray);
-}
-
-.highlight {
-    color: var(--secondary);
-}
-
-/* Buttons */
-.btn-primary, .btn-secondary, .btn-nav {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    border-radius: var(--radius-sm);
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-    font-family: 'Poppins', sans-serif;
-}
 
 .btn-primary {
     background: var(--primary);
@@ -1653,24 +1596,6 @@ p {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 20px;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--dark);
-}
-
-.logo-icon {
-    font-size: 2rem;
-}
-
-.logo-text strong {
-    color: var(--primary);
 }
 
 .nav-links {
