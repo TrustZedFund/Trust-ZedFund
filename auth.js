@@ -1,8 +1,15 @@
 import { auth, db } from "./firebase.js";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword }
-  from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { ref, set }
-  from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import {
+  ref,
+  set,
+  update,
+  get,
+  push
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
 /* ======================
    AUTO REFERRAL
@@ -36,9 +43,11 @@ if (signupForm) {
     loader.style.display = "inline";
 
     try {
+      // Create user
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const uid = cred.user.uid;
 
+      // Initialize user in Realtime DB
       await set(ref(db, "users/" + uid), {
         firstName: name,
         email,
@@ -63,58 +72,6 @@ if (signupForm) {
       btnText.style.display = "inline";
       loader.style.display = "none";
     }
-  });
-}
-
-// AFTER user makes a deposit
-async function handleDeposit(userId, depositAmount) {
-  // Update user balance
-  const userSnap = await get(ref(db, "users/" + userId));
-  const userData = userSnap.val();
-
-  const newBalance = (userData.balance || 0) + depositAmount;
-  await update(ref(db, "users/" + userId), { balance: newBalance });
-
-  // Handle referral bonus
-  const referralCode = userData.referral; // friend who referred
-  if (referralCode) {
-    const refSnap = await get(ref(db, "users/" + referralCode));
-    if (refSnap.exists()) {
-      const refUserData = refSnap.val();
-      const bonusPercent = 0.05; // 5%
-      const bonus = depositAmount * bonusPercent;
-
-      await update(ref(db, "users/" + referralCode), {
-        balance: (refUserData.balance || 0) + bonus
-      });
-    }
-  }
-}
-async function applyReferralBonus(userId, depositAmount) {
-  const userSnap = await get(ref(db, "users/" + userId));
-  const userData = userSnap.val();
-
-  if (!userData || !userData.referredBy) return;
-
-  const referrerId = userData.referredBy;
-
-  const refSnap = await get(ref(db, "users/" + referrerId));
-  if (!refSnap.exists()) return;
-
-  const refUser = refSnap.val();
-
-  const bonusPercent = 0.05; // 5%
-  const bonus = depositAmount * bonusPercent;
-
-  await update(ref(db, "users/" + referrerId), {
-    referralWallet: (refUser.referralWallet || 0) + bonus
-  });
-
-  await push(ref(db, "referrals/" + referrerId), {
-    from: userId,
-    amount: depositAmount,
-    bonus,
-    date: Date.now()
   });
 }
 
@@ -154,4 +111,51 @@ if (loginForm) {
       loader.style.display = "none";
     }
   });
+}
+
+/* ======================
+   HANDLE DEPOSITS
+====================== */
+export async function handleDeposit(userId, depositAmount) {
+  const userSnap = await get(ref(db, "users/" + userId));
+  const userData = userSnap.val();
+
+  if (!userData) throw new Error("User not found");
+
+  // Update deposit wallet
+  const newDepositWallet = (userData.depositWallet || 0) + depositAmount;
+  await update(ref(db, "users/" + userId), {
+    depositWallet: newDepositWallet
+  });
+
+  // Add transaction record
+  await push(ref(db, `transactions/${userId}`), {
+    type: "deposit",
+    amount: depositAmount,
+    date: Date.now(),
+    status: "pending"
+  });
+
+  // Apply referral bonus
+  if (userData.referredBy) {
+    const refId = userData.referredBy;
+    const refSnap = await get(ref(db, "users/" + refId));
+    if (refSnap.exists()) {
+      const refUser = refSnap.val();
+      const bonusPercent = 0.05; // 5%
+      const bonus = depositAmount * bonusPercent;
+
+      await update(ref(db, "users/" + refId), {
+        referralWallet: (refUser.referralWallet || 0) + bonus
+      });
+
+      // Log referral bonus
+      await push(ref(db, `referrals/${refId}`), {
+        from: userId,
+        amount: depositAmount,
+        bonus,
+        date: Date.now()
+      });
+    }
+  }
 }
