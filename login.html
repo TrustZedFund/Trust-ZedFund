@@ -13,11 +13,11 @@
     }
 
     .auth-box {
-      max-width: 420px;
-      margin: 80px auto;
+      max-width: 400px;
+      margin: 60px auto;
       background: #111821;
       padding: 20px;
-      border-radius: 14px;
+      border-radius: 12px;
     }
 
     input {
@@ -26,98 +26,79 @@
       margin-top: 10px;
       border-radius: 8px;
       border: none;
-      background: #1a2230;
-      color: #fff;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      margin-top: 15px;
+      margin-top: 12px;
       border-radius: 8px;
       border: none;
-      background: #1fa463;
-      color: #fff;
-      font-weight: bold;
       cursor: pointer;
+      font-weight: bold;
     }
 
-    .link {
-      color: #2e7dff;
-      cursor: pointer;
-      font-size: 14px;
-      margin-top: 12px;
-      display: block;
-      text-align: center;
-    }
+    .btn-primary { background: #1fa463; color: #fff; }
+    .btn-secondary { background: #2e7dff; color: #fff; }
+    .btn-whatsapp { background: #25D366; color: #000; }
 
     .error, .success {
       font-size: 14px;
       margin-top: 10px;
-      text-align: center;
     }
 
     .error { color: #ff6b6b; }
-    .success { color: #4caf50; }
+    .success { color: #1fa463; }
 
-    /* MODAL */
     .modal {
+      display: none;
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.7);
-      display: none;
       align-items: center;
       justify-content: center;
     }
 
-    .modal-box {
+    .modal-content {
       background: #111821;
       padding: 20px;
       border-radius: 12px;
-      width: 90%;
-      max-width: 400px;
+      max-width: 360px;
+      width: 100%;
     }
   </style>
 </head>
+
 <body>
 
 <div class="auth-box">
-  <h2>Login</h2>
+  <h2>Login with Phone</h2>
 
-  <input id="loginEmail" placeholder="Email or Phone" />
-  <input id="loginPassword" type="password" placeholder="Password" />
+  <input id="phone" placeholder="+260 9XXXXXXXX" />
+  <div id="recaptcha-container"></div>
 
-  <div id="loginError" class="error"></div>
+  <button class="btn-primary" id="sendOtpBtn">Send OTP</button>
 
-  <button id="loginBtn">Login</button>
-
-  <span class="link" id="forgotBtn">Forgot Password?</span>
+  <div id="loginMsg"></div>
 </div>
 
-<!-- RESET MODAL -->
-<div class="modal" id="resetModal">
-  <div class="modal-box">
+<!-- OTP MODAL -->
+<div class="modal" id="otpModal">
+  <div class="modal-content">
+    <h3>Enter OTP</h3>
 
-    <h3>Reset Password</h3>
+    <input id="otpCode" placeholder="6-digit code" />
 
-    <input id="resetPhone" placeholder="Phone e.g. +26097xxxxxx" />
-    <div id="recaptcha-container"></div>
+    <button class="btn-secondary" id="verifyOtpBtn">Verify OTP</button>
 
-    <button id="sendOtpBtn">Send OTP</button>
+    <button class="btn-whatsapp" id="whatsappHelpBtn">
+      Didn’t receive SMS? WhatsApp Us
+    </button>
 
-    <input id="otpCode" placeholder="Enter OTP" style="display:none"/>
-    <input id="newPassword" type="password" placeholder="New Password" style="display:none"/>
-
-    <button id="confirmResetBtn" style="display:none">Reset Password</button>
-
-    <div id="resetMsg" class="error"></div>
-
-    <span class="link" onclick="closeModal()">Cancel</span>
+    <div id="otpMsg"></div>
   </div>
 </div>
 
-<script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
-
 </body>
 </html>
