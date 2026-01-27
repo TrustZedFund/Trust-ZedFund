@@ -131,24 +131,49 @@ onAuthStateChanged(auth, (user) => {
     window.location.href = "login.html";
   }
 });
-import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
 /* =========================
-   FORGOT PASSWORD
+   FORGOT PASSWORD (MODAL)
 ========================= */
 
 const forgotPasswordLink = document.getElementById("forgotPasswordLink");
+const forgotPasswordModal = document.getElementById("forgotPasswordModal");
+const closeModal = document.getElementById("closeModal");
+const sendResetBtn = document.getElementById("sendResetBtn");
+const resetEmailInput = document.getElementById("resetEmail");
 
 if (forgotPasswordLink) {
-  forgotPasswordLink.addEventListener("click", async (e) => {
+  forgotPasswordLink.addEventListener("click", (e) => {
     e.preventDefault();
+    forgotPasswordModal.classList.remove("hidden");
+  });
+}
 
-    const email = prompt("Enter your email to reset password:");
-    if (!email) return alert("Email is required.");
+if (closeModal) {
+  closeModal.addEventListener("click", () => {
+    forgotPasswordModal.classList.add("hidden");
+    resetEmailInput.value = "";
+  });
+}
+
+// Close modal when clicking outside content
+window.addEventListener("click", (e) => {
+  if (e.target === forgotPasswordModal) {
+    forgotPasswordModal.classList.add("hidden");
+    resetEmailInput.value = "";
+  }
+});
+
+if (sendResetBtn) {
+  sendResetBtn.addEventListener("click", async () => {
+    const email = resetEmailInput.value.trim();
+    if (!email) return alert("Please enter your email.");
 
     try {
       await sendPasswordResetEmail(auth, email);
       alert("Password reset email sent! Check your inbox.");
+      forgotPasswordModal.classList.add("hidden");
+      resetEmailInput.value = "";
     } catch (err) {
       console.error(err);
       alert(err.message.replace("Firebase: ", ""));
