@@ -27,7 +27,6 @@ if (signupForm) {
     const email = document.getElementById("email")?.value.trim();
     const password = document.getElementById("password")?.value.trim();
     const referralCode = document.getElementById("referral")?.value.trim();
-
     const errorEl = document.getElementById("signupError");
     errorEl.textContent = "";
 
@@ -35,18 +34,15 @@ if (signupForm) {
       errorEl.textContent = "All fields are required.";
       return;
     }
-
     if (password.length < 6) {
       errorEl.textContent = "Password must be at least 6 characters.";
       return;
     }
 
     try {
-      // Create user
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCred.user;
 
-      // Generate referral code for new user
       const myReferralCode = "TZF" + Math.floor(100000 + Math.random() * 900000);
 
       const userData = {
@@ -62,26 +58,19 @@ if (signupForm) {
         createdAt: serverTimestamp()
       };
 
-      // Save user profile
       await set(ref(db, `users/${user.uid}`), userData);
 
-      // Credit referral if valid
+      // Credit referrer if exists
       if (referralCode) {
         const usersRef = ref(db, "users");
         const snap = await get(usersRef);
-
         if (snap.exists()) {
           const users = snap.val();
-
-          const referrerId = Object.keys(users).find(
-            uid => users[uid].referralCode === referralCode
-          );
-
+          const referrerId = Object.keys(users).find(uid => users[uid].referralCode === referralCode);
           if (referrerId) {
             const balRef = ref(db, `users/${referrerId}/balances/referral`);
             const balSnap = await get(balRef);
             const current = balSnap.exists() ? Number(balSnap.val()) : 0;
-
             await update(ref(db, `users/${referrerId}/balances`), {
               referral: current + 5
             });
@@ -89,10 +78,9 @@ if (signupForm) {
         }
       }
 
-      // Sign out the user so they must login manually
+      // SIGN OUT → Force user to login manually
       await signOut(auth);
-
-      alert("Account created successfully! Please log in.");
+      alert("Account created successfully! Please login to continue.");
       window.location.href = "login.html";
 
     } catch (err) {
@@ -114,7 +102,6 @@ if (loginForm) {
 
     const email = document.getElementById("loginEmail")?.value.trim();
     const password = document.getElementById("loginPassword")?.value.trim();
-
     const errorEl = document.getElementById("loginError");
     errorEl.textContent = "";
 
@@ -140,14 +127,7 @@ if (loginForm) {
 
 onAuthStateChanged(auth, (user) => {
   const path = window.location.pathname;
-
-  // Protect dashboard
-  if (!user && path.includes("dashboard.html")) {
+  if (!user && path.includes("dashboard")) {
     window.location.href = "login.html";
-  }
-
-  // Redirect logged-in user away from login/register
-  if (user && (path.includes("login.html") || path.includes("register.html"))) {
-    window.location.href = "dashboard.html";
   }
 });
