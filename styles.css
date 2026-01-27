@@ -1624,59 +1624,6 @@ nav .cta-row {
     cursor: pointer;
 }
 
-/* Hero Section */
-.hero {
-    padding: 4rem 0;
-    background: linear-gradient(135deg, #F0FFF4 0%, #E6FFFA 100%);
-    overflow: hidden;
-}
-
-.hero .container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-}
-
-.hero-content {
-    max-width: 600px;
-}
-
-.hero .subtitle {
-    font-size: 1.25rem;
-    color: var(--gray);
-    margin-bottom: 2rem;
-}
-
-.hero-stats {
-    display: flex;
-    gap: 2rem;
-    margin: 2rem 0;
-}
-
-.stat {
-    text-align: center;
-}
-
-.stat .number {
-    display: block;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--primary);
-    line-height: 1;
-}
-
-.stat .label {
-    font-size: 0.875rem;
-    color: var(--gray);
-}
-
-.hero-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
 .trust-badges {
     display: flex;
     flex-wrap: wrap;
