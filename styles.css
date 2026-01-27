@@ -953,55 +953,67 @@ table th, table td {
   border-bottom: 1px solid #ddd;
 }
 
+/* Navbar container */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 30px;
-  background-color: #0b3d2e; /* dark green */
-  font-family: 'Arial', sans-serif;
+  padding: 12px 20px;
+  background-color: #ffffff; /* white background */
+  border-bottom: 1px solid #e5e5e5;
+  font-family: Arial, sans-serif;
 }
 
+/* Logo section */
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: white;
+  gap: 8px;
   font-weight: bold;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
+  color: #0b3d2e;
 }
 
 .logo img {
+  height: 40px;
+  width: 40px;
   border-radius: 50%;
 }
 
+/* Nav container */
 nav {
   display: flex;
   align-items: center;
-  gap: 15px; /* space between buttons */
+  gap: 10px;
 }
 
+/* Label-style buttons */
 .nav-btn {
-  padding: 8px 18px;
-  border-radius: 20px; /* pill-shaped buttons */
+  padding: 6px 12px;              /* smaller padding */
+  border-radius: 14px;            /* softer pill */
   text-decoration: none;
+  font-size: 0.85rem;             /* smaller text */
   font-weight: 500;
-  font-size: 0.95rem;
-  color: #0b3d2e; /* text color for light button */
-  background-color: #ffd700; /* gold background */
-  transition: all 0.3s ease;
+  color: #0b3d2e;
+  background-color: #f1f5f3;      /* light grey-green */
+  border: 1px solid #d8e5df;
+  white-space: nowrap;            /* forces single line */
+  transition: all 0.2s ease;
 }
 
 .nav-btn:hover {
-  background-color: #ffc107; /* slightly darker on hover */
-  transform: translateY(-2px);
+  background-color: #e3f1eb;
+  border-color: #0b3d2e;
 }
 
+/* Call-to-action button */
 .get-started {
-  background-color: #00b894; /* green for call-to-action */
-  color: white;
+  background-color: #0b3d2e;
+  color: #ffffff;
+  border-color: #0b3d2e;
 }
 
 .get-started:hover {
-  background-color: #019875; /* darker green hover */
+  background-color: #0f4f3a;
 }
+
