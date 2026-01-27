@@ -44,13 +44,22 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 /* =========================
-   REAL-TIME BALANCE
+   REAL-TIME BALANCE (DEPOSITS + REFERRALS)
 ========================= */
 function setupRealtimeBalance() {
-  const balRef = ref(db, `users/${currentUserId}/balances/earnings`);
-  onValue(balRef, (snap) => {
-    earningsBalance = snap.exists() ? Number(snap.val()) : 0;
-    updateBalanceUI();
+  const earningsRef = ref(db, `users/${currentUserId}/balances/earnings`);
+  const referralRef = ref(db, `users/${currentUserId}/balances/referral`);
+
+  // Listen for earnings changes (deposits + admin adjustments)
+  onValue(earningsRef, (snap) => {
+    const earnings = snap.exists() ? Number(snap.val()) : 0;
+
+    // Listen for referral bonus changes
+    onValue(referralRef, (rSnap) => {
+      const referral = rSnap.exists() ? Number(rSnap.val()) : 0;
+      earningsBalance = earnings + referral;
+      updateBalanceUI();
+    });
   });
 }
 
