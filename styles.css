@@ -958,26 +958,26 @@ table th, table td {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 30px;   /* increased from 20px */
-  background-color: #ffffff;
+  padding: 12px 18px;          /* tighter right/left spacing */
+  background-color: #ffffff;  /* white background */
   border-bottom: 1px solid #e5e5e5;
   font-family: Arial, sans-serif;
-  box-sizing: border-box;  /* IMPORTANT: prevents overflow cut */
+  box-sizing: border-box;
 }
 
 /* Logo section */
 .logo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1.3rem;           /* slightly larger brand text */
   color: #0b3d2e;
 }
 
 .logo img {
-  height: 55px;   /* increased from 40px */
-  width: 55px;    /* increased from 40px */
+  height: 60px;                /* bigger logo */
+  width: 60px;
   border-radius: 50%;
 }
 
@@ -985,22 +985,20 @@ table th, table td {
 nav {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: nowrap;       /* keep in one line */
-  max-width: 100%;
+  gap: 6px;                    /* buttons closer together */
 }
 
 /* Label-style buttons */
 .nav-btn {
-  padding: 6px 12px;              /* smaller padding */
-  border-radius: 14px;            /* softer pill */
+  padding: 6px 12px;           /* compact size */
+  border-radius: 14px;
   text-decoration: none;
-  font-size: 0.85rem;             /* smaller text */
+  font-size: 0.85rem;          /* smaller text */
   font-weight: 500;
   color: #0b3d2e;
-  background-color: #f1f5f3;      /* light grey-green */
+  background-color: #f1f5f3;
   border: 1px solid #d8e5df;
-  white-space: nowrap;            /* forces single line */
+  white-space: nowrap;         /* force single line */
   transition: all 0.2s ease;
 }
 
@@ -1014,12 +1012,9 @@ nav {
   background-color: #0b3d2e;
   color: #ffffff;
   border-color: #0b3d2e;
+  padding: 6px 12px;           /* same width as others, not floating */
 }
 
-.get-started {
-  background-color: #0b3d2e;
-  color: #ffffff;
-  border-color: #0b3d2e;
-  padding: 6px 14px;   /* slightly tighter so it never cuts */
+.get-started:hover {
+  background-color: #0f4f3a;
 }
-
