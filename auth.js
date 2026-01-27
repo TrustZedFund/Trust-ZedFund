@@ -2,25 +2,20 @@ import { auth, db } from "./firebase.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
-  RecaptchaVerifier,
-  signInWithPhoneNumber
+  sendPasswordResetEmail,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
 import {
   ref,
-  get,
   set,
+  get,
   update,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
 /* =========================
-   GLOBALS
-========================= */
-let confirmationResult = null;
-
-/* =========================
-   SIGNUP (EMAIL)
+   SIGNUP
 ========================= */
 const signupForm = document.getElementById("signupForm");
 
@@ -28,17 +23,21 @@ if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const name = document.getElementById("name")?.value.trim();
-    const email = document.getElementById("email")?.value.trim();
-    const password = document.getElementById("password")?.value.trim();
-    const phone = document.getElementById("phone")?.value.trim();
-    const referralCode = document.getElementById("referral")?.value.trim();
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const password = passwordInput.value.trim();
+    const referralCode = referralInput.value.trim();
 
-    const errorEl = document.getElementById("signupError");
-    errorEl.textContent = "";
+    signupError.textContent = "";
 
-    if (!name || !email || !password || !phone) {
-      errorEl.textContent = "All fields are required.";
+    if (!name || !email || !phone || !password) {
+      signupError.textContent = "All fields are required.";
+      return;
+    }
+
+    if (password.length < 6) {
+      signupError.textContent = "Password must be at least 6 characters.";
       return;
     }
 
@@ -46,29 +45,36 @@ if (signupForm) {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const user = cred.user;
 
-      const myReferralCode = "TZF" + Math.floor(100000 + Math.random() * 900000);
+      const myReferral = "TZF" + Math.floor(100000 + Math.random() * 900000);
 
       await set(ref(db, `users/${user.uid}`), {
         name,
         email,
         phone,
-        referralCode: myReferralCode,
+        referralCode: myReferral,
         referredBy: referralCode || null,
-        balances: { deposit: 0, earnings: 0, referral: 0 },
+        balances: {
+          deposit: 0,
+          earnings: 0,
+          referral: 0
+        },
         createdAt: serverTimestamp()
       });
 
+      // Referral reward
       if (referralCode) {
         const snap = await get(ref(db, "users"));
         if (snap.exists()) {
           const users = snap.val();
-          const referrerId = Object.keys(users)
-            .find(uid => users[uid].referralCode === referralCode);
+          const referrerId = Object.keys(users).find(
+            uid => users[uid].referralCode === referralCode
+          );
 
           if (referrerId) {
             const balRef = ref(db, `users/${referrerId}/balances/referral`);
             const balSnap = await get(balRef);
             const current = balSnap.exists() ? Number(balSnap.val()) : 0;
+
             await update(ref(db, `users/${referrerId}/balances`), {
               referral: current + 5
             });
@@ -79,13 +85,13 @@ if (signupForm) {
       window.location.href = "dashboard.html";
 
     } catch (err) {
-      errorEl.textContent = err.message.replace("Firebase: ", "");
+      signupError.textContent = err.message.replace("Firebase: ", "");
     }
   });
 }
 
 /* =========================
-   LOGIN (EMAIL)
+   LOGIN
 ========================= */
 const loginForm = document.getElementById("loginForm");
 
@@ -93,81 +99,70 @@ if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById("loginEmail")?.value.trim();
-    const password = document.getElementById("loginPassword")?.value.trim();
-    const errorEl = document.getElementById("loginError");
+    const input = loginInput.value.trim();
+    const password = loginPassword.value.trim();
 
-    errorEl.textContent = "";
+    loginError.textContent = "";
+
+    if (!input || !password) {
+      loginError.textContent = "Enter credentials.";
+      return;
+    }
+
+    // Phone → convert to email lookup
+    let email = input;
+    if (input.startsWith("+")) {
+      const snap = await get(ref(db, "users"));
+      if (!snap.exists()) {
+        loginError.textContent = "Account not found.";
+        return;
+      }
+      const users = snap.val();
+      const match = Object.values(users).find(u => u.phone === input);
+      if (!match) {
+        loginError.textContent = "Account not found.";
+        return;
+      }
+      email = match.email;
+    }
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
       window.location.href = "dashboard.html";
     } catch {
-      errorEl.textContent = "Invalid email or password.";
+      loginError.textContent = "Invalid login credentials.";
     }
   });
 }
 
 /* =========================
-   PHONE OTP LOGIN
+   FORGOT PASSWORD
 ========================= */
-const sendOtpBtn = document.getElementById("sendOtpBtn");
-const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+window.resetPassword = async function () {
+  const email = resetEmail.value.trim();
+  resetMsg.textContent = "";
 
-if (sendOtpBtn) {
-  window.recaptchaVerifier = new RecaptchaVerifier(
-    auth,
-    "recaptcha-container",
-    { size: "invisible" }
-  );
+  if (!email) {
+    resetMsg.textContent = "Enter your email.";
+    resetMsg.className = "error-text";
+    return;
+  }
 
-  sendOtpBtn.addEventListener("click", async () => {
-    const phone = document.getElementById("phone")?.value.trim();
-    const msg = document.getElementById("loginMsg");
-
-    if (!phone || !phone.startsWith("+260")) {
-      msg.textContent = "Use format +2609XXXXXXXX";
-      return;
-    }
-
-    try {
-      confirmationResult = await signInWithPhoneNumber(
-        auth,
-        phone,
-        window.recaptchaVerifier
-      );
-      document.getElementById("otpModal").style.display = "flex";
-      msg.textContent = "OTP sent via SMS";
-    } catch (err) {
-      msg.textContent = "OTP failed. Try again.";
-    }
-  });
-}
-
-if (verifyOtpBtn) {
-  verifyOtpBtn.addEventListener("click", async () => {
-    const code = document.getElementById("otpCode")?.value.trim();
-    const msg = document.getElementById("otpMsg");
-
-    if (!code || code.length !== 6) {
-      msg.textContent = "Enter valid OTP";
-      return;
-    }
-
-    try {
-      await confirmationResult.confirm(code);
-      window.location.href = "dashboard.html";
-    } catch {
-      msg.textContent = "Invalid or expired OTP";
-    }
-  });
-}
+  try {
+    await sendPasswordResetEmail(auth, email);
+    resetMsg.textContent = "Password reset link sent. Check your email.";
+    resetMsg.className = "success-text";
+  } catch {
+    resetMsg.textContent = "Failed to send reset email.";
+    resetMsg.className = "error-text";
+  }
+};
 
 /* =========================
-   SESSION PROTECT
+   SESSION GUARD
 ========================= */
 onAuthStateChanged(auth, (user) => {
-  if (!user && window.location.pathname.includes("dashboard")) {
-    window.location.href = "login.html";
+  if (!user && location.pathname.includes("dashboard")) {
+    location.href = "login.html";
   }
 });
