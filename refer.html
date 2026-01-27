@@ -48,7 +48,7 @@
     .ref-code-row {
       display: flex;
       gap: 10px;
-      flex-wrap: wrap;
+      margin-top: 5px;
     }
 
     .ref-code-row input {
@@ -81,7 +81,6 @@
       display: flex;
       gap: 10px;
       margin-top: 15px;
-      flex-wrap: wrap;
     }
 
     .share-buttons button {
@@ -131,6 +130,7 @@
 </head>
 
 <body>
+
 <div class="container">
 
   <div class="card">
@@ -141,14 +141,14 @@
       <p><strong>Your Referral Code / Link</strong></p>
       <div class="ref-code-row">
         <input type="text" id="referralLink" readonly />
-        <button class="btn-primary" onclick="copyReferral()">Copy Link</button>
-        <button class="btn-primary" onclick="copyRefCode()">Copy Code</button>
+        <button class="btn-primary" id="copyLinkBtn">Copy Link</button>
+        <button class="btn-primary" id="copyCodeBtn">Copy Code</button>
       </div>
     </div>
 
     <div class="share-buttons">
-      <button onclick="shareWhatsApp()">WhatsApp</button>
-      <button onclick="shareLink()">Share Anywhere</button>
+      <button id="shareWhatsappBtn">WhatsApp</button>
+      <button id="shareLinkBtn">Share</button>
     </div>
   </div>
 
@@ -182,6 +182,15 @@
 
 </div>
 
-<script type="module" src="referral.js"></script>
+<script type="module">
+import { copyReferral, copyRefCode, shareWhatsApp, shareLink } from './referral.js';
+
+// Button event bindings
+document.getElementById("copyLinkBtn").addEventListener("click", copyReferral);
+document.getElementById("copyCodeBtn").addEventListener("click", copyRefCode);
+document.getElementById("shareWhatsappBtn").addEventListener("click", shareWhatsApp);
+document.getElementById("shareLinkBtn").addEventListener("click", shareLink);
+</script>
+
 </body>
 </html>
