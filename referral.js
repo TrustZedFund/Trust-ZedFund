@@ -42,30 +42,30 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 /* =========================
-   COPY REFERRAL LINK
+   COPY REFERRAL LINK TO CLIPBOARD
 ========================= */
 export function copyReferral() {
   if (!referralLink) return alert("Referral link not ready yet.");
   
   navigator.clipboard.writeText(referralLink)
-    .then(() => alert("Referral link copied!"))
+    .then(() => alert("Referral link copied to clipboard!"))
     .catch(() => alert("Failed to copy. Try manually."));
 }
 
 /* =========================
-   COPY REFERRAL CODE ONLY
+   COPY REFERRAL CODE ONLY TO CLIPBOARD
 ========================= */
 export function copyRefCode() {
   if (!referralLink) return alert("Referral code not ready yet.");
 
   const code = referralLink.split("ref=")[1];
   navigator.clipboard.writeText(code)
-    .then(() => alert("Referral code copied!"))
+    .then(() => alert("Referral code copied to clipboard!"))
     .catch(() => alert("Failed to copy. Try manually."));
 }
 
 /* =========================
-   WHATSAPP SHARE
+   SHARE VIA WHATSAPP
 ========================= */
 export function shareWhatsApp() {
   if (!referralLink) return alert("Referral link not ready yet.");
