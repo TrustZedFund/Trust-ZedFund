@@ -2,6 +2,7 @@ import { auth, db } from "./firebase.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import {
@@ -41,9 +42,11 @@ if (signupForm) {
     }
 
     try {
+      // Create user
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCred.user;
 
+      // Generate referral code for new user
       const myReferralCode = "TZF" + Math.floor(100000 + Math.random() * 900000);
 
       const userData = {
@@ -62,7 +65,7 @@ if (signupForm) {
       // Save user profile
       await set(ref(db, `users/${user.uid}`), userData);
 
-      // If referral was used → credit referrer
+      // Credit referral if valid
       if (referralCode) {
         const usersRef = ref(db, "users");
         const snap = await get(usersRef);
@@ -86,7 +89,11 @@ if (signupForm) {
         }
       }
 
-      window.location.href = "dashboard.html";
+      // Sign out the user so they must login manually
+      await signOut(auth);
+
+      alert("Account created successfully! Please log in.");
+      window.location.href = "login.html";
 
     } catch (err) {
       console.error(err);
@@ -128,13 +135,19 @@ if (loginForm) {
 }
 
 /* =========================
-   SESSION PROTECT (OPTIONAL)
+   SESSION PROTECT
 ========================= */
 
 onAuthStateChanged(auth, (user) => {
   const path = window.location.pathname;
 
-  if (!user && path.includes("dashboard")) {
+  // Protect dashboard
+  if (!user && path.includes("dashboard.html")) {
     window.location.href = "login.html";
+  }
+
+  // Redirect logged-in user away from login/register
+  if (user && (path.includes("login.html") || path.includes("register.html"))) {
+    window.location.href = "dashboard.html";
   }
 });
