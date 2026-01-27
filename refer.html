@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Refer & Earn</title>
+  <title>Refer & Earn | Trust ZedFund</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -48,6 +48,7 @@
     .ref-code-row {
       display: flex;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .ref-code-row input {
@@ -74,6 +75,28 @@
 
     .btn-primary:active {
       transform: scale(0.97);
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .share-buttons button {
+      flex: 1;
+      background: #1a2230;
+      border: 1px solid #2e7dff;
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .share-buttons button:hover {
+      background: #243044;
     }
 
     .how-it-works {
@@ -104,32 +127,10 @@
       font-size: 13px;
       color: #9aa3ad;
     }
-
-    .share-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .share-buttons button {
-      flex: 1;
-      background: #1a2230;
-      border: 1px solid #2e7dff;
-      border-radius: 8px;
-      color: #fff;
-      padding: 10px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .share-buttons button:hover {
-      background: #243044;
-    }
   </style>
 </head>
 
 <body>
-
 <div class="container">
 
   <div class="card">
@@ -137,17 +138,17 @@
     <p class="subtext">Invite friends and earn 5% of their investments</p>
 
     <div class="referral-box">
-      <p><strong>Your Referral Code</strong></p>
+      <p><strong>Your Referral Code / Link</strong></p>
       <div class="ref-code-row">
         <input type="text" id="referralLink" readonly />
-<button onclick="copyReferral()">Copy Referral Link</button>
-        <button class="btn-primary" onclick="copyRefCode()">Copy</button>
+        <button class="btn-primary" onclick="copyReferral()">Copy Link</button>
+        <button class="btn-primary" onclick="copyRefCode()">Copy Code</button>
       </div>
     </div>
 
     <div class="share-buttons">
       <button onclick="shareWhatsApp()">WhatsApp</button>
-      <button onclick="shareLink()">Share Link</button>
+      <button onclick="shareLink()">Share Anywhere</button>
     </div>
   </div>
 
@@ -181,6 +182,6 @@
 
 </div>
 
-<script src="referral.js"></script>
+<script type="module" src="referral.js"></script>
 </body>
 </html>
