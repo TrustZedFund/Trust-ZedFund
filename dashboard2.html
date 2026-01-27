@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - Trust ZedFund</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🤝</span>
+                <span class="logo-text">Trust <strong>ZedFund</strong></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="savings-circles.html">Savings Circles</a>
+                <a href="business-boost.html">Business Boost</a>
+                <a href="dashboard.html" class="active">Dashboard</a>
+                <a href="about.html">About</a>
+                <a href="waitlist.html" class="btn-nav">Join Waitlist</a>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="dashboard-header">
+        <div class="container">
+            <h1>Welcome back, Bwalya! 👋</h1>
+            <p>Here's your financial overview</p>
+        </div>
+    </div>
+
+    <div class="container dashboard-grid">
+        <aside class="dashboard-sidebar">
+            <div class="user-info">
+                <div class="avatar-large">B</div>
+                <h3>Bwalya C.</h3>
+                <p class="user-email">bwalya@example.com</p>
+                <div class="user-tier">
+                    <span class="tier-badge">Trust Level 2</span>
+                </div>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html" class="active"><i class="fas fa-home"></i> Overview</a></li>
+                    <li><a href="#"><i class="fas fa-users"></i> My Circles</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i> Investments</a></li>
+                    <li><a href="#"><i class="fas fa-business-time"></i> Business Loans</a></li>
+                    <li><a href="#"><i class="fas fa-history"></i> Transaction History</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="#"><i class="fas fa-question-circle"></i> Help & Support</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-action">
+                <a href="waitlist.html" class="btn-primary" style="width: 100%; text-align: center;">
+                    <i class="fas fa-plus"></i> Add Funds
+                </a>
+            </div>
+        </aside>
+
+        <main class="dashboard-content">
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <h3>Total Balance</h3>
+                    <div class="amount">K2,450</div>
+                    <div class="change">+K245 this month</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Circle Savings</h3>
+                    <div class="amount">K1,500</div>
+                    <div class="change">In 3 active circles</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Investment Returns</h3>
+                    <div class="amount">K450</div>
+                    <div class="change">+8.5% this month</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Available to Invest</h3>
+                    <div class="amount">K500</div>
+                    <div class="change"><a href="#" style="color: white; text-decoration: underline;">Add more</a></div>
+                </div>
+            </div>
+
+            <section class="dashboard-section">
+                <h2><i class="fas fa-users"></i> My Savings Circles</h2>
+                <div class="circles-grid">
+                    <div class="circle-card">
+                        <div class="circle-header">
+                            <h3>Soweto Market Circle</h3>
+                            <span class="circle-status active">Active</span>
+                        </div>
+                        <div class="circle-balance">K15,000 total</div>
+                        <div class="circle-members">
+                            <span class="members-count"><i class="fas fa-user-friends"></i> 8 members</span>
+                            <span class="circle-return">+5% monthly</span>
+                        </div>
+                        <div class="circle-progress">
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 75%"></div>
+                            </div>
+                            <span>75% to goal</span>
+                        </div>
+                        <a href="#" class="btn-secondary" style="width: 100%; margin-top: 1rem;">View Details</a>
+                    </div>
+                    
+                    <div class="circle-card">
+                        <div class="circle-header">
+                            <h3>Family Pool</h3>
+                            <span class="circle-status active">Active</span>
+                        </div>
+                        <div class="circle-balance">K8,500 total</div>
+                        <div class="circle-members">
+                            <span class="members-count"><i class="fas fa-user-friends"></i> 5 members</span>
+                            <span class="circle-return">+4% monthly</span>
+                        </div>
+                        <div class="circle-progress">
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 90%"></div>
+                            </div>
+                            <span>90% to goal</span>
+                        </div>
+                        <a href="#" class="btn-secondary" style="width: 100%; margin-top: 1rem;">View Details</a>
+                    </div>
+                    
+                    <div class="circle-card add-circle">
+                        <div class="add-circle-content">
+                            <i class="fas fa-plus-circle"></i>
+                            <h3>Start New Circle</h3>
+                            <p>Create or join a savings circle</p>
+                            <a href="savings-circles.html" class="btn-primary">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2><i class="fas fa-chart-line"></i> Active Investments</h2>
+                <div class="investments-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Business</th>
+                                <th>Amount</th>
+                                <th>Return</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong>Grace's Tomato Wholesale</strong>
+                                    <small>Lusaka • Funded: 2 months ago</small>
+                                </td>
+                                <td>K500</td>
+                                <td class="positive">+12%</td>
+                                <td><span class="status-badge active">Performing</span></td>
+                                <td><a href="#" class="btn-link">Track</a></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Kitwe Bike Delivery</strong>
+                                    <small>Kitwe • Funded: 1 month ago</small>
+                                </td>
+                                <td>K300</td>
+                                <td class="positive">+9%</td>
+                                <td><span class="status-badge active">Performing</span></td>
+                                <td><a href="#" class="btn-link">Track</a></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Ndola Tailoring Shop</strong>
+                                    <small>Ndola • Funded: 3 months ago</small>
+                                </td>
+                                <td>K200</td>
+                                <td class="positive">+7%</td>
+                                <td><span class="status-badge active">Performing</span></td>
+                                <td><a href="#" class="btn-link">Track</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                <div class="quick-actions">
+                    <a href="business-boost.html" class="action-card">
+                        <i class="fas fa-business-time"></i>
+                        <span>Fund a Business</span>
+                    </a>
+                    <a href="savings-circles.html" class="action-card">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Start New Circle</span>
+                    </a>
+                    <a href="#" class="action-card">
+                        <i class="fas fa-download"></i>
+                        <span>Withdraw Funds</span>
+                    </a>
+                    <a href="#" class="action-card">
+                        <i class="fas fa-file-alt"></i>
+                        <span>View Statements</span>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <span class="logo-icon">🤝</span>
+                        <span class="logo-text">Trust <strong>ZedFund</strong></span>
+                    </div>
+                    <p class="footer-tagline">Growing Zambia together, one circle at a time.</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Risk Disclosure</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Community Guidelines</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p>hello@trustzedfund.co.zm</p>
+                    <p>+260 800 933 833</p>
+                    <p>Cairo Road, Lusaka</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="disclaimer">
+                    <p><strong>⚠️ Important:</strong> Your capital is at risk. Returns are not guaranteed. Only invest what you can afford to lose.</p>
+                </div>
+                <div class="footer-info">
+                    <p>© 2024 Trust ZedFund Zambia Limited • Reg: TZF2024001</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
