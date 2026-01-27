@@ -957,9 +957,9 @@ table th, table td {
 .navbar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 12px 18px;          /* tighter right/left spacing */
-  background-color: #ffffff;  /* white background */
+  align-items: flex-start;   /* allow vertical stacking */
+  padding: 12px 18px;
+  background-color: #ffffff;
   border-bottom: 1px solid #e5e5e5;
   font-family: Arial, sans-serif;
   box-sizing: border-box;
@@ -971,34 +971,47 @@ table th, table td {
   align-items: center;
   gap: 10px;
   font-weight: bold;
-  font-size: 1.3rem;           /* slightly larger brand text */
+  font-size: 1.3rem;
   color: #0b3d2e;
 }
 
 .logo img {
-  height: 60px;                /* bigger logo */
-  width: 60px;
+  height: 70px;
+  width: 70px;
   border-radius: 50%;
 }
 
-/* Nav container */
+/* Nav container (now stacked) */
 nav {
   display: flex;
-  align-items: center;
-  gap: 6px;                    /* buttons closer together */
+  flex-direction: column;   /* stack rows */
+  align-items: flex-end;
+  gap: 6px;
+}
+
+/* Top row: Features + How It Works */
+nav .top-links {
+  display: flex;
+  gap: 6px;
+}
+
+/* Bottom row: Get Started */
+nav .cta-row {
+  display: flex;
+  justify-content: center;  /* center CTA */
 }
 
 /* Label-style buttons */
 .nav-btn {
-  padding: 6px 12px;           /* compact size */
+  padding: 6px 12px;
   border-radius: 14px;
   text-decoration: none;
-  font-size: 0.85rem;          /* smaller text */
+  font-size: 0.85rem;
   font-weight: 500;
   color: #0b3d2e;
   background-color: #f1f5f3;
   border: 1px solid #d8e5df;
-  white-space: nowrap;         /* force single line */
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
@@ -1012,7 +1025,7 @@ nav {
   background-color: #0b3d2e;
   color: #ffffff;
   border-color: #0b3d2e;
-  padding: 6px 12px;           /* same width as others, not floating */
+  padding: 7px 16px;     /* slightly wider to look premium */
 }
 
 .get-started:hover {
