@@ -3,14 +3,15 @@ import {
   ref,
   get,
   set,
-  push,
-  update,
-  serverTimestamp
+  update
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
+/* =========================
+   ELEMENTS
+========================= */
 const earningsBalanceEl = document.getElementById("earningsBalance");
 const withdrawAmountInput = document.getElementById("withdrawAmount");
 const chooseProviderBtn = document.getElementById("chooseProviderBtn");
@@ -29,6 +30,9 @@ const confirmWithdrawBtn = document.getElementById("confirmWithdrawBtn");
 const activeWithdrawalsList = document.getElementById("activeWithdrawalsList");
 const transactionHistoryList = document.getElementById("transactionHistoryList");
 
+/* =========================
+   STATE
+========================= */
 let selectedProvider = "";
 let currentWithdrawAmount = 0;
 let currentUserId = null;
@@ -37,7 +41,6 @@ let earningsBalance = 0;
 /* =========================
    AUTH + LOAD BALANCE
 ========================= */
-
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "index.html";
@@ -52,7 +55,6 @@ onAuthStateChanged(auth, async (user) => {
 /* =========================
    LOAD BALANCE
 ========================= */
-
 async function loadEarningsBalance() {
   const balRef = ref(db, `users/${currentUserId}/balances/earnings`);
   const snap = await get(balRef);
@@ -66,9 +68,8 @@ function updateBalances() {
 }
 
 /* =========================
-   CONTINUE BUTTON (SAME LOGIC)
+   CONTINUE BUTTON
 ========================= */
-
 chooseProviderBtn.addEventListener("click", () => {
   const amount = parseFloat(withdrawAmountInput.value);
 
@@ -104,7 +105,6 @@ function showPaymentDetails(provider) {
 /* =========================
    CONFIRM WITHDRAW
 ========================= */
-
 confirmWithdrawBtn.addEventListener("click", async () => {
   const receiverNumber = receiverNumberInput.value.trim();
 
@@ -137,6 +137,7 @@ confirmWithdrawBtn.addEventListener("click", async () => {
       earnings: earningsBalance
     });
 
+    // 4. Update UI
     addActiveWithdrawal(currentWithdrawAmount, selectedProvider);
     addTransaction("Withdrawal", currentWithdrawAmount, selectedProvider);
 
@@ -153,7 +154,6 @@ confirmWithdrawBtn.addEventListener("click", async () => {
 /* =========================
    LOAD PENDING WITHDRAWALS
 ========================= */
-
 async function loadPendingWithdrawals() {
   const wRef = ref(db, `users/${currentUserId}/withdrawals`);
   const snap = await get(wRef);
@@ -176,7 +176,6 @@ async function loadPendingWithdrawals() {
 /* =========================
    UI HELPERS
 ========================= */
-
 function addActiveWithdrawal(amount, provider) {
   const div = document.createElement("div");
   div.className = "list-item";
