@@ -156,7 +156,13 @@ if (sendBtn) {
     } catch (err) {
       console.error(err);
       resetMessage.style.color = "red";
-      resetMessage.textContent = "Failed to send reset email. Check your email address.";
+      if (err.code === "auth/user-not-found") {
+        resetMessage.textContent = "Email not found. Please check your address or sign up first.";
+      } else if (err.code === "auth/invalid-email") {
+        resetMessage.textContent = "Invalid email format.";
+      } else {
+        resetMessage.textContent = "Failed to send reset email. Try again later.";
+      }
     }
   });
 }
