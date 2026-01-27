@@ -1,81 +1,102 @@
+// Firebase imports
 import { auth, db } from "./firebase.js";
 import { ref, get } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-const refCodeInput = document.getElementById("refCode");
+// DOM elements
 const referralLinkInput = document.getElementById("referralLink");
-const copyBtn = document.getElementById("copyBtn");
-const shareBtn = document.getElementById("shareBtn");
 
-let currentUserId = null;
-let referralCode = null;
+// Global user variable
+let currentUser = null;
+let referralLink = "";
 
 /* =========================
-   AUTH + LOAD REFERRAL CODE
+   AUTH CHECK + LOAD REFERRAL
 ========================= */
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    alert("Session expired. Please log in again.");
+    alert("You must log in to access referrals.");
     window.location.href = "index.html";
     return;
   }
 
-  currentUserId = user.uid;
-
+  currentUser = user;
+  
+  // Load referral code from Firebase
   try {
-    const userSnap = await get(ref(db, `users/${currentUserId}`));
-    if (!userSnap.exists()) throw new Error("User data not found");
+    const userRef = ref(db, `users/${user.uid}/referralCode`);
+    const snap = await get(userRef);
+    if (!snap.exists()) {
+      alert("Referral code not found. Contact support.");
+      return;
+    }
 
-    const userData = userSnap.val();
-    referralCode = userData.referralCode || userData.uid; // fallback to UID if no code
-
-    if (refCodeInput) refCodeInput.value = referralCode;
-
-    const baseUrl = window.location.origin;
-    const link = `${baseUrl}/register.html?ref=${referralCode}`;
-    if (referralLinkInput) referralLinkInput.value = link;
+    const referralCode = snap.val();
+    referralLink = `${window.location.origin}/register.html?ref=${referralCode}`;
+    referralLinkInput.value = referralLink;
 
   } catch (err) {
-    console.error(err);
-    alert("Failed to load referral code. Please refresh.");
+    console.error("Failed to load referral code:", err);
+    alert("Error loading referral code. Try again later.");
   }
 });
 
 /* =========================
-   COPY REFERRAL CODE
-========================= */
-function copyRefCode() {
-  if (!refCodeInput || !refCodeInput.value) return;
-  navigator.clipboard.writeText(refCodeInput.value).then(() => {
-    alert("Referral code copied!");
-  });
-}
-
-/* =========================
    COPY REFERRAL LINK
 ========================= */
-function copyReferral() {
-  if (!referralLinkInput || !referralLinkInput.value) return;
-  navigator.clipboard.writeText(referralLinkInput.value).then(() => {
-    alert("Referral link copied!");
-  });
+export function copyReferral() {
+  if (!referralLink) return alert("Referral link not ready yet.");
+  
+  navigator.clipboard.writeText(referralLink)
+    .then(() => alert("Referral link copied!"))
+    .catch(() => alert("Failed to copy. Try manually."));
 }
 
 /* =========================
-   SHARE VIA WHATSAPP
+   COPY REFERRAL CODE ONLY
 ========================= */
-function shareWhatsApp() {
-  if (!referralCode) return;
-  const link = `${window.location.origin}/register.html?ref=${referralCode}`;
-  const text = `Join Trust ZedFund using my referral code: ${referralCode}\n${link}`;
+export function copyRefCode() {
+  if (!referralLink) return alert("Referral code not ready yet.");
+
+  const code = referralLink.split("ref=")[1];
+  navigator.clipboard.writeText(code)
+    .then(() => alert("Referral code copied!"))
+    .catch(() => alert("Failed to copy. Try manually."));
+}
+
+/* =========================
+   WHATSAPP SHARE
+========================= */
+export function shareWhatsApp() {
+  if (!referralLink) return alert("Referral link not ready yet.");
+
+  const code = referralLink.split("ref=")[1];
+  const text = `Join Trust ZedFund using my referral code: ${code}\n${referralLink}`;
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
 }
 
 /* =========================
-   ATTACH BUTTON EVENTS
+   UNIVERSAL SHARE (Any Platform)
 ========================= */
-if (copyBtn) copyBtn.addEventListener("click", copyReferral);
-if (shareBtn) shareBtn.addEventListener("click", shareWhatsApp);
+export async function shareLink() {
+  if (!referralLink) return alert("Referral link not ready yet.");
 
-// Optional: if you want the old direct copy input
-if (refCodeInput) refCodeInput.addEventListener("click", copyRefCode);
+  const code = referralLink.split("ref=")[1];
+  const shareData = {
+    title: "Join Trust ZedFund",
+    text: `Use my referral code: ${code}`,
+    url: referralLink
+  };
+
+  if (navigator.share) {
+    // Native share supported
+    try {
+      await navigator.share(shareData);
+    } catch (err) {
+      console.error("Share failed:", err);
+    }
+  } else {
+    // Fallback: open generic share page
+    window.open(`https://www.addtoany.com/share#url=${encodeURIComponent(referralLink)}&title=${encodeURIComponent(shareData.title)}`, "_blank");
+  }
+}
