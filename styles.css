@@ -952,3 +952,56 @@ table th, table td {
   padding: 10px;
   border-bottom: 1px solid #ddd;
 }
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: #0b3d2e; /* dark green */
+  font-family: 'Arial', sans-serif;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+.logo img {
+  border-radius: 50%;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* space between buttons */
+}
+
+.nav-btn {
+  padding: 8px 18px;
+  border-radius: 20px; /* pill-shaped buttons */
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #0b3d2e; /* text color for light button */
+  background-color: #ffd700; /* gold background */
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background-color: #ffc107; /* slightly darker on hover */
+  transform: translateY(-2px);
+}
+
+.get-started {
+  background-color: #00b894; /* green for call-to-action */
+  color: white;
+}
+
+.get-started:hover {
+  background-color: #019875; /* darker green hover */
+}
