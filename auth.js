@@ -2,9 +2,8 @@ import { auth, db } from "./firebase.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
   sendPasswordResetEmail,
-  confirmPasswordReset
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import {
   ref,
@@ -53,30 +52,23 @@ if (signupForm) {
 
       await set(ref(db, `users/${user.uid}`), userData);
 
-      // Credit referrer if any
       if (referralCode) {
         const usersRef = ref(db, "users");
         const snap = await get(usersRef);
         if (snap.exists()) {
           const users = snap.val();
-          const referrerId = Object.keys(users).find(
-            uid => users[uid].referralCode === referralCode
-          );
+          const referrerId = Object.keys(users).find(uid => users[uid].referralCode === referralCode);
           if (referrerId) {
             const balRef = ref(db, `users/${referrerId}/balances/referral`);
             const balSnap = await get(balRef);
             const current = balSnap.exists() ? Number(balSnap.val()) : 0;
-            await update(ref(db, `users/${referrerId}/balances`), {
-              referral: current + 5
-            });
+            await update(ref(db, `users/${referrerId}/balances`), { referral: current + 5 });
           }
         }
       }
 
       window.location.href = "dashboard.html";
-
     } catch (err) {
-      console.error(err);
       errorEl.textContent = err.message.replace("Firebase: ", "");
     }
   });
@@ -103,66 +95,7 @@ if (loginForm) {
       await signInWithEmailAndPassword(auth, email, password);
       window.location.href = "dashboard.html";
     } catch (err) {
-      console.error(err);
       errorEl.textContent = "Invalid email or password.";
-    }
-  });
-}
-
-/* =========================
-   FORGOT PASSWORD MODAL
-========================= */
-const forgotModal = document.getElementById("forgotModal");
-const forgotLink = document.getElementById("forgotPasswordLink");
-const closeModal = document.getElementById("closeForgotModal");
-const sendBtn = document.getElementById("sendResetEmailBtn");
-const resetEmailInput = document.getElementById("resetEmail");
-const resetMessage = document.getElementById("resetMessage");
-
-// Open modal
-if (forgotLink && forgotModal) {
-  forgotLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    resetMessage.textContent = "";
-    resetEmailInput.value = "";
-    forgotModal.style.display = "flex";
-  });
-}
-
-// Close modal
-if (closeModal) {
-  closeModal.addEventListener("click", () => forgotModal.style.display = "none");
-}
-window.addEventListener("click", (e) => {
-  if (e.target === forgotModal) forgotModal.style.display = "none";
-});
-
-// Send reset email
-if (sendBtn) {
-  sendBtn.addEventListener("click", async () => {
-    const email = resetEmailInput.value.trim();
-    resetMessage.textContent = "";
-    if (!email) {
-      resetMessage.style.color = "red";
-      resetMessage.textContent = "Enter your email.";
-      return;
-    }
-    try {
-      await sendPasswordResetEmail(auth, email, {
-        url: window.location.origin + "/reset-password.html"
-      });
-      resetMessage.style.color = "green";
-      resetMessage.textContent = "Reset email sent! Check your inbox.";
-    } catch (err) {
-      console.error(err);
-      resetMessage.style.color = "red";
-      if (err.code === "auth/user-not-found") {
-        resetMessage.textContent = "Email not found. Please check your address or sign up first.";
-      } else if (err.code === "auth/invalid-email") {
-        resetMessage.textContent = "Invalid email format.";
-      } else {
-        resetMessage.textContent = "Failed to send reset email. Try again later.";
-      }
     }
   });
 }
@@ -174,5 +107,45 @@ onAuthStateChanged(auth, (user) => {
   const path = window.location.pathname;
   if (!user && path.includes("dashboard")) {
     window.location.href = "login.html";
+  }
+});
+
+/* =========================
+   FORGOT PASSWORD MODAL
+========================= */
+const forgotModal = document.getElementById("forgotModal");
+const forgotBtn = document.getElementById("forgotPasswordBtn");
+const closeForgot = document.getElementById("closeForgotModal");
+const sendResetBtn = document.getElementById("sendResetEmailBtn");
+const resetEmailInput = document.getElementById("resetEmail");
+const resetMessage = document.getElementById("resetMessage");
+
+forgotBtn.addEventListener("click", () => {
+  forgotModal.style.display = "flex";
+  resetMessage.textContent = "";
+  resetEmailInput.value = "";
+});
+
+closeForgot.addEventListener("click", () => {
+  forgotModal.style.display = "none";
+});
+
+sendResetBtn.addEventListener("click", async () => {
+  const email = resetEmailInput.value.trim();
+  resetMessage.textContent = "";
+
+  if (!email) {
+    resetMessage.textContent = "Enter your email address.";
+    resetMessage.className = "message error";
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    resetMessage.textContent = "Reset email sent. Check your inbox.";
+    resetMessage.className = "message success";
+  } catch (err) {
+    resetMessage.textContent = "Failed to send. Check your email.";
+    resetMessage.className = "message error";
   }
 });
