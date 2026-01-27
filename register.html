@@ -50,6 +50,11 @@
 
 <!-- Firebase + Auth -->
 <script type="module" src="firebase.js"></script>
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get("ref");
+  if (ref) {
+    document.getElementById("referral").value = ref;
+  }
 <script type="module" src="auth.js"></script>
 
 </body>
