@@ -1521,11 +1521,6 @@ nav .cta-row {
 }
 
 /* Reset & Base Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
 :root {
     --primary: #2A5C3D; /* Zambian green */
