@@ -1,8 +1,13 @@
 import { auth, db } from "./firebase.js";
-import { ref, get } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import { ref, get, set } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
 const referralLinkInput = document.getElementById("referralLink");
+
+// Generate a simple unique referral code
+function generateReferralCode(uid) {
+  return "TZF-" + uid.substring(0, 6).toUpperCase();
+}
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -11,15 +16,25 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  try {
-    const userSnap = await get(ref(db, `users/${user.uid}/referralCode`));
+  const userRef = ref(db, `users/${user.uid}`);
+  const referralRef = ref(db, `users/${user.uid}/referralCode`);
 
-    if (!userSnap.exists() || !userSnap.val()) {
-      alert("Referral code not found");
-      return;
+  try {
+    const snap = await get(referralRef);
+
+    let code;
+
+    if (!snap.exists() || !snap.val()) {
+      // 🔹 Create referral code if missing
+      code = generateReferralCode(user.uid);
+
+      await set(referralRef, code);
+      console.log("Referral code created:", code);
+    } else {
+      code = snap.val();
+      console.log("Referral code loaded:", code);
     }
 
-    const code = userSnap.val();
     const baseUrl = window.location.origin;
     const referralLink = `${baseUrl}/register.html?ref=${code}`;
     referralLinkInput.value = referralLink;
@@ -54,7 +69,7 @@ onAuthStateChanged(auth, async (user) => {
     };
 
   } catch (err) {
-    console.error(err);
-    alert("Failed to load referral code");
+    console.error("Referral error:", err);
+    alert("Failed to load or create referral code");
   }
 });
