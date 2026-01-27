@@ -27,14 +27,8 @@ if (signupForm) {
     const errorEl = document.getElementById("signupError");
     errorEl.textContent = "";
 
-    if (!name || !email || !password) {
-      errorEl.textContent = "All fields are required.";
-      return;
-    }
-    if (password.length < 6) {
-      errorEl.textContent = "Password must be at least 6 characters.";
-      return;
-    }
+    if (!name || !email || !password) { errorEl.textContent = "All fields required."; return; }
+    if (password.length < 6) { errorEl.textContent = "Password must be at least 6 characters."; return; }
 
     try {
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
@@ -68,7 +62,9 @@ if (signupForm) {
       }
 
       window.location.href = "dashboard.html";
+
     } catch (err) {
+      console.error(err);
       errorEl.textContent = err.message.replace("Firebase: ", "");
     }
   });
@@ -86,19 +82,56 @@ if (loginForm) {
     const errorEl = document.getElementById("loginError");
     errorEl.textContent = "";
 
-    if (!email || !password) {
-      errorEl.textContent = "Enter email and password.";
-      return;
-    }
+    if (!email || !password) { errorEl.textContent = "Enter email and password."; return; }
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
       window.location.href = "dashboard.html";
     } catch (err) {
+      console.error(err);
       errorEl.textContent = "Invalid email or password.";
     }
   });
 }
+
+/* =========================
+   FORGOT PASSWORD MODAL
+========================= */
+const forgotLink = document.getElementById("forgotPasswordLink");
+const forgotModal = document.getElementById("forgotPasswordModal");
+const closeReset = document.getElementById("closeResetModal");
+const sendResetBtn = document.getElementById("sendResetBtn");
+const resetEmailInput = document.getElementById("resetEmail");
+const resetMessage = document.getElementById("resetMessage");
+
+forgotLink?.addEventListener("click", () => {
+  resetEmailInput.value = "";
+  resetMessage.textContent = "";
+  forgotModal.style.display = "flex";
+});
+
+closeReset?.addEventListener("click", () => { forgotModal.style.display = "none"; });
+
+sendResetBtn?.addEventListener("click", async () => {
+  const email = resetEmailInput.value.trim();
+  resetMessage.textContent = "";
+
+  if (!email) {
+    resetMessage.textContent = "Enter your email.";
+    resetMessage.style.color = "red";
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    resetMessage.textContent = "Reset link sent! Check your email.";
+    resetMessage.style.color = "green";
+  } catch (err) {
+    console.error(err);
+    resetMessage.textContent = "Failed to send. Check email.";
+    resetMessage.style.color = "red";
+  }
+});
 
 /* =========================
    SESSION PROTECT
@@ -107,45 +140,5 @@ onAuthStateChanged(auth, (user) => {
   const path = window.location.pathname;
   if (!user && path.includes("dashboard")) {
     window.location.href = "login.html";
-  }
-});
-
-/* =========================
-   FORGOT PASSWORD MODAL
-========================= */
-const forgotModal = document.getElementById("forgotModal");
-const forgotBtn = document.getElementById("forgotPasswordBtn");
-const closeForgot = document.getElementById("closeForgotModal");
-const sendResetBtn = document.getElementById("sendResetEmailBtn");
-const resetEmailInput = document.getElementById("resetEmail");
-const resetMessage = document.getElementById("resetMessage");
-
-forgotBtn.addEventListener("click", () => {
-  forgotModal.style.display = "flex";
-  resetMessage.textContent = "";
-  resetEmailInput.value = "";
-});
-
-closeForgot.addEventListener("click", () => {
-  forgotModal.style.display = "none";
-});
-
-sendResetBtn.addEventListener("click", async () => {
-  const email = resetEmailInput.value.trim();
-  resetMessage.textContent = "";
-
-  if (!email) {
-    resetMessage.textContent = "Enter your email address.";
-    resetMessage.className = "message error";
-    return;
-  }
-
-  try {
-    await sendPasswordResetEmail(auth, email);
-    resetMessage.textContent = "Reset email sent. Check your inbox.";
-    resetMessage.className = "message success";
-  } catch (err) {
-    resetMessage.textContent = "Failed to send. Check your email.";
-    resetMessage.className = "message error";
   }
 });
