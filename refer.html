@@ -77,6 +77,35 @@
       transform: scale(0.97);
     }
 
+    .earnings {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 10px;
+      color: #1fa463;
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .share-buttons button {
+      flex: 1;
+      background: #1a2230;
+      border: 1px solid #2e7dff;
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .share-buttons button:hover {
+      background: #243044;
+    }
+
     .how-it-works {
       margin-top: 15px;
     }
@@ -106,33 +135,21 @@
       color: #9aa3ad;
     }
 
-    .share-buttons {
-      display: flex;
-      gap: 10px;
+    /* Referred Friends List */
+    .friends-list {
       margin-top: 15px;
     }
 
-    .share-buttons button {
-      flex: 1;
-      background: #1a2230;
-      border: 1px solid #2e7dff;
-      border-radius: 8px;
-      color: #fff;
-      padding: 10px;
-      cursor: pointer;
+    .friend-item {
+      padding: 8px 10px;
+      border-bottom: 1px solid #243044;
+      display: flex;
+      justify-content: space-between;
       font-size: 14px;
     }
 
-    .share-buttons button:hover {
-      background: #243044;
-    }
-
-    .earnings {
-      font-size: 18px;
+    .friend-item span.status {
       font-weight: bold;
-      text-align: center;
-      margin-top: 10px;
-      color: #1fa463;
     }
   </style>
 </head>
@@ -161,6 +178,13 @@
     <div class="share-buttons">
       <button onclick="shareWhatsApp()">WhatsApp</button>
       <button onclick="shareLink()">Share</button>
+    </div>
+
+    <div class="friends-list card" id="friendsListCard">
+      <h4>Referred Friends</h4>
+      <div id="friendsList">
+        <p class="subtext">No friends referred yet</p>
+      </div>
     </div>
   </div>
 
@@ -196,7 +220,7 @@
 
 <script type="module">
 import { auth, db } from "./firebase.js";
-import { ref, get } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import { ref, get, child } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
 let referralCode = "";
@@ -204,9 +228,10 @@ let referralLink = "";
 
 const referralLinkInput = document.getElementById("referralLink");
 const referralEarningsEl = document.getElementById("referralEarnings");
+const friendsListEl = document.getElementById("friendsList");
 
 /* =========================
-   AUTH + LOAD REFERRAL
+   AUTH + LOAD REFERRAL DATA
 ========================= */
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -232,6 +257,24 @@ onAuthStateChanged(auth, async (user) => {
     const earningsSnap = await get(ref(db, `users/${userId}/referralWallet`));
     const totalEarnings = earningsSnap.exists() ? Number(earningsSnap.val()) : 0;
     referralEarningsEl.textContent = totalEarnings.toFixed(2);
+
+    // Fetch referred friends
+    const friendsSnap = await get(ref(db, `referrals/${referralCode}`));
+    if (friendsSnap.exists()) {
+      const friendsData = friendsSnap.val();
+      friendsListEl.innerHTML = "";
+      Object.values(friendsData).forEach(f => {
+        const div = document.createElement("div");
+        div.className = "friend-item";
+        div.innerHTML = `
+          <span>${f.name || "Anonymous"}</span>
+          <span class="status">${f.hasDeposited ? "Deposited" : "Pending"}</span>
+        `;
+        friendsListEl.appendChild(div);
+      });
+    } else {
+      friendsListEl.innerHTML = `<p class="subtext">No friends referred yet</p>`;
+    }
 
   } catch (err) {
     console.error(err);
