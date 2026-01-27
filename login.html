@@ -2,117 +2,122 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Login | Trust ZedFund</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trust ZedFund — Login</title>
-  <link rel="stylesheet" href="styles.css"/>
+
   <style>
-    /* Modal styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.6);
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b0f14;
+      color: #fff;
     }
-    .modal-content {
-      background-color: #111821;
-      margin: 15% auto;
+
+    .auth-box {
+      max-width: 420px;
+      margin: 80px auto;
+      background: #111821;
       padding: 20px;
-      border-radius: 12px;
-      max-width: 400px;
-      color: #fff;
-      position: relative;
+      border-radius: 14px;
     }
-    .close {
-      color: #fff;
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 22px;
-      cursor: pointer;
-    }
-    .error-text, .success-text {
-      font-size: 14px;
-      margin-top: 8px;
-      color: #ff6b6b;
-    }
-    .success-text { color: #4caf50; }
-    .modal input {
+
+    input {
       width: 100%;
-      padding: 10px;
-      margin-top: 12px;
+      padding: 12px;
+      margin-top: 10px;
       border-radius: 8px;
-      border: 1px solid #2e7dff;
+      border: none;
       background: #1a2230;
       color: #fff;
     }
-    .modal button {
+
+    button {
       width: 100%;
-      padding: 10px;
-      margin-top: 12px;
+      padding: 12px;
+      margin-top: 15px;
       border-radius: 8px;
       border: none;
-      background: #2e7dff;
+      background: #1fa463;
       color: #fff;
-      cursor: pointer;
       font-weight: bold;
+      cursor: pointer;
     }
-    .modal button:active { transform: scale(0.97); }
+
+    .link {
+      color: #2e7dff;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 12px;
+      display: block;
+      text-align: center;
+    }
+
+    .error, .success {
+      font-size: 14px;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .error { color: #ff6b6b; }
+    .success { color: #4caf50; }
+
+    /* MODAL */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-box {
+      background: #111821;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+    }
   </style>
 </head>
 <body>
 
-<header class="navbar">
-  <div class="logo">Trust ZedFund</div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="register.html">Sign Up</a>
-  </nav>
-</header>
+<div class="auth-box">
+  <h2>Login</h2>
 
-<section class="hero">
-  <h1>Welcome Back</h1>
-  <p>Login with your phone or email to access your dashboard.</p>
-</section>
+  <input id="loginEmail" placeholder="Email or Phone" />
+  <input id="loginPassword" type="password" placeholder="Password" />
 
-<div class="auth-wrapper">
-  <form id="loginForm" class="auth-card reveal">
-    <h2>Login</h2>
+  <div id="loginError" class="error"></div>
 
-    <input class="input" id="loginIdentifier" placeholder="Email or Phone" required />
-    <input class="input" id="loginPassword" type="password" placeholder="Password" required />
+  <button id="loginBtn">Login</button>
 
-    <div id="loginError" class="error-text"></div>
-
-    <button class="btn-primary" type="submit">Login</button>
-
-    <p class="auth-switch">
-      Don't have an account? <a href="register.html">Sign Up</a> |
-      <a href="#" id="forgotPasswordLink">Forgot Password?</a>
-    </p>
-  </form>
+  <span class="link" id="forgotBtn">Forgot Password?</span>
 </div>
 
-<!-- Forgot Password Modal -->
-<div id="forgotModal" class="modal">
-  <div class="modal-content">
-    <span class="close" id="modalClose">&times;</span>
+<!-- RESET MODAL -->
+<div class="modal" id="resetModal">
+  <div class="modal-box">
+
     <h3>Reset Password</h3>
-    <input id="resetIdentifier" placeholder="Enter Email or Phone" />
-    <button id="resetPasswordBtn">Reset Password</button>
-    <div id="resetMessage"></div>
+
+    <input id="resetPhone" placeholder="Phone e.g. +26097xxxxxx" />
+    <div id="recaptcha-container"></div>
+
+    <button id="sendOtpBtn">Send OTP</button>
+
+    <input id="otpCode" placeholder="Enter OTP" style="display:none"/>
+    <input id="newPassword" type="password" placeholder="New Password" style="display:none"/>
+
+    <button id="confirmResetBtn" style="display:none">Reset Password</button>
+
+    <div id="resetMsg" class="error"></div>
+
+    <span class="link" onclick="closeModal()">Cancel</span>
   </div>
 </div>
 
-<footer>
-  <p>© 2026 Trust ZedFund. All rights reserved.</p>
-</footer>
-
 <script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
+
 </body>
 </html>
