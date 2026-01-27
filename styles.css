@@ -1528,7 +1528,10 @@ nav .cta-row {
 }
 
 :root {
-    
+    --primary: #2A5C3D; /* Zambian green */
+    --secondary: #F7B731; /* Zambian gold */
+    --accent: #E53E3E; /* Zambian red accent 
+*/
     --dark: #1A202C;
     --light: #F7FAFC;
     --gray: #718096;
