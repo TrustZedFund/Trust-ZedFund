@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Waitlist - Trust ZedFund</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🤝</span>
+                <span class="logo-text">Trust <strong>ZedFund</strong></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="savings-circles.html">Savings Circles</a>
+                <a href="business-boost.html">Business Boost</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="about.html">About</a>
+                <a href="waitlist.html" class="active btn-nav">Join Waitlist</a>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero waitlist-hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="waitlist-badge">
+                    <span class="badge-text">🚀 Coming Soon</span>
+                    <span class="badge-subtext">Launching Q4 2024</span>
+                </div>
+                
+                <h1>Join the <span class="highlight">Financial Revolution</span></h1>
+                <p class="subtitle">
+                    Be among the first Zambians to experience community-powered finance. Join our waitlist for exclusive early access.
+                </p>
+                
+                <div class="waitlist-counter">
+                    <div class="counter-number">5,234</div>
+                    <div class="counter-label">Zambians Already Waiting</div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 65%"></div>
+                    </div>
+                    <div class="progress-labels">
+                        <span>Early Access Phase 1</span>
+                        <span>65% full</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="waitlist-illustration">
+                    <div class="phone-stack">
+                        <div class="phone" style="--delay: 0s">
+                            <div class="phone-screen">
+                                <div class="app-notification">
+                                    <div class="notification-icon">🎉</div>
+                                    <div class="notification-text">
+                                        <strong>You're in!</strong>
+                                        <p>Early access granted</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="phone" style="--delay: 0.2s">
+                            <div class="phone-screen">
+                                <div class="app-notification">
+                                    <div class="notification-icon">📈</div>
+                                    <div class="notification-text">
+                                        <strong>+K245 earned</strong>
+                                        <p>This month on Trust ZedFund</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="phone" style="--delay: 0.4s">
+                            <div class="phone-screen">
+                                <div class="app-notification">
+                                    <div class="notification-icon">👥</div>
+                                    <div class="notification-text">
+                                        <strong>Market Circle</strong>
+                                        <p>K15,000 saved together</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist Form -->
+    <section class="section">
+        <div class="container">
+            <div class="waitlist-form-container">
+                <div class="form-header">
+                    <h2>Secure Your Spot</h2>
+                    <p>Fill out the form below to join our exclusive waitlist</p>
+                </div>
+                
+                <form id="waitlistForm" class="waitlist-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" required>
+                        <small>We'll send launch updates here</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Mobile Number *</label>
+                        <div class="phone-input">
+                            <span class="country-code">+260</span>
+                            <input type="tel" id="phone" placeholder="96 123 4567" required>
+                        </div>
+                        <small>For SMS notifications and verification</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="province">Province *</label>
+                        <select id="province" required>
+                            <option value="">Select your province</option>
+                            <option value="lusaka">Lusaka</option>
+                            <option value="copperbelt">Copperbelt</option>
+                            <option value="central">Central</option>
+                            <option value="southern">Southern</option>
+                            <option value="eastern">Eastern</option>
+                            <option value="western">Western</option>
+                            <option value="northwestern">Northwestern</option>
+                            <option value="luapula">Luapula</option>
+                            <option value="northern">Northern</option>
+                            <option value="muchinga">Muchinga</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>What interests you most? *</label>
+                        <div class="interest-grid">
+                            <label class="interest-option">
+                                <input type="radio" name="interest" value="savings" required>
+                                <div class="option-content">
+                                    <i class="fas fa-users"></i>
+                                    <span>Savings Circles</span>
+                                    <small>Save with friends & family</small>
+                                </div>
+                            </label>
+                            
+                            <label class="interest-option">
+                                <input type="radio" name="interest" value="investing">
+                                <div class="option-content">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Investing</span>
+                                    <small>Fund Zambian businesses</small>
+                                </div>
+                            </label>
+                            
+                            <label class="interest-option">
+                                <input type="radio" name="interest" value="business">
+                                <div class="option-content">
+                                    <i class="fas fa-business-time"></i>
+                                    <span>Business Funding</span>
+                                    <small>Get capital for my business</small>
+                                </div>
+                            </label>
+                            
+                            <label class="interest-option">
+                                <input type="radio" name="interest" value="exploring">
+                                <div class="option-content">
+                                    <i class="fas fa-binoculars"></i>
+                                    <span>Just Exploring</span>
+                                    <small>Learning about options</small>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="terms" required>
+                            <span>I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></span>
+                        </label>
+                        
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="updates">
+                            <span>Send me financial tips and updates about Trust ZedFund</span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary btn-large" style="width: 100%;">
+                        <i class="fas fa-lock"></i> Secure My Spot on Waitlist
+                    </button>
+                </form>
+                
+                <div class="form-success" id="successMessage" style="display: none;">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2>Welcome to Trust ZedFund!</h2>
+                    <p class="success-subtitle">You're officially #<span id="waitlistNumber">5,235</span> on our waitlist</p>
+                    
+                    <div class="success-details">
+                        <div class="detail-card">
+                            <i class="fas fa-gift"></i>
+                            <h4>Early Access Benefits</h4>
+                            <ul>
+                                <li>Priority access at launch</li>
+                                <li>50% off fees for first year</li>
+                                <li>Free financial coaching session</li>
+                                <li>Founding member badge</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="detail-card">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h4>What Happens Next</h4>
+                            <ol>
+                                <li>Check your email for confirmation</li>
+                                <li>We'll notify you when we launch in your province</li>
+                                <li>Get early access to set up your profile</li>
+                                <li>Start growing with your community!</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="success-actions">
+                        <button class="btn-primary" onclick="shareWaitlist()">
+                            <i class="fas fa-share-alt"></i> Share with Friends
+                        </button>
+                        <a href="index.html" class="btn-secondary">
+                            <i class="fas fa-home"></i> Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits -->
+    <section class="section light-bg">
+        <div class="container">
+            <h2 class="section-title">Why Join Our Waitlist?</h2>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🚀</div>
+                    <h3>Priority Access</h3>
+                    <p>Be among the first to experience Trust ZedFund when we launch in your province.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">💰</div>
+                    <h3>Exclusive Discounts</h3>
+                    <p>Early members get 50% off platform fees for the first year.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎓</div>
+                    <h3>Free Education</h3>
+                    <p>Access exclusive financial education resources before launch.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">👑</div>
+                    <h3>Founding Member Status</h3>
+                    <p>Get special recognition as one of our first community members.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Launch Timeline -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Launch Timeline</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item current">
+                    <div class="timeline-date">Now</div>
+                    <div class="timeline-content">
+                        <h3>Waitlist Phase</h3>
+                        <p>Building our founding community. Exclusive access for early joiners.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Q4 2024</div>
+                    <div class="timeline-content">
+                        <h3>Lusaka Launch</h3>
+                        <p>Initial launch in Lusaka with Savings Circles and Business Boost.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Q1 2025</div>
+                    <div class="timeline-content">
+                        <h3>Provincial Expansion</h3>
+                        <p>Expand to Copperbelt, Central, and Southern provinces.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Q3 2025</div>
+                    <div class="timeline-content">
+                        <h3>Nationwide Launch</h3>
+                        <p>Available in all 10 provinces of Zambia.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section light-bg">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>When will Trust ZedFund launch?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We're launching in phases starting Q4 2024 in Lusaka, with provincial expansion through 2025. Waitlist members get priority access in their province.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is there any cost to join the waitlist?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No, joining the waitlist is completely free. There's no obligation to use Trust ZedFund when we launch.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What information do you collect?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Just your name, email, phone number, and province. We use this to notify you when we launch in your area and for verification purposes.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I join if I'm not in Lusaka?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! Join now and we'll notify you when we expand to your province. The earlier you join, the higher your priority for early access.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">What People Are Saying</h2>
+            
+            <div class="testimonials">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "Finally, a financial platform that understands Zambian communities. Can't wait to start saving with my market friends digitally!"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">M</div>
+                        <div class="author-info">
+                            <h4>Mary K.</h4>
+                            <p>Market Trader, Lusaka</p>
+                            <div class="author-waitlist">Waitlist #423</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "As a young entrepreneur, getting capital is impossible. Trust ZedFund's Business Boost is exactly what Zambia needs."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">D</div>
+                        <div class="author-info">
+                            <h4>David L.</h4>
+                            <p>Small Business Owner, Kitwe</p>
+                            <div class="author-waitlist">Waitlist #1,245</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "My family has been doing chilimba for generations. Excited to see it modernized with transparency and better returns."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">E</div>
+                        <div class="author-info">
+                            <h4>Esther M.</h4>
+                            <p>Teacher, Ndola</p>
+                            <div class="author-waitlist">Waitlist #3,872</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="section final-cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Don't Miss Out</h2>
+                <p>Join thousands of Zambians who are ready to take control of their financial future.</p>
+                <a href="#waitlistForm" class="btn-primary btn-large">
+                    <i class="fas fa-rocket"></i> Join Waitlist Now
+                </a>
+                <p class="cta-note">
+                    <i class="fas fa-bolt"></i> Limited spots available for early access benefits
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <span class="logo-icon">🤝</span>
+                        <span class="logo-text">Trust <strong>ZedFund</strong></span>
+                    </div>
+                    <p class="footer-tagline">Coming soon to transform Zambian finance.</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="savings-circles.html">Savings Circles</a></li>
+                        <li><a href="business-boost.html">Business Boost</a></li>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Status</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="disclaimer">
+                    <p><strong>⚠️ Important:</strong> Trust ZedFund is currently in pre-launch phase. All features and timelines are subject to change based on regulatory approvals.</p>
+                </div>
+                <div class="footer-info">
+                    <p>© 2024 Trust ZedFund Zambia Limited. All rights reserved.</p>
+                    <p>hello@trustzedfund.co.zm • +260 800 933 833</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Waitlist specific JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Form submission
+            const waitlistForm = document.getElementById('waitlistForm');
+            const successMessage = document.getElementById('successMessage');
+            const waitlistNumber = document.getElementById('waitlistNumber');
+            const counterNumber = document.querySelector('.counter-number');
+            
+            if (waitlistForm) {
+                waitlistForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get form values
+                    const firstName = document.getElementById('firstName').value;
+                    const email = document.getElementById('email').value;
+                    
+                    // Show loading state
+                    const submitBtn = waitlistForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    submitBtn.disabled = true;
+                    
+                    // Simulate API call
+                    setTimeout(() => {
+                        // Update counters
+                        const currentCount = parseInt(counterNumber.textContent.replace(/,/g, ''));
+                        const newCount = currentCount + 1;
+                        
+                        counterNumber.textContent = newCount.toLocaleString();
+                        waitlistNumber.textContent = newCount.toLocaleString();
+                        
+                        // Update progress bar
+                        const progress = document.querySelector('.progress');
+                        const newWidth = Math.min(100, (newCount / 8000) * 100);
+                        progress.style.width = newWidth + '%';
+                        
+                        // Update progress label
+                        const progressLabel = document.querySelector('.progress-labels span:last-child');
+                        progressLabel.textContent = Math.round(newWidth) + '% full';
+                        
+                        // Show success message
+                        waitlistForm.style.display = 'none';
+                        successMessage.style.display = 'block';
+                        
+                        // Scroll to success message
+                        successMessage.scrollIntoView({ behavior: 'smooth' });
+                    }, 1500);
+                });
+            }
+            
+            // FAQ toggle
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const answer = this.nextElementSibling;
+                    const icon = this.querySelector('i');
+                    
+                    answer.classList.toggle('active');
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                });
+            });
+            
+            // Interest option selection
+            const interestOptions = document.querySelectorAll('.interest-option');
+            interestOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    interestOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+        });
+        
+        function shareWaitlist() {
+            const text = 'Join me on the Trust ZedFund waitlist! Be among the first to experience community-powered finance in Zambia. https://trustzedfund.co.zm/waitlist';
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Join Trust ZedFund Waitlist',
+                    text: text,
+                    url: 'https://trustzedfund.co.zm/waitlist'
+                });
+            } else {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Waitlist link copied to clipboard! Share with your friends.');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
