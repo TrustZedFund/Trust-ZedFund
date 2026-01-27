@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Trust ZedFund — Login</title>
   <link rel="stylesheet" href="styles.css"/>
-
   <style>
-    /* Modal Styles */
-    .modal {
+    /* Modal styles */
+    #forgotPasswordModal {
       position: fixed;
       top: 0;
       left: 0;
@@ -16,19 +15,20 @@
       height: 100%;
       background: rgba(0,0,0,0.6);
       display: flex;
-      align-items: center;
       justify-content: center;
-      z-index: 999;
+      align-items: center;
+      z-index: 1000;
     }
+
+    #forgotPasswordModal.hidden { display: none; }
 
     .modal-content {
       background: #fff;
       color: #000;
-      padding: 25px;
-      border-radius: 12px;
-      width: 90%;
+      padding: 20px;
+      border-radius: 10px;
       max-width: 400px;
-      text-align: center;
+      width: 90%;
       position: relative;
     }
 
@@ -38,64 +38,58 @@
 
     .modal-content input {
       width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      margin: 15px 0;
-      font-size: 14px;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
 
-    .modal-content .btn-primary {
+    .modal-content button {
+      margin-top: 15px;
       width: 100%;
-      padding: 12px;
-      font-size: 15px;
-      border-radius: 8px;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #2e7dff;
+      color: #fff;
+      font-weight: bold;
       cursor: pointer;
     }
 
-    .close {
+    .close-modal {
       position: absolute;
       top: 10px;
       right: 15px;
       font-size: 20px;
       cursor: pointer;
+      font-weight: bold;
     }
-
-    /* Optional: modal hidden */
-    .hidden { display: none; }
   </style>
 </head>
+
 <body>
 
 <header class="navbar">
   <div class="logo">Trust ZedFund</div>
   <nav>
     <a href="index.html">Home</a>
-    <a href="register.html">Create Account</a>
+    <a href="register.html">Sign Up</a>
   </nav>
 </header>
-
-<section class="hero">
-  <h1>Welcome Back</h1>
-  <p>Login to continue your Trust ZedFund journey.</p>
-</section>
 
 <div class="auth-wrapper">
   <form id="loginForm" class="auth-card reveal">
     <h2>Login</h2>
 
-    <input class="input" id="loginEmail" type="email" placeholder="Email Address" required />
-    <input class="input" id="loginPassword" type="password" placeholder="Password" required />
+    <input id="loginEmail" type="email" placeholder="Email" required />
+    <input id="loginPassword" type="password" placeholder="Password" required />
 
     <div id="loginError" class="error-text"></div>
 
-    <button class="btn-primary" type="submit">
-      <span id="loginText">Login</span>
-      <span id="loginLoader" style="display:none;">Logging in...</span>
-    </button>
+    <button class="btn-primary" type="submit">Login</button>
 
     <p class="auth-switch">
-      Don't have an account? <a href="register.html">Create one</a>
+      Don't have an account? <a href="register.html">Sign Up</a>
     </p>
 
     <p class="auth-switch">
@@ -105,19 +99,19 @@
 </div>
 
 <!-- Forgot Password Modal -->
-<div id="forgotPasswordModal" class="modal hidden">
+<div id="forgotPasswordModal" class="hidden">
   <div class="modal-content">
-    <span id="closeModal" class="close">&times;</span>
+    <span class="close-modal" id="closeModal">&times;</span>
     <h3>Reset Password</h3>
     <p>Enter your email to receive a password reset link.</p>
-    <input type="email" id="resetEmail" placeholder="Your email" />
-    <button class="btn-primary" id="sendResetBtn">Send Reset Email</button>
+    <input type="email" id="resetEmail" placeholder="Your email" required />
+    <button id="sendResetBtn">Send Reset Email</button>
   </div>
 </div>
 
 <footer>
   <p>© 2026 Trust ZedFund. All rights reserved.</p>
-  <p class="disclaimer">TrustVault is an educational savings platform.</p>
+  <p class="disclaimer">Trust ZedFund is an educational savings & investment platform.</p>
 </footer>
 
 <script type="module" src="firebase.js"></script>
