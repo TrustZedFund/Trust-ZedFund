@@ -2,7 +2,7 @@ import { auth, db } from "./firebase.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut,
+  sendPasswordResetEmail,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import {
@@ -16,7 +16,6 @@ import {
 /* =========================
    SIGNUP HANDLER
 ========================= */
-
 const signupForm = document.getElementById("signupForm");
 
 if (signupForm) {
@@ -27,6 +26,7 @@ if (signupForm) {
     const email = document.getElementById("email")?.value.trim();
     const password = document.getElementById("password")?.value.trim();
     const referralCode = document.getElementById("referral")?.value.trim();
+
     const errorEl = document.getElementById("signupError");
     errorEl.textContent = "";
 
@@ -34,6 +34,7 @@ if (signupForm) {
       errorEl.textContent = "All fields are required.";
       return;
     }
+
     if (password.length < 6) {
       errorEl.textContent = "Password must be at least 6 characters.";
       return;
@@ -60,17 +61,20 @@ if (signupForm) {
 
       await set(ref(db, `users/${user.uid}`), userData);
 
-      // Credit referrer if exists
+      // Credit referrer
       if (referralCode) {
         const usersRef = ref(db, "users");
         const snap = await get(usersRef);
+
         if (snap.exists()) {
           const users = snap.val();
           const referrerId = Object.keys(users).find(uid => users[uid].referralCode === referralCode);
+
           if (referrerId) {
             const balRef = ref(db, `users/${referrerId}/balances/referral`);
             const balSnap = await get(balRef);
             const current = balSnap.exists() ? Number(balSnap.val()) : 0;
+
             await update(ref(db, `users/${referrerId}/balances`), {
               referral: current + 5
             });
@@ -78,10 +82,7 @@ if (signupForm) {
         }
       }
 
-      // SIGN OUT → Force user to login manually
-      await signOut(auth);
-      alert("Account created successfully! Please login to continue.");
-      window.location.href = "login.html";
+      window.location.href = "dashboard.html";
 
     } catch (err) {
       console.error(err);
@@ -93,7 +94,6 @@ if (signupForm) {
 /* =========================
    LOGIN HANDLER
 ========================= */
-
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
@@ -102,6 +102,7 @@ if (loginForm) {
 
     const email = document.getElementById("loginEmail")?.value.trim();
     const password = document.getElementById("loginPassword")?.value.trim();
+
     const errorEl = document.getElementById("loginError");
     errorEl.textContent = "";
 
@@ -122,61 +123,48 @@ if (loginForm) {
 }
 
 /* =========================
-   SESSION PROTECT
+   FORGOT PASSWORD MODAL
 ========================= */
-
-onAuthStateChanged(auth, (user) => {
-  const path = window.location.pathname;
-  if (!user && path.includes("dashboard")) {
-    window.location.href = "login.html";
-  }
-});
-
-/* =========================
-   FORGOT PASSWORD (MODAL)
-========================= */
-
 const forgotPasswordLink = document.getElementById("forgotPasswordLink");
 const forgotPasswordModal = document.getElementById("forgotPasswordModal");
 const closeModal = document.getElementById("closeModal");
 const sendResetBtn = document.getElementById("sendResetBtn");
 const resetEmailInput = document.getElementById("resetEmail");
 
-if (forgotPasswordLink) {
-  forgotPasswordLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    forgotPasswordModal.classList.remove("hidden");
-  });
-}
+forgotPasswordLink?.addEventListener("click", (e) => {
+  e.preventDefault();
+  forgotPasswordModal.classList.remove("hidden");
+});
 
-if (closeModal) {
-  closeModal.addEventListener("click", () => {
-    forgotPasswordModal.classList.add("hidden");
-    resetEmailInput.value = "";
-  });
-}
+closeModal?.addEventListener("click", () => {
+  forgotPasswordModal.classList.add("hidden");
+});
 
-// Close modal when clicking outside content
-window.addEventListener("click", (e) => {
-  if (e.target === forgotPasswordModal) {
-    forgotPasswordModal.classList.add("hidden");
+sendResetBtn?.addEventListener("click", async () => {
+  const email = resetEmailInput.value.trim();
+  if (!email) {
+    alert("Enter your email.");
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert("Password reset email sent! Check your inbox.");
     resetEmailInput.value = "";
+    forgotPasswordModal.classList.add("hidden");
+  } catch (err) {
+    console.error(err);
+    alert(err.message.replace("Firebase: ", ""));
   }
 });
 
-if (sendResetBtn) {
-  sendResetBtn.addEventListener("click", async () => {
-    const email = resetEmailInput.value.trim();
-    if (!email) return alert("Please enter your email.");
+/* =========================
+   SESSION PROTECT
+========================= */
+onAuthStateChanged(auth, (user) => {
+  const path = window.location.pathname;
 
-    try {
-      await sendPasswordResetEmail(auth, email);
-      alert("Password reset email sent! Check your inbox.");
-      forgotPasswordModal.classList.add("hidden");
-      resetEmailInput.value = "";
-    } catch (err) {
-      console.error(err);
-      alert(err.message.replace("Firebase: ", ""));
-    }
-  });
-}
+  if (!user && path.includes("dashboard")) {
+    window.location.href = "login.html";
+  }
+});
