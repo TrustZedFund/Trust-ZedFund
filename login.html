@@ -1,104 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Login | Trust ZedFund</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0b0f14;
-      color: #fff;
-    }
-
-    .auth-box {
-      max-width: 400px;
-      margin: 60px auto;
-      background: #111821;
-      padding: 20px;
-      border-radius: 12px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: none;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 12px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .btn-primary { background: #1fa463; color: #fff; }
-    .btn-secondary { background: #2e7dff; color: #fff; }
-    .btn-whatsapp { background: #25D366; color: #000; }
-
-    .error, .success {
-      font-size: 14px;
-      margin-top: 10px;
-    }
-
-    .error { color: #ff6b6b; }
-    .success { color: #1fa463; }
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-content {
-      background: #111821;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 360px;
-      width: 100%;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Trust ZedFund — Login</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
-<div class="auth-box">
-  <h2>Login with Phone</h2>
+<div class="auth-wrapper">
+  <form id="loginForm" class="auth-card">
+    <h2>Login</h2>
 
-  <input id="phone" placeholder="+260 9XXXXXXXX" />
-  <div id="recaptcha-container"></div>
+    <input id="loginInput" class="input" placeholder="Email or Phone (+260…)" />
+    <input id="loginPassword" class="input" type="password" placeholder="Password" />
 
-  <button class="btn-primary" id="sendOtpBtn">Send OTP</button>
+    <div id="loginError" class="error-text"></div>
 
-  <div id="loginMsg"></div>
+    <button class="btn-primary">Login</button>
+
+    <p class="auth-switch">
+      <a href="#" onclick="openReset()">Forgot password?</a>
+    </p>
+  </form>
 </div>
 
-<!-- OTP MODAL -->
-<div class="modal" id="otpModal">
+<!-- Reset Modal -->
+<div id="resetModal" class="modal">
   <div class="modal-content">
-    <h3>Enter OTP</h3>
-
-    <input id="otpCode" placeholder="6-digit code" />
-
-    <button class="btn-secondary" id="verifyOtpBtn">Verify OTP</button>
-
-    <button class="btn-whatsapp" id="whatsappHelpBtn">
-      Didn’t receive SMS? WhatsApp Us
-    </button>
-
-    <div id="otpMsg"></div>
+    <h3>Reset Password</h3>
+    <input id="resetEmail" class="input" placeholder="Email address" />
+    <div id="resetMsg"></div>
+    <button class="btn-primary" onclick="resetPassword()">Send Reset Link</button>
+    <button class="btn-secondary" onclick="closeReset()">Close</button>
   </div>
 </div>
 
+<script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
+
+<script>
+function openReset() {
+  document.getElementById("resetModal").style.display = "flex";
+}
+function closeReset() {
+  document.getElementById("resetModal").style.display = "none";
+}
+</script>
+
 </body>
 </html>
