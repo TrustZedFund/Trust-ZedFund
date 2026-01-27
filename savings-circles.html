@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savings Circles - Trust ZedFund</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🤝</span>
+                <span class="logo-text">Trust <strong>ZedFund</strong></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="savings-circles.html" class="active">Savings Circles</a>
+                <a href="business-boost.html">Business Boost</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="about.html">About</a>
+                <a href="waitlist.html" class="btn-nav">Join Waitlist</a>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero circles-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Save Together, <span class="highlight">Grow Together</span></h1>
+                <p class="subtitle">
+                    Digital chilimba for the modern Zambian. Start a savings circle with people you trust and watch your money grow together.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="number">127</span>
+                        <span class="label">Active Circles</span>
+                    </div>
+                    <div class="stat">
+                        <span class="number">K2.1M</span>
+                        <span class="label">Total Saved</span>
+                    </div>
+                    <div class="stat">
+                        <span class="number">4-8%</span>
+                        <span class="label">Monthly Returns</span>
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <a href="#create-circle" class="btn-primary">
+                        <i class="fas fa-plus-circle"></i> Create Circle
+                    </a>
+                    <a href="#browse-circles" class="btn-secondary">
+                        <i class="fas fa-search"></i> Browse Circles
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="circles-illustration">
+                    <div class="circle-group">
+                        <div class="circle-item" style="--delay: 0s">
+                            <div class="circle-avatar">👨‍👩‍👧</div>
+                            <span>Family Pool</span>
+                        </div>
+                        <div class="circle-item" style="--delay: 0.2s">
+                            <div class="circle-avatar">🏪</div>
+                            <span>Market Circle</span>
+                        </div>
+                        <div class="circle-item" style="--delay: 0.4s">
+                            <div class="circle-avatar">⛪</div>
+                            <span>Church Group</span>
+                        </div>
+                    </div>
+                    <div class="money-flow">
+                        <div class="flow-line"></div>
+                        <div class="kwacha-symbol">K</div>
+                        <div class="kwacha-symbol">K</div>
+                        <div class="kwacha-symbol">K</div>
+                    </div>
+                    <div class="growing-pot">
+                        <div class="pot-label">Growing Together</div>
+                        <div class="pot-amount">K15,000</div>
+                        <div class="pot-growth">+12% this month</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How Circles Work -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">How Savings Circles Work</h2>
+            <p class="section-subtitle">Traditional chilimba meets modern technology</p>
+            
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Create Your Circle</h3>
+                        <p>Invite 3-20 people you trust - family, friends, colleagues, or market mates. Set your circle rules together.</p>
+                        <ul class="step-features">
+                            <li><i class="fas fa-check-circle"></i> Choose contribution amount</li>
+                            <li><i class="fas fa-check-circle"></i> Set meeting frequency</li>
+                            <li><i class="fas fa-check-circle"></i> Define withdrawal rules</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Save Together</h3>
+                        <p>Everyone contributes regularly through mobile money. Watch your collective savings grow in real-time.</p>
+                        <ul class="step-features">
+                            <li><i class="fas fa-check-circle"></i> Automatic reminders</li>
+                            <li><i class="fas fa-check-circle"></i> Transparent tracking</li>
+                            <li><i class="fas fa-check-circle"></i> Digital receipts</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Grow & Lend</h3>
+                        <p>Your circle's money earns returns. Members can borrow from the pool for emergencies or opportunities.</p>
+                        <ul class="step-features">
+                            <li><i class="fas fa-check-circle"></i> Earn 4-8% monthly returns</li>
+                            <li><i class="fas fa-check-circle"></i> Internal lending at low rates</li>
+                            <li><i class="fas fa-check-circle"></i> Community decision-making</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Circle Types -->
+    <section class="section light-bg">
+        <div class="container">
+            <h2 class="section-title">Types of Circles</h2>
+            
+            <div class="circle-types">
+                <div class="type-card">
+                    <div class="type-icon">👨‍👩‍👧‍👦</div>
+                    <h3>Family Circles</h3>
+                    <p>Save with extended family for big expenses like weddings, funerals, or home improvements.</p>
+                    <div class="type-stats">
+                        <span><i class="fas fa-users"></i> 4-12 members</span>
+                        <span><i class="fas fa-money-bill-wave"></i> K200-2,000 weekly</span>
+                    </div>
+                </div>
+                
+                <div class="type-card">
+                    <div class="type-icon">🏪</div>
+                    <h3>Business Circles</h3>
+                    <p>Market traders, shop owners, or service providers pooling capital for wholesale buying.</p>
+                    <div class="type-stats">
+                        <span><i class="fas fa-users"></i> 5-20 members</span>
+                        <span><i class="fas fa-money-bill-wave"></i> K500-5,000 weekly</span>
+                    </div>
+                </div>
+                
+                <div class="type-card">
+                    <div class="type-icon">🎓</div>
+                    <h3>Education Circles</h3>
+                    <p>Parents saving together for school fees, uniforms, and educational materials.</p>
+                    <div class="type-stats">
+                        <span><i class="fas fa-users"></i> 3-10 members</span>
+                        <span><i class="fas fa-money-bill-wave"></i> K300-1,500 weekly</span>
+                    </div>
+                </div>
+                
+                <div class="type-card">
+                    <div class="type-icon">🙏</div>
+                    <h3>Faith Circles</h3>
+                    <p>Church or mosque members saving for community projects, events, or mutual support.</p>
+                    <div class="type-stats">
+                        <span><i class="fas fa-users"></i> 10-50 members</span>
+                        <span><i class="fas fa-money-bill-wave"></i> K100-1,000 weekly</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Create Circle Form -->
+    <section id="create-circle" class="section">
+        <div class="container">
+            <div class="form-container">
+                <h2>Create Your Circle</h2>
+                <p>Start your savings journey in 5 minutes</p>
+                
+                <form id="circleForm" class="circle-form">
+                    <div class="form-step active" id="step1">
+                        <h3><i class="fas fa-users"></i> Circle Details</h3>
+                        
+                        <div class="form-group">
+                            <label for="circleName">Circle Name</label>
+                            <input type="text" id="circleName" placeholder="e.g., Soweto Market Circle" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="circlePurpose">Purpose</label>
+                            <select id="circlePurpose" required>
+                                <option value="">Select purpose</option>
+                                <option value="business">Business Capital</option>
+                                <option value="education">School Fees</option>
+                                <option value="emergency">Emergency Fund</option>
+                                <option value="project">Project Funding</option>
+                                <option value="general">General Savings</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="memberCount">Number of Members</label>
+                                <input type="range" id="memberCount" min="3" max="20" value="8">
+                                <div class="range-value">
+                                    <span id="memberCountValue">8</span> members
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contribution">Weekly Contribution</label>
+                                <div class="amount-input">
+                                    <span class="currency">K</span>
+                                    <input type="number" id="contribution" min="50" value="200" required>
+                                </div>
+                                <small>Minimum: K50 per week</small>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn-primary next-step" data-next="step2">
+                            Next: Set Rules <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="form-step" id="step2">
+                        <h3><i class="fas fa-gavel"></i> Circle Rules</h3>
+                        
+                        <div class="form-group">
+                            <label for="meetingFrequency">Meeting Frequency</label>
+                            <select id="meetingFrequency">
+                                <option value="weekly">Weekly</option>
+                                <option value="biweekly">Every 2 Weeks</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Loan Rules</label>
+                            <div class="checkbox-group">
+                                <label>
+                                    <input type="checkbox" name="loanRules" value="circle_only" checked>
+                                    Members can only borrow from circle
+                                </label>
+                                <label>
+                                    <input type="checkbox" name="loanRules" value="majority_vote">
+                                    Loans require majority vote
+                                </label>
+                                <label>
+                                    <input type="checkbox" name="loanRules" value="interest">
+                                    Charge interest on loans (3-5%)
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="penalty">Late Payment Penalty</label>
+                            <select id="penalty">
+                                <option value="none">No penalty</option>
+                                <option value="small">Small fee (K10)</option>
+                                <option value="interest">Additional interest</option>
+                                <option value="suspension">Temporary suspension</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-buttons">
+                            <button type="button" class="btn-secondary prev-step">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </button>
+                            <button type="button" class="btn-primary next-step" data-next="step3">
+                                Next: Invite Members <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-step" id="step3">
+                        <h3><i class="fas fa-user-plus"></i> Invite Members</h3>
+                        
+                        <div class="form-group">
+                            <label>Invite via:</label>
+                            <div class="invite-methods">
+                                <button type="button" class="invite-btn">
+                                    <i class="fab fa-whatsapp"></i> WhatsApp
+                                </button>
+                                <button type="button" class="invite-btn">
+                                    <i class="fas fa-sms"></i> SMS
+                                </button>
+                                <button type="button" class="invite-btn">
+                                    <i class="fas fa-link"></i> Share Link
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inviteMessage">Custom Message</label>
+                            <textarea id="inviteMessage" rows="3">
+Join my Trust ZedFund savings circle! We're saving K200 weekly for business capital. Click to join: [circle-link]
+                            </textarea>
+                        </div>
+                        
+                        <div class="form-buttons">
+                            <button type="button" class="btn-secondary prev-step">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-check-circle"></i> Create Circle
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <div class="form-success" id="successMessage" style="display: none;">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Circle Created Successfully!</h3>
+                    <p>Your savings circle has been created. Share the invite link with your members to get started.</p>
+                    <div class="circle-summary">
+                        <div class="summary-item">
+                            <strong>Circle Name:</strong>
+                            <span id="summaryName">Soweto Market Circle</span>
+                        </div>
+                        <div class="summary-item">
+                            <strong>Weekly Contribution:</strong>
+                            <span id="summaryAmount">K200</span>
+                        </div>
+                        <div class="summary-item">
+                            <strong>Circle Code:</strong>
+                            <span id="summaryCode" class="code">CIRCLE#ZTF8932</span>
+                        </div>
+                    </div>
+                    <div class="success-actions">
+                        <button class="btn-primary" onclick="copyToClipboard()">
+                            <i class="fas fa-copy"></i> Copy Invite Link
+                        </button>
+                        <a href="dashboard.html" class="btn-secondary">
+                            <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Browse Circles -->
+    <section id="browse-circles" class="section light-bg">
+        <div class="container">
+            <h2 class="section-title">Browse Open Circles</h2>
+            <p class="section-subtitle">Join existing circles looking for members</p>
+            
+            <div class="browse-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search circles by purpose or location...">
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn active">All</button>
+                    <button class="filter-btn">Business</button>
+                    <button class="filter-btn">Family</button>
+                    <button class="filter-btn">Education</button>
+                    <button class="filter-btn">Faith</button>
+                </div>
+            </div>
+            
+            <div class="circles-grid">
+                <div class="public-circle-card">
+                    <div class="circle-badge">Open</div>
+                    <div class="circle-header">
+                        <h3>Lusaka Market Traders</h3>
+                        <span class="circle-location"><i class="fas fa-map-marker-alt"></i> Soweto Market</span>
+                    </div>
+                    <p class="circle-description">Vegetable sellers pooling capital for wholesale buying. Weekly meetings on Mondays.</p>
+                    <div class="circle-details">
+                        <div class="detail">
+                            <i class="fas fa-coins"></i>
+                            <span>K300/week</span>
+                        </div>
+                        <div class="detail">
+                            <i class="fas fa-users"></i>
+                            <span>6/10 members</span>
+                        </div>
+                        <div class="detail">
+                            <i class="fas fa-percentage"></i>
+                            <span>5% returns</span>
+                        </div>
+                    </div>
+                    <a href="#" class="btn-primary" style="width: 100%;">Request to Join</a>
+                </div>
+                
+                <div class="public-circle-card">
+                    <div class="circle-badge">Open</div>
+                    <div class="circle-header">
+                        <h3>Kitwe Youth Entrepreneurs</h3>
+                        <span class="circle-location"><i class="fas fa-map-marker-alt"></i> Kitwe</span>
+                    </div>
+                    <p class="circle-description">Young entrepreneurs saving for business start-ups and equipment.</p>
+                    <div class="circle-details">
+                        <div class="detail">
+                            <i class="fas fa-coins"></i>
+                            <span>K200/week</span>
+                        </div>
+                        <div class="detail">
+                            <i class="fas fa-users"></i>
+                            <span>8/12 members</span>
+                        </div>
+                        <div class="detail">
+                            <i class="fas fa-percentage"></i>
+                            <span>6% returns</span>
+                        </div>
+                    </div>
+                    <a href="#" class="btn-primary" style="width: 100%;">Request to Join</a>
+                </div>
+                
+                <div class="public-circle-card">
+                    <div class="circle-badge">Open</div>
+                    <div class="circle-header">
+                        <h3>Ndola School Fees Pool</h3>
+                        <span class="circle-location"><i class="fas fa-map-marker-alt"></i> Ndola</span>
+                    </div>
+                    <p class="circle-description">Parents saving together for January school fees and uniforms.</p>
+                    <div class="circle-details">
+                        <div class="detail">
+                            <i class="fas fa-coins"></i>
+                            <span>K500/week</span>
+                        </div>
+                        <div class="detail">
+                            <i class="fas fa-users"></i>
+                            <span>4/8 members</span>
+                        </div>
+                        <div class="detail">
+                            <i class="fas fa-percentage"></i>
+                            <span>4% returns</span>
+                        </div>
+                    </div>
+                    <a href="#" class="btn-primary" style="width: 100%;">Request to Join</a>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 3rem;">
+                <a href="#" class="btn-secondary">
+                    <i class="fas fa-eye"></i> View All Circles
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is my money safe in a savings circle?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! Funds are held in secure escrow accounts with our licensed mobile money partners. Each transaction is recorded and transparent to all circle members. We never hold funds directly in Trust ZedFund accounts.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What happens if someone doesn't pay?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Each circle sets its own rules for late payments. Common approaches include small penalties, temporary suspension, or requiring guarantors. The social accountability within trusted circles keeps compliance high.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How are returns generated?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Returns come from two sources: 1) Interest charged when circle members borrow from the pool, and 2) Investment of idle funds in our Community Pools which fund Zambian businesses at higher returns.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I withdraw my money anytime?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Withdrawal rules are set by each circle. Most circles allow withdrawals with notice (e.g., 1-2 weeks) and may require paying any outstanding loans first. Emergency withdrawals are typically accommodated.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <span class="logo-icon">🤝</span>
+                        <span class="logo-text">Trust <strong>ZedFund</strong></span>
+                    </div>
+                    <p class="footer-tagline">Digital chilimba for modern Zambia.</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Savings Circles</h4>
+                    <ul>
+                        <li><a href="#create-circle">Create Circle</a></li>
+                        <li><a href="#browse-circles">Browse Circles</a></li>
+                        <li><a href="#">How It Works</a></li>
+                        <li><a href="#">Circle Rules Guide</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Financial Education</a></li>
+                        <li><a href="#">Success Stories</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Risk Disclosure</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="disclaimer">
+                    <p><strong>⚠️ Important:</strong> Savings circles involve risk. Only save with people you trust. Trust ZedFund provides the platform only, not financial guarantees.</p>
+                </div>
+                <div class="footer-info">
+                    <p>© 2024 Trust ZedFund Zambia Limited • Reg: TZF2024001</p>
+                    <p>hello@trustzedfund.co.zm • +260 800 933 833</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Savings Circles specific JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Form step navigation
+            const nextButtons = document.querySelectorAll('.next-step');
+            const prevButtons = document.querySelectorAll('.prev-step');
+            const formSteps = document.querySelectorAll('.form-step');
+            const form = document.getElementById('circleForm');
+            
+            nextButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentStep = this.closest('.form-step');
+                    const nextStepId = this.getAttribute('data-next');
+                    const nextStep = document.getElementById(nextStepId);
+                    
+                    currentStep.classList.remove('active');
+                    nextStep.classList.add('active');
+                });
+            });
+            
+            prevButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentStep = this.closest('.form-step');
+                    const prevStep = currentStep.previousElementSibling;
+                    
+                    currentStep.classList.remove('active');
+                    prevStep.classList.add('active');
+                });
+            });
+            
+            // Member count slider
+            const memberSlider = document.getElementById('memberCount');
+            const memberValue = document.getElementById('memberCountValue');
+            
+            if (memberSlider) {
+                memberSlider.addEventListener('input', function() {
+                    memberValue.textContent = this.value;
+                });
+            }
+            
+            // Form submission
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get form values
+                    const circleName = document.getElementById('circleName').value;
+                    const contribution = document.getElementById('contribution').value;
+                    
+                    // Update success message
+                    document.getElementById('summaryName').textContent = circleName;
+                    document.getElementById('summaryAmount').textContent = 'K' + contribution;
+                    document.getElementById('summaryCode').textContent = 'CIRCLE#' + Math.random().toString(36).substr(2, 8).toUpperCase();
+                    
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    form.style.display = 'none';
+                });
+            }
+            
+            // FAQ toggle
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const answer = this.nextElementSibling;
+                    const icon = this.querySelector('i');
+                    
+                    answer.classList.toggle('active');
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                });
+            });
+            
+            // Filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+        
+        function copyToClipboard() {
+            const text = 'Join my Trust ZedFund circle: https://trustzedfund.co.zm/join/CIRCLE#ZTF8932';
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Invite link copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>
