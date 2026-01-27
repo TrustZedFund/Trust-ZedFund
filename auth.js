@@ -131,3 +131,27 @@ onAuthStateChanged(auth, (user) => {
     window.location.href = "login.html";
   }
 });
+import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+/* =========================
+   FORGOT PASSWORD
+========================= */
+
+const forgotPasswordLink = document.getElementById("forgotPasswordLink");
+
+if (forgotPasswordLink) {
+  forgotPasswordLink.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    const email = prompt("Enter your email to reset password:");
+    if (!email) return alert("Email is required.");
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert("Password reset email sent! Check your inbox.");
+    } catch (err) {
+      console.error(err);
+      alert(err.message.replace("Firebase: ", ""));
+    }
+  });
+}
