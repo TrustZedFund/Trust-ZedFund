@@ -26,8 +26,7 @@
     <h2>Create Account</h2>
 
     <input class="input" id="name" placeholder="Full Name" required />
-    <input class="input" id="phone" placeholder="Phone Number (e.g. 0971234567)" />
-    <input class="input" id="email" type="email" placeholder="Email Address (optional)" />
+    <input class="input" id="email" type="email" placeholder="Email Address" required />
     <input class="input" id="password" type="password" placeholder="Password (min 6 chars)" required />
     <input class="input" id="referral" placeholder="Referral Code (optional)" />
 
@@ -51,6 +50,16 @@
 
 <script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
+
+<!-- Autofill referral code from URL -->
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const refCode = urlParams.get('ref');
+  if (refCode) {
+    const referralInput = document.getElementById('referral');
+    referralInput.value = refCode;
+  }
+</script>
 
 </body>
 </html>
