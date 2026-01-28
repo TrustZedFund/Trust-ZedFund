@@ -123,3 +123,34 @@ button:hover {
   color: #c6f6d5;
   text-decoration: none;
 }
+/* Brand */
+:root {
+  --green: #0f9d58;
+  --green-dark: #0b7a44;
+}
+
+/* Page base */
+body {
+  background: #ffffff;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* HERO ONLY = GREEN */
+.hero {
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  color: white;
+}
+
+/* NORMAL SECTIONS = WHITE */
+.section {
+  background: #ffffff;
+}
+
+/* Light contrast sections */
+.light-bg {
+  background: #f6fdf9;
+}
+.section,
+.light-bg {
+  background: transparent !important;
+}
