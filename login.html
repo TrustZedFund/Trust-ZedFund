@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trust ZedFund — Login</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -18,11 +18,11 @@
 
 <section class="hero">
   <h1>Welcome Back</h1>
-  <p>Log in to manage your savings and investments.</p>
+  <p>Log in to manage your investments and earnings.</p>
 </section>
 
 <div class="auth-wrapper">
-  <form id="loginForm" class="auth-card reveal">
+  <form id="loginForm" class="auth-card">
     <h2>Login</h2>
 
     <input class="input" id="loginEmail" type="email" placeholder="Email Address" required />
@@ -31,28 +31,33 @@
     <div id="loginError" class="error-text"></div>
     <div id="loginSuccess" class="success-text"></div>
 
-    <button class="btn-primary" type="submit">
-      <span id="loginText">Login</span>
-      <span id="loginLoader" style="display:none;">Logging in...</span>
-    </button>
+    <button class="btn-primary" type="submit">Login</button>
 
     <p class="auth-switch">
-      Forgot password? <a href="#" id="forgotPasswordLink">Reset Here</a>
+      Forgot Password? <span id="showResetModal" style="cursor:pointer; color:#2e7dff;">Reset Here</span>
+    </p>
+
+    <p class="auth-switch">
+      Don't have an account? <a href="register.html">Sign Up</a>
     </p>
   </form>
 </div>
 
-<!-- Forgot Password Modal -->
-<div id="forgotPasswordModal" class="modal hidden">
+<!-- Reset Password Modal -->
+<div id="resetModal" class="modal">
   <div class="modal-content">
-    <span class="close-modal" id="closeForgotModal">&times;</span>
+    <span class="close" id="closeResetModal">&times;</span>
     <h3>Reset Password</h3>
-    <input class="input" id="resetEmail" type="email" placeholder="Enter your email" required />
+    <input type="email" id="resetEmail" placeholder="Enter your email" />
     <div id="resetError" class="error-text"></div>
     <div id="resetSuccess" class="success-text"></div>
-    <button class="btn-primary" id="resetPasswordBtn">Send Reset Link</button>
+    <button class="btn-primary" id="resetPasswordBtn">Send Reset Email</button>
   </div>
 </div>
+
+<footer>
+  <p>© 2026 Trust ZedFund. All rights reserved.</p>
+</footer>
 
 <script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
