@@ -2654,3 +2654,56 @@ p {
         flex-direction: column;
     }
 }
+
+/* Trust ZedFund – Global Theme */
+
+:root {
+  --tzf-green-dark: #0b4f46;
+  --tzf-green-main: #0f6f61;
+  --tzf-green-light: #1aa08a;
+  --tzf-accent-gold: #f1e17b;
+  --tzf-text-white: #ffffff;
+}
+
+/* Apply to ALL pages */
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--tzf-green-main);
+  color: var(--tzf-text-white);
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+/* Links */
+a {
+  color: var(--tzf-accent-gold);
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.85;
+}
+
+/* Sections / cards */
+.section,
+.card {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+/* Buttons */
+button,
+.btn {
+  background-color: var(--tzf-green-light);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+button:hover,
+.btn:hover {
+  background-color: #17b39a;
+}
