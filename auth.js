@@ -2,15 +2,23 @@ import { auth, db } from "./firebase.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendEmailVerification,
   sendPasswordResetEmail,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { ref, set, get, update, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import {
+  ref,
+  get,
+  set,
+  update,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
 /* =========================
-   SIGNUP HANDLER
+   SIGNUP
 ========================= */
 const signupForm = document.getElementById("signupForm");
+
 if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -29,7 +37,6 @@ if (signupForm) {
       errorEl.textContent = "All fields are required.";
       return;
     }
-
     if (password.length < 6) {
       errorEl.textContent = "Password must be at least 6 characters.";
       return;
@@ -52,13 +59,15 @@ if (signupForm) {
 
       await set(ref(db, `users/${user.uid}`), userData);
 
-      // Credit referrer
+      // Referral bonus
       if (referralCode) {
         const usersRef = ref(db, "users");
         const snap = await get(usersRef);
         if (snap.exists()) {
           const users = snap.val();
-          const referrerId = Object.keys(users).find(uid => users[uid].referralCode === referralCode);
+          const referrerId = Object.keys(users).find(
+            uid => users[uid].referralCode === referralCode
+          );
           if (referrerId) {
             const balRef = ref(db, `users/${referrerId}/balances/referral`);
             const balSnap = await get(balRef);
@@ -68,8 +77,8 @@ if (signupForm) {
         }
       }
 
-      successEl.textContent = "Account created successfully! Redirecting...";
-      setTimeout(() => window.location.href = "dashboard.html", 1200);
+      await sendEmailVerification(user);
+      successEl.textContent = "Account created! Please verify your email before login.";
 
     } catch (err) {
       errorEl.textContent = err.message.replace("Firebase: ", "");
@@ -78,16 +87,15 @@ if (signupForm) {
 }
 
 /* =========================
-   LOGIN HANDLER
+   LOGIN
 ========================= */
 const loginForm = document.getElementById("loginForm");
+
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPassword").value.trim();
-
     const errorEl = document.getElementById("loginError");
     const successEl = document.getElementById("loginSuccess");
     errorEl.textContent = "";
@@ -99,9 +107,13 @@ if (loginForm) {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      if (!userCred.user.emailVerified) {
+        errorEl.textContent = "Please verify your email before login.";
+        return;
+      }
       successEl.textContent = "Login successful! Redirecting...";
-      setTimeout(() => window.location.href = "dashboard.html", 800);
+      setTimeout(() => { window.location.href = "dashboard.html"; }, 800);
     } catch (err) {
       errorEl.textContent = "Invalid email or password.";
     }
@@ -109,22 +121,17 @@ if (loginForm) {
 }
 
 /* =========================
-   FORGOT PASSWORD HANDLER
+   RESET PASSWORD
 ========================= */
-const forgotLink = document.getElementById("forgotPasswordLink");
-const forgotModal = document.getElementById("forgotPasswordModal");
-const closeModal = document.getElementById("closeForgotModal");
+const showModalBtn = document.getElementById("showResetModal");
+const resetModal = document.getElementById("resetModal");
+const closeModalBtn = document.getElementById("closeResetModal");
 const resetBtn = document.getElementById("resetPasswordBtn");
 
-if (forgotLink && forgotModal) {
-  forgotLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    forgotModal.classList.remove("hidden");
-  });
-}
-
-if (closeModal && forgotModal) {
-  closeModal.addEventListener("click", () => forgotModal.classList.add("hidden"));
+if (showModalBtn && resetModal) {
+  showModalBtn.onclick = () => resetModal.style.display = "block";
+  closeModalBtn.onclick = () => resetModal.style.display = "none";
+  window.onclick = (e) => { if (e.target == resetModal) resetModal.style.display = "none"; }
 }
 
 if (resetBtn) {
@@ -135,22 +142,19 @@ if (resetBtn) {
     errorEl.textContent = "";
     successEl.textContent = "";
 
-    if (!email) {
-      errorEl.textContent = "Enter your email.";
-      return;
-    }
+    if (!email) { errorEl.textContent = "Enter your email."; return; }
 
     try {
       await sendPasswordResetEmail(auth, email);
-      successEl.textContent = "Reset link sent! Check your email.";
+      successEl.textContent = "Reset email sent! Check your inbox.";
     } catch (err) {
-      errorEl.textContent = err.message.replace("Firebase: ", "");
+      errorEl.textContent = "Failed to send reset email. Check your email address.";
     }
   });
 }
 
 /* =========================
-   SESSION PROTECTION
+   SESSION PROTECT
 ========================= */
 onAuthStateChanged(auth, (user) => {
   const path = window.location.pathname;
