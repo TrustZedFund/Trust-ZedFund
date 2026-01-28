@@ -1,29 +1,121 @@
-/* Trust ZedFund – Global Theme */
-
+/* =========================
+   TRUST ZEDFUND GLOBAL VARIABLES
+========================= */
 :root {
-  --tzf-green-dark: #0b4f46;
-  --tzf-green-main: #0f6f61;
-  --tzf-green-light: #1aa08a;
-  --tzf-accent-gold: #f1e17b;
-  --tzf-text-white: #ffffff;
+  /* Colors */
+  --primary: #2A5C3D; /* Zambian green */
+  --secondary: #F7B731; /* Zambian gold */
+  --accent: #E53E3E; /* Zambian red accent */
+  --dark: #1A202C;
+  --light: #F7FAFC;
+  --gray: #718096;
+  --success: #38A169;
+  --warning: #D69E2E;
+  --danger: #E53E3E;
+
+  --bg-main: #F7FDFC;
+  --blue-dark: #0A2540;
+  --green-main: #00BFA6;
+  --btn-gradient: linear-gradient(90deg, #00FF99, #00C6FF);
+  --hero-gradient: linear-gradient(135deg, #0A2540, #00BFA6);
+  --text-main: #0A2540;
+  --text-body: #425466;
+
+  /* Shadows */
+  --shadow: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+  --shadow-card: rgba(0,0,0,0.1);
+  --shadow-hover: rgba(0,191,166,0.35);
+
+  /* Radius */
+  --radius: 12px;
+  --radius-sm: 6px;
 }
 
-/* Global base */
-html, body {
+/* =========================
+   GLOBAL RESET & BASE
+========================= */
+* {
   margin: 0;
   padding: 0;
-  background-color: var(--tzf-green-main);
-  color: var(--tzf-text-white);
-  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--tzf-text-white);
+body {
+  background: var(--bg-main);
+  color: var(--text-main);
+  overflow-y: auto;
 }
 
-/* Links */
 a {
-  color: var(--tzf-accent-gold);
   text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+/* =========================
+   REUSABLE CLASSES
+========================= */
+.hidden { display: none !important; }
+
+.center-title { text-align: center; font-weight: bold; margin-top: 15px; }
+
+.card, .wallet-card, .auth-card, .step, .story-card, .stat-card {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: var(--btn-gradient);
+  color: var(--blue-dark);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px var(--shadow-hover);
+}
+
+.input, .auth-input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: var(--radius-sm);
+  border: 2px solid #ddd;
+  margin: 10px 0;
+  transition: 0.3s;
+}
+
+.input:focus, .auth-input:focus {
+  border-color: var(--green-main);
+  outline: none;
+  box-shadow: 0 0 10px rgba(0,191,166,0.3);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes pop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
