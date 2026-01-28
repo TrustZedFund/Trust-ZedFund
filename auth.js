@@ -2,6 +2,7 @@ import { auth, db } from "./firebase.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendEmailVerification,
   sendPasswordResetEmail,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
@@ -17,22 +18,36 @@ import {
    SIGNUP HANDLER
 ========================= */
 const signupForm = document.getElementById("signupForm");
+
 if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const name = document.getElementById("name")?.value.trim();
-    const email = document.getElementById("email")?.value.trim();
-    const password = document.getElementById("password")?.value.trim();
-    const referralCode = document.getElementById("referral")?.value.trim();
-    const errorEl = document.getElementById("signupError");
-    errorEl.textContent = "";
 
-    if (!name || !email || !password) { errorEl.textContent = "All fields required."; return; }
-    if (password.length < 6) { errorEl.textContent = "Password must be at least 6 characters."; return; }
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const referralCode = document.getElementById("referral").value.trim();
+
+    const errorEl = document.getElementById("signupError");
+    const successEl = document.getElementById("signupSuccess");
+    errorEl.textContent = "";
+    successEl.textContent = "";
+
+    if (!name || !email || !password) {
+      errorEl.textContent = "All fields are required.";
+      return;
+    }
+
+    if (password.length < 6) {
+      errorEl.textContent = "Password must be at least 6 characters.";
+      return;
+    }
 
     try {
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCred.user;
+
+      // Generate referral code
       const myReferralCode = "TZF" + Math.floor(100000 + Math.random() * 900000);
 
       const userData = {
@@ -40,28 +55,23 @@ if (signupForm) {
         email,
         referralCode: myReferralCode,
         referredBy: referralCode || null,
-        balances: { deposit: 0, earnings: 0, referral: 0 },
+        balances: {
+          deposit: 0,
+          earnings: 0,
+          referral: 0
+        },
         createdAt: serverTimestamp()
       };
 
       await set(ref(db, `users/${user.uid}`), userData);
 
-      if (referralCode) {
-        const usersRef = ref(db, "users");
-        const snap = await get(usersRef);
-        if (snap.exists()) {
-          const users = snap.val();
-          const referrerId = Object.keys(users).find(uid => users[uid].referralCode === referralCode);
-          if (referrerId) {
-            const balRef = ref(db, `users/${referrerId}/balances/referral`);
-            const balSnap = await get(balRef);
-            const current = balSnap.exists() ? Number(balSnap.val()) : 0;
-            await update(ref(db, `users/${referrerId}/balances`), { referral: current + 5 });
-          }
-        }
-      }
+      // Send email verification
+      await sendEmailVerification(user);
 
-      window.location.href = "dashboard.html";
+      successEl.textContent = "Account created! Verify your email to continue.";
+
+      // Clear form
+      signupForm.reset();
 
     } catch (err) {
       console.error(err);
@@ -74,19 +84,38 @@ if (signupForm) {
    LOGIN HANDLER
 ========================= */
 const loginForm = document.getElementById("loginForm");
+
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = document.getElementById("loginEmail")?.value.trim();
-    const password = document.getElementById("loginPassword")?.value.trim();
-    const errorEl = document.getElementById("loginError");
-    errorEl.textContent = "";
 
-    if (!email || !password) { errorEl.textContent = "Enter email and password."; return; }
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+
+    const errorEl = document.getElementById("loginError");
+    const successEl = document.getElementById("loginSuccess");
+    errorEl.textContent = "";
+    successEl.textContent = "";
+
+    if (!email || !password) {
+      errorEl.textContent = "Enter email and password.";
+      return;
+    }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = "dashboard.html";
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCred.user;
+
+      if (!user.emailVerified) {
+        errorEl.textContent = "Please verify your email before logging in.";
+        return;
+      }
+
+      successEl.textContent = "Login successful! Redirecting...";
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1000);
+
     } catch (err) {
       console.error(err);
       errorEl.textContent = "Invalid email or password.";
@@ -97,41 +126,49 @@ if (loginForm) {
 /* =========================
    FORGOT PASSWORD MODAL
 ========================= */
-const forgotLink = document.getElementById("forgotPasswordLink");
+const forgotPasswordLink = document.getElementById("forgotPasswordLink");
 const forgotModal = document.getElementById("forgotPasswordModal");
-const closeReset = document.getElementById("closeResetModal");
-const sendResetBtn = document.getElementById("sendResetBtn");
-const resetEmailInput = document.getElementById("resetEmail");
-const resetMessage = document.getElementById("resetMessage");
+const closeModal = document.getElementById("closeModal");
+const resetPasswordBtn = document.getElementById("resetPasswordBtn");
 
-forgotLink?.addEventListener("click", () => {
-  resetEmailInput.value = "";
-  resetMessage.textContent = "";
-  forgotModal.style.display = "flex";
-});
+if (forgotPasswordLink) {
+  forgotPasswordLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    forgotModal.classList.remove("hidden");
+  });
+}
 
-closeReset?.addEventListener("click", () => { forgotModal.style.display = "none"; });
+if (closeModal) {
+  closeModal.addEventListener("click", () => {
+    forgotModal.classList.add("hidden");
+    document.getElementById("resetEmail").value = "";
+    document.getElementById("resetError").textContent = "";
+    document.getElementById("resetSuccess").textContent = "";
+  });
+}
 
-sendResetBtn?.addEventListener("click", async () => {
-  const email = resetEmailInput.value.trim();
-  resetMessage.textContent = "";
+if (resetPasswordBtn) {
+  resetPasswordBtn.addEventListener("click", async () => {
+    const email = document.getElementById("resetEmail").value.trim();
+    const errorEl = document.getElementById("resetError");
+    const successEl = document.getElementById("resetSuccess");
+    errorEl.textContent = "";
+    successEl.textContent = "";
 
-  if (!email) {
-    resetMessage.textContent = "Enter your email.";
-    resetMessage.style.color = "red";
-    return;
-  }
+    if (!email) {
+      errorEl.textContent = "Enter your email.";
+      return;
+    }
 
-  try {
-    await sendPasswordResetEmail(auth, email);
-    resetMessage.textContent = "Reset link sent! Check your email.";
-    resetMessage.style.color = "green";
-  } catch (err) {
-    console.error(err);
-    resetMessage.textContent = "Failed to send. Check email.";
-    resetMessage.style.color = "red";
-  }
-});
+    try {
+      await sendPasswordResetEmail(auth, email);
+      successEl.textContent = "Password reset link sent! Check your email.";
+    } catch (err) {
+      console.error(err);
+      errorEl.textContent = err.message.replace("Firebase: ", "");
+    }
+  });
+}
 
 /* =========================
    SESSION PROTECT
