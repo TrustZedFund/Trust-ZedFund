@@ -31,6 +31,7 @@
     <input class="input" id="referral" placeholder="Referral Code (optional)" />
 
     <div id="signupError" class="error-text"></div>
+    <div id="signupSuccess" class="success-text"></div>
 
     <button class="btn-primary" type="submit">
       <span id="signupText">Create Account</span>
@@ -50,16 +51,6 @@
 
 <script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
-
-<!-- Autofill referral code from URL -->
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const refCode = urlParams.get('ref');
-  if (refCode) {
-    const referralInput = document.getElementById('referral');
-    referralInput.value = refCode;
-  }
-</script>
 
 </body>
 </html>
