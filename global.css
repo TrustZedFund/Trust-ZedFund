@@ -1,0 +1,125 @@
+/* ================================
+   TRUST ZEDFUND – GLOBAL THEME
+   ================================ */
+
+:root {
+  --brand-green: #0f9d58;   /* Trust ZedFund Green */
+  --brand-green-dark: #0c7f47;
+  --brand-green-soft: #e6f4ec;
+  --text-dark: #0f172a;
+  --text-light: #ffffff;
+  --bg-light: #ffffff;
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* GLOBAL BACKGROUND */
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: var(--brand-green);
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* Containers */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* NAVBAR */
+.navbar {
+  background: var(--brand-green-dark);
+  padding: 1rem 0;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+}
+
+.nav-links a {
+  margin-left: 1.2rem;
+}
+
+.nav-links a.active {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* HERO */
+.hero {
+  background: linear-gradient(
+    135deg,
+    var(--brand-green),
+    var(--brand-green-dark)
+  );
+  color: white;
+  padding: 5rem 0;
+}
+
+/* SECTIONS */
+.section {
+  background: var(--brand-green);
+  padding: 4rem 0;
+}
+
+/* LIGHT SECTIONS (cards / contrast areas) */
+.light-bg {
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+
+.light-bg h1,
+.light-bg h2,
+.light-bg h3,
+.light-bg p {
+  color: var(--text-dark);
+}
+
+/* CARDS */
+.mission-card,
+.team-card,
+.compliance-card,
+.advisor-card,
+.contact-form {
+  background: white;
+  color: var(--text-dark);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* BUTTONS */
+.btn-primary,
+.btn-nav,
+button {
+  background: var(--brand-green-dark);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* FOOTER */
+.footer {
+  background: #0b3d2e;
+  color: white;
+  padding: 3rem 0;
+}
+
+.footer a {
+  color: #c6f6d5;
+  text-decoration: none;
+}
