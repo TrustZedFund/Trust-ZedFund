@@ -1597,14 +1597,39 @@ nav .cta-row {
   background: linear-gradient(135deg, #f7fdfc, #eef9f7);
 }
 /* =========================
-   AUTH PAGES ONLY
+   AUTH + HERO (SAFE)
 ========================= */
 
 .auth-page {
+  background: #f7fdfc;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f7fdfc, #eef9f7);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+}
+
+/* HERO */
+.auth-hero {
+  padding: 60px 20px 40px;
+  text-align: center;
+}
+
+.auth-hero h1 {
+  font-size: 28px;
+  color: #0a2540;
+  margin-bottom: 12px;
+}
+
+.auth-hero p {
+  max-width: 620px;
+  margin: auto;
+  font-size: 16px;
+  color: #475467;
+  line-height: 1.6;
+}
+
+/* AUTH CARD */
+.auth-section {
+  display: flex;
   justify-content: center;
   padding: 20px;
 }
@@ -1684,7 +1709,7 @@ nav .cta-row {
   margin-bottom: 10px;
 }
 
-/* Password Eye */
+/* PASSWORD EYE */
 .password-field {
   position: relative;
 }
@@ -1700,4 +1725,13 @@ nav .cta-row {
 
 .password-field span:hover {
   opacity: 1;
+}
+
+/* FOOTER */
+.auth-site-footer {
+  margin-top: auto;
+  padding: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: #667085;
 }
