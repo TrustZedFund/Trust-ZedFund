@@ -2,159 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trust ZedFund — Login</title>
-  <link rel="stylesheet" href="styles.css"/>
-  <style>
-    .auth-wrapper {
-      max-width: 420px;
-      margin: 60px auto;
-      padding: 20px;
-    }
-    .auth-card {
-      background: #111821;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-    }
-    .auth-card h2 {
-      color: #fff;
-      text-align: center;
-      margin-bottom: 15px;
-    }
-    .input {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
-    }
-    .btn-primary {
-      width: 100%;
-      padding: 12px;
-      background: #2e7dff;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 12px;
-    }
-    .btn-primary:active {
-      transform: scale(0.97);
-    }
-    .auth-switch {
-      text-align: center;
-      margin-top: 10px;
-      color: #9aa3ad;
-    }
-    .auth-switch a {
-      color: #2e7dff;
-      text-decoration: none;
-    }
-    .error-text {
-      color: #ff4d4f;
-      font-size: 13px;
-      margin-top: 5px;
-    }
-
-    /* =========================
-       RESET PASSWORD MODAL
-    ========================= */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .modal {
-      background: #111821;
-      padding: 25px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 400px;
-      position: relative;
-    }
-    .modal h3 {
-      margin-top: 0;
-      color: #fff;
-      text-align: center;
-    }
-    .close-modal {
-      position: absolute;
-      top: 10px; right: 15px;
-      font-size: 18px;
-      color: #fff;
-      cursor: pointer;
-    }
-    .modal input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 12px;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
-    }
-    .modal button {
-      width: 100%;
-      margin-top: 15px;
-    }
-    .modal .modal-msg {
-      margin-top: 10px;
-      font-size: 14px;
-      text-align: center;
-    }
-    .modal .success {
-      color: #4caf50;
-    }
-    .modal .error {
-      color: #ff4d4f;
-    }
-<link rel="stylesheet" href="assets/css/global.css">
-  </style>
+  <title>Trust ZedFund | Login</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<div class="auth-wrapper">
-
-  <form id="loginForm" class="auth-card">
+  <div class="auth-container">
     <h2>Login</h2>
 
-    <input id="loginEmail" class="input" type="email" placeholder="Email Address" required />
-    <input id="loginPassword" class="input" type="password" placeholder="Password" required />
+    <form id="loginForm">
 
-    <div id="loginError" class="error-text"></div>
+      <input type="email" id="loginEmail" placeholder="Email Address" required />
 
-    <button type="submit" class="btn-primary">Login</button>
+      <div class="password-field">
+        <input type="password" id="loginPassword" placeholder="Password" required />
+        <span class="toggle-eye" data-target="loginPassword">👁️</span>
+      </div>
 
-    <p class="auth-switch">
-      Forgot Password? <a href="#" id="openResetModal">Reset Here</a>
+      <button type="submit" class="primary-btn">Login</button>
+      <p id="loginError" class="error"></p>
+    </form>
+
+    <p class="forgot">
+      <a href="#" id="openReset">Forgot Password?</a>
     </p>
 
-    <p class="auth-switch">
-      Don't have an account? <a href="register.html">Sign Up</a>
+    <p class="switch">
+      Don’t have an account?
+      <a href="register.html">Create one</a>
     </p>
-  </form>
-
-</div>
-
-<!-- =========================
-     RESET PASSWORD MODAL
-========================= -->
-<div class="modal-overlay" id="resetModal">
-  <div class="modal">
-    <span class="close-modal" id="closeResetModal">&times;</span>
-    <h3>Reset Password</h3>
-    <input type="email" id="resetEmail" placeholder="Enter your email" required />
-    <button id="sendResetEmail" class="btn-primary">Send Reset Email</button>
-    <div class="modal-msg" id="resetMsg"></div>
   </div>
-</div>
 
-<script type="module" src="auth.js"></script>
+  <!-- Reset Password Modal -->
+  <div class="modal" id="resetModal">
+    <div class="modal-content">
+      <h3>Reset Password</h3>
+
+      <input type="email" id="resetEmail" placeholder="Enter your email" />
+      <button id="sendReset" class="primary-btn">Send Reset Link</button>
+
+      <p id="resetMsg" class="info"></p>
+
+      <button class="close-btn" id="closeReset">Close</button>
+    </div>
+  </div>
+
+  <script type="module" src="./auth.js"></script>
 </body>
 </html>
