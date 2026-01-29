@@ -1561,3 +1561,31 @@ nav .cta-row {
     font-size: 0.875rem;
     box-shadow: var(--shadow);
 }
+/* =====================
+   PASSWORD FIELD + EYE
+===================== */
+
+.password-field {
+  position: relative;
+  width: 100%;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 45px;
+}
+
+.toggle-eye {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0.6;
+  user-select: none;
+}
+
+.toggle-eye:hover {
+  opacity: 1;
+}
