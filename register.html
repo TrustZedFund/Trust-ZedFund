@@ -2,65 +2,64 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Create Account | Trust ZedFund</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<div class="auth-page">
+<!-- HERO -->
+<section class="auth-hero">
+  <h1>Build Your Financial Future</h1>
+  <p>
+    Trust ZedFund turns everyday Zambians into investors, and local businesses
+    into success stories. Join thousands taking control of their future.
+  </p>
+</section>
 
-  <!-- HERO -->
-  <section class="auth-hero">
-    <h1>Build Your Financial Future</h1>
-    <p>
-      Trust ZedFund turns everyday Zambians into investors, and local businesses into success stories.
-      Join thousands of Zambians who are taking control of their financial future.
+<!-- SIGNUP CARD -->
+<div class="auth-wrapper">
+  <form id="signupForm" class="auth-card">
+    <h2>Create Account</h2>
+
+    <input class="input" id="name" placeholder="Full Name" required />
+    <input class="input" id="email" type="email" placeholder="Email Address" required />
+
+    <div class="password-wrap">
+      <input class="input" id="password" type="password" placeholder="Password (min 6 chars)" required />
+      <span class="toggle-eye" onclick="togglePassword('password')">👀</span>
+    </div>
+
+    <input class="input" id="referral" placeholder="Referral Code (optional)" />
+
+    <div id="signupError" class="error-text"></div>
+    <div id="signupSuccess" class="success-text"></div>
+
+    <!-- ✅ THIS WAS THE MAIN FIX -->
+    <button type="submit" class="primary-btn">
+      Create Account
+    </button>
+
+    <p class="auth-switch">
+      Already have an account?
+      <a href="login.html">Login</a>
     </p>
-  </section>
-
-  <!-- SIGNUP -->
-  <section class="auth-section">
-    <form id="signupForm" class="auth-card">
-      <h2>Create Account</h2>
-      <p class="auth-subtext">Secure. Transparent. Built for Zambians.</p>
-
-      <input id="name" placeholder="Full Name" required />
-      <input id="email" type="email" placeholder="Email Address" required />
-
-      <div class="password-field">
-        <input id="password" type="password" placeholder="Password (min 6 chars)" required />
-        <span onclick="togglePassword('password')">👀</span>
-      </div>
-
-      <input id="referral" placeholder="Referral Code (optional)" />
-
-      <div id="signupError" class="error-text"></div>
-
-      <button class="primary-btn" type="submit">Create Account</button>
-
-      <div class="auth-footer">
-        Already have an account? <a href="login.html">Login</a>
-      </div>
-    </form>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="auth-site-footer">
-    © 2026 Trust ZedFund. All rights reserved.
-  </footer>
-
+  </form>
 </div>
+
+<footer class="auth-footer">
+  © 2026 Trust ZedFund. Learn. Grow. Earn Safely.
+</footer>
+
+<script>
+  function togglePassword(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === "password" ? "text" : "password";
+  }
+</script>
 
 <script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
-
-<script>
-function togglePassword(id) {
-  const input = document.getElementById(id);
-  input.type = input.type === "password" ? "text" : "password";
-}
-</script>
 
 </body>
 </html>
