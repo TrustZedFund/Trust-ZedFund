@@ -13,9 +13,55 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <!-- Page polish (scoped) -->
   <style>
-    .center { text-align: center; }
+    /* Page-specific polish */
+    .hero {
+      padding: 100px 20px 60px;
+      background: var(--bg-main);
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 36px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .hero-stats div {
+      background: var(--green-light);
+      padding: 20px 28px;
+      border-radius: 16px;
+      color: #fff;
+      min-width: 140px;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .hero-stats div:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    }
+
+    .hero-stats strong {
+      display: block;
+      font-size: 28px;
+      font-weight: 700;
+    }
 
     .card-grid {
       display: grid;
@@ -24,55 +70,83 @@
       margin-top: 40px;
     }
 
-    .card {
+    .card, .circle-card {
       background: #fff;
-      padding: 28px;
       border-radius: 16px;
+      padding: 28px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.06);
       transition: transform .25s ease, box-shadow .25s ease;
     }
 
-    .card:hover {
+    .card:hover, .circle-card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 16px 38px rgba(0,0,0,0.10);
+      box-shadow: 0 16px 38px rgba(0,0,0,0.12);
     }
 
     .card-icon {
-      font-size: 34px;
-      margin-bottom: 12px;
+      font-size: 36px;
+      margin-bottom: 14px;
       color: var(--green-main);
     }
 
-    .soft-bg { background: #f7fdfc; }
-
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-top: 28px;
-      flex-wrap: wrap;
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 12px;
     }
 
-    .hero-stats div {
+    .section-subtitle {
+      color: #555;
+      margin-bottom: 36px;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: var(--btn-gradient);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform .2s ease, box-shadow .2s ease;
+      display: inline-block;
+      margin: 8px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.14);
+    }
+
+    .btn-secondary {
+      background: #f1f1f1;
+      color: var(--blue-dark);
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      margin: 8px;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    }
+
+    footer.footer {
+      background: var(--blue-dark);
+      color: #fff;
+      padding: 40px 20px;
       text-align: center;
     }
 
-    .hero-stats strong {
-      font-size: 28px;
-      color: var(--green-main);
-    }
-
-    .circle-card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 8px 26px rgba(0,0,0,0.07);
-      transition: transform .25s ease, box-shadow .25s ease;
-    }
-
-    .circle-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 16px 38px rgba(0,0,0,0.12);
+    footer .disclaimer {
+      font-size: 0.875rem;
+      color: #ddd;
+      margin-top: 12px;
     }
   </style>
 </head>
@@ -96,24 +170,17 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-inner center">
-    <h1>Save Together. Grow Together.</h1>
-    <p>
-      Digital chilimba for modern Zambia.  
-      Build discipline, trust, and wealth with people you know.
-    </p>
+  <h1>Save Together. Grow Together.</h1>
+  <p>Digital chilimba for modern Zambia. Build discipline, trust, and wealth with people you know.</p>
 
-    <div class="hero-stats">
-      <div><strong>127</strong><p>Active Circles</p></div>
-      <div><strong>K2.1M</strong><p>Total Saved</p></div>
-      <div><strong>4–8%</strong><p>Monthly Returns</p></div>
-    </div>
-
-    <div style="margin-top:32px">
-      <a href="#create-circle" class="btn-primary">Create Circle</a>
-      <a href="#browse-circles" class="btn-secondary">Browse Circles</a>
-    </div>
+  <div class="hero-stats">
+    <div><strong>127</strong>Active Circles</div>
+    <div><strong>K2.1M</strong>Total Saved</div>
+    <div><strong>4–8%</strong>Monthly Returns</div>
   </div>
+
+  <a href="#create-circle" class="btn-primary">Create Circle</a>
+  <a href="#browse-circles" class="btn-secondary">Browse Circles</a>
 </section>
 
 <!-- HOW IT WORKS -->
@@ -128,13 +195,11 @@
         <h3>Create a Circle</h3>
         <p>Invite 3–20 people you trust and set contribution rules.</p>
       </div>
-
       <div class="card">
         <div class="card-icon"><i class="fas fa-coins"></i></div>
         <h3>Save Together</h3>
         <p>Contribute regularly via mobile money with full transparency.</p>
       </div>
-
       <div class="card">
         <div class="card-icon"><i class="fas fa-chart-line"></i></div>
         <h3>Grow & Lend</h3>
@@ -150,37 +215,22 @@
     <h2 class="section-title">Types of Savings Circles</h2>
 
     <div class="card-grid">
-      <div class="card">
-        <h3>👨‍👩‍👧 Family Circles</h3>
-        <p>Save together for emergencies, housing, or major events.</p>
-      </div>
-
-      <div class="card">
-        <h3>🏪 Business Circles</h3>
-        <p>Pool capital for wholesale buying and expansion.</p>
-      </div>
-
-      <div class="card">
-        <h3>🎓 Education Circles</h3>
-        <p>Plan school fees and education costs collectively.</p>
-      </div>
-
-      <div class="card">
-        <h3>🙏 Faith Circles</h3>
-        <p>Support community projects and mutual assistance.</p>
-      </div>
+      <div class="card">👨‍👩‍👧 <h3>Family Circles</h3><p>Save together for emergencies, housing, or major events.</p></div>
+      <div class="card">🏪 <h3>Business Circles</h3><p>Pool capital for wholesale buying and expansion.</p></div>
+      <div class="card">🎓 <h3>Education Circles</h3><p>Plan school fees and education costs collectively.</p></div>
+      <div class="card">🙏 <h3>Faith Circles</h3><p>Support community projects and mutual assistance.</p></div>
     </div>
   </div>
 </section>
 
-<!-- CREATE CIRCLE -->
+<!-- CREATE CIRCLE FORM -->
 <section id="create-circle" class="section soft-bg">
-  <div class="container">
+  <div class="container center">
+    <h2 class="section-title">Create Your Circle</h2>
+    <p class="section-subtitle">Start your own savings group with ease</p>
+
     <div class="form-container">
-      <!-- YOUR EXISTING MULTI-STEP FORM STAYS EXACTLY THE SAME -->
-      <!-- NO LOGIC REMOVED -->
-      <!-- Only visual centering retained -->
-      <!-- (Form content unchanged for safety) -->
+      <!-- Retain your existing multi-step form here -->
     </div>
   </div>
 </section>
@@ -197,13 +247,11 @@
         <p>Soweto Market • K300/week • 6/10 members</p>
         <a class="btn-primary" href="#">Request to Join</a>
       </div>
-
       <div class="circle-card">
         <h3>Kitwe Youth Entrepreneurs</h3>
         <p>Kitwe • K200/week • 8/12 members</p>
         <a class="btn-primary" href="#">Request to Join</a>
       </div>
-
       <div class="circle-card">
         <h3>Ndola School Fees Pool</h3>
         <p>Ndola • K500/week • 4/8 members</p>
@@ -217,9 +265,7 @@
 <footer class="footer">
   <div class="footer-inner">
     <p>© 2026 Trust ZedFund Zambia Ltd</p>
-    <p class="disclaimer">
-      Savings circles involve risk. Only save with people you trust.
-    </p>
+    <p class="disclaimer">Savings circles involve risk. Only save with people you trust.</p>
   </div>
 </footer>
 
