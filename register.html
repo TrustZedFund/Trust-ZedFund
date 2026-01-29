@@ -5,52 +5,91 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Trust ZedFund — Create Account</title>
   <link rel="stylesheet" href="styles.css"/>
+
+  <style>
+    .auth-wrapper {
+      max-width: 420px;
+      margin: 60px auto;
+      padding: 20px;
+    }
+    .auth-card {
+      background: #111821;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .auth-card h2 {
+      color: #fff;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: #2e7dff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+    .auth-switch {
+      text-align: center;
+      margin-top: 10px;
+      color: #9aa3ad;
+    }
+    .auth-switch a {
+      color: #2e7dff;
+      text-decoration: none;
+    }
+    .error-text {
+      color: #ff4d4f;
+      font-size: 13px;
+      margin-top: 6px;
+      text-align: center;
+    }
+    .success-text {
+      color: #4caf50;
+      font-size: 14px;
+      margin-top: 6px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
-<header class="navbar">
-  <div class="logo">Trust ZedFund</div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="login.html">Login</a>
-  </nav>
-</header>
-
-<section class="hero">
-  <h1>Build Your Financial Future</h1>
-  <p>Create a Trust ZedFund account to save, invest, and grow smartly.</p>
-</section>
-
 <div class="auth-wrapper">
+
   <form id="signupForm" class="auth-card">
     <h2>Create Account</h2>
 
-    <input class="input" id="name" placeholder="Full Name" required />
-    <input class="input" id="email" type="email" placeholder="Email Address" required />
-    <input class="input" id="password" type="password" placeholder="Password (min 6 chars)" required />
-    <input class="input" id="referral" placeholder="Referral Code (optional)" />
+    <input id="signupEmail" class="input" type="email" placeholder="Email Address" required />
+    <input id="signupPassword" class="input" type="password" placeholder="Password (min 6 characters)" required />
+    <input id="signupConfirm" class="input" type="password" placeholder="Confirm Password" required />
 
-    <div id="signupError" class="error-text"></div>
-    <div id="signupSuccess" class="success-text"></div>
+    <div id="signupMsg" class="error-text"></div>
 
-    <button class="btn-primary" type="submit">
-      <span id="signupText">Create Account</span>
-      <span id="signupLoader" style="display:none;">Creating...</span>
-    </button>
+    <button type="submit" class="btn-primary">Create Account</button>
 
     <p class="auth-switch">
       Already have an account? <a href="login.html">Login</a>
     </p>
   </form>
+
 </div>
 
-<footer>
-  <p>© 2026 Trust ZedFund. All rights reserved.</p>
-  <p class="disclaimer">Trust ZedFund is an educational savings & investment platform.</p>
-</footer>
-
-<script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
-
 </body>
 </html>
