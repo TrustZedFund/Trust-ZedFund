@@ -2,45 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Trust ZedFund | Create Account</title>
+  <title>Create Account | Trust ZedFund</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <div class="auth-container">
+<div class="auth-page">
+  <form id="signupForm" class="auth-card">
     <h2>Create Account</h2>
+    <p class="auth-subtext">Join Trust ZedFund and grow with confidence</p>
 
-    <form id="signupForm">
+    <input id="name" placeholder="Full Name" required />
+    <input id="email" type="email" placeholder="Email Address" required />
 
-      <input type="text" id="name" placeholder="Full Name" required />
-      <input type="email" id="email" placeholder="Email Address" required />
-
-      <div class="password-field">
-        <input type="password" id="password" placeholder="Password (min 6 chars)" required />
-        <span class="toggle-eye" data-target="password">👁️</span>
-      </div>
-
-      <input type="text" id="referral" placeholder="Referral Code (optional)" />
-
-      <button type="submit" class="primary-btn">Create Account</button>
-
-      <p id="signupError" class="error"></p>
-      <p id="signupSuccess" class="success"></p>
-    </form>
-
-    <p class="switch">
-      Already have an account?
-      <a href="login.html">Login</a>
-    </p>
-  </div>
-<body>
-  <div class="auth-page">
-    <div class="auth-container">
-      <!-- login or register form -->
+    <div class="password-field">
+      <input id="password" type="password" placeholder="Password (min 6 chars)" required />
+      <span onclick="togglePassword('password')">👀</span>
     </div>
-  </div>
-</body>
 
-  <script type="module" src="./auth.js"></script>
+    <input id="referral" placeholder="Referral Code (optional)" />
+
+    <div id="signupError" class="error-text"></div>
+
+    <button class="primary-btn" type="submit">Create Account</button>
+
+    <div class="auth-footer">
+      Already have an account? <a href="login.html">Login</a>
+    </div>
+  </form>
+</div>
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="auth.js"></script>
+
+<script>
+function togglePassword(id) {
+  const input = document.getElementById(id);
+  input.type = input.type === "password" ? "text" : "password";
+}
+</script>
+
 </body>
 </html>
