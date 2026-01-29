@@ -9,26 +9,44 @@
 <body>
 
 <div class="auth-page">
-  <form id="loginForm" class="auth-card">
-    <h2>Welcome Back</h2>
-    <p class="auth-subtext">Login to your Trust ZedFund account</p>
 
-    <input id="loginEmail" type="email" placeholder="Email Address" required />
+  <!-- HERO -->
+  <section class="auth-hero">
+    <h1>Welcome Back</h1>
+    <p>
+      Continue your journey with Trust ZedFund and take control of your financial future.
+    </p>
+  </section>
 
-    <div class="password-field">
-      <input id="loginPassword" type="password" placeholder="Password" required />
-      <span onclick="togglePassword('loginPassword')">👀</span>
-    </div>
+  <!-- LOGIN -->
+  <section class="auth-section">
+    <form id="loginForm" class="auth-card">
+      <h2>Login</h2>
+      <p class="auth-subtext">Access your secure account</p>
 
-    <div id="loginError" class="error-text"></div>
+      <input id="loginEmail" type="email" placeholder="Email Address" required />
 
-    <button class="primary-btn" type="submit">Login</button>
+      <div class="password-field">
+        <input id="loginPassword" type="password" placeholder="Password" required />
+        <span onclick="togglePassword('loginPassword')">👀</span>
+      </div>
 
-    <div class="auth-footer">
-      <a href="reset.html">Forgot password?</a><br/><br/>
-      Don’t have an account? <a href="register.html">Create one</a>
-    </div>
-  </form>
+      <div id="loginError" class="error-text"></div>
+
+      <button class="primary-btn" type="submit">Login</button>
+
+      <div class="auth-footer">
+        <a href="reset.html">Forgot password?</a><br/><br/>
+        Don’t have an account? <a href="register.html">Create one</a>
+      </div>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="auth-site-footer">
+    © 2026 Trust ZedFund. All rights reserved.
+  </footer>
+
 </div>
 
 <script type="module" src="firebase.js"></script>
