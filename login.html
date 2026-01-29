@@ -2,51 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Trust ZedFund | Login</title>
+  <title>Login | Trust ZedFund</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <div class="auth-container">
-    <h2>Login</h2>
+<div class="auth-page">
+  <form id="loginForm" class="auth-card">
+    <h2>Welcome Back</h2>
+    <p class="auth-subtext">Login to your Trust ZedFund account</p>
 
-    <form id="loginForm">
+    <input id="loginEmail" type="email" placeholder="Email Address" required />
 
-      <input type="email" id="loginEmail" placeholder="Email Address" required />
-
-      <div class="password-field">
-        <input type="password" id="loginPassword" placeholder="Password" required />
-        <span class="toggle-eye" data-target="loginPassword">👁️</span>
-      </div>
-
-      <button type="submit" class="primary-btn">Login</button>
-      <p id="loginError" class="error"></p>
-    </form>
-
-    <p class="forgot">
-      <a href="#" id="openReset">Forgot Password?</a>
-    </p>
-
-    <p class="switch">
-      Don’t have an account?
-      <a href="register.html">Create one</a>
-    </p>
-  </div>
-
-  <!-- Reset Password Modal -->
-  <div class="modal" id="resetModal">
-    <div class="modal-content">
-      <h3>Reset Password</h3>
-
-      <input type="email" id="resetEmail" placeholder="Enter your email" />
-      <button id="sendReset" class="primary-btn">Send Reset Link</button>
-
-      <p id="resetMsg" class="info"></p>
-
-      <button class="close-btn" id="closeReset">Close</button>
+    <div class="password-field">
+      <input id="loginPassword" type="password" placeholder="Password" required />
+      <span onclick="togglePassword('loginPassword')">👀</span>
     </div>
-  </div>
 
-  <script type="module" src="./auth.js"></script>
+    <div id="loginError" class="error-text"></div>
+
+    <button class="primary-btn" type="submit">Login</button>
+
+    <div class="auth-footer">
+      <a href="reset.html">Forgot password?</a><br/><br/>
+      Don’t have an account? <a href="register.html">Create one</a>
+    </div>
+  </form>
+</div>
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="auth.js"></script>
+
+<script>
+function togglePassword(id) {
+  const input = document.getElementById(id);
+  input.type = input.type === "password" ? "text" : "password";
+}
+</script>
+
 </body>
 </html>
