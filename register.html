@@ -2,94 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trust ZedFund — Create Account</title>
-  <link rel="stylesheet" href="styles.css"/>
-
-  <style>
-    .auth-wrapper {
-      max-width: 420px;
-      margin: 60px auto;
-      padding: 20px;
-    }
-    .auth-card {
-      background: #111821;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-    }
-    .auth-card h2 {
-      color: #fff;
-      text-align: center;
-      margin-bottom: 15px;
-    }
-    .input {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
-    }
-    .btn-primary {
-      width: 100%;
-      padding: 12px;
-      background: #2e7dff;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 12px;
-    }
-    .btn-primary:active {
-      transform: scale(0.97);
-    }
-    .auth-switch {
-      text-align: center;
-      margin-top: 10px;
-      color: #9aa3ad;
-    }
-    .auth-switch a {
-      color: #2e7dff;
-      text-decoration: none;
-    }
-    .error-text {
-      color: #ff4d4f;
-      font-size: 13px;
-      margin-top: 6px;
-      text-align: center;
-    }
-    .success-text {
-      color: #4caf50;
-      font-size: 14px;
-      margin-top: 6px;
-      text-align: center;
-    }
-  </style>
+  <title>Trust ZedFund | Create Account</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<div class="auth-wrapper">
-
-  <form id="signupForm" class="auth-card">
+  <div class="auth-container">
     <h2>Create Account</h2>
 
-    <input id="signupEmail" class="input" type="email" placeholder="Email Address" required />
-    <input id="signupPassword" class="input" type="password" placeholder="Password (min 6 characters)" required />
-    <input id="signupConfirm" class="input" type="password" placeholder="Confirm Password" required />
+    <form id="signupForm">
 
-    <div id="signupMsg" class="error-text"></div>
+      <input type="text" id="name" placeholder="Full Name" required />
+      <input type="email" id="email" placeholder="Email Address" required />
 
-    <button type="submit" class="btn-primary">Create Account</button>
+      <div class="password-field">
+        <input type="password" id="password" placeholder="Password (min 6 chars)" required />
+        <span class="toggle-eye" data-target="password">👁️</span>
+      </div>
 
-    <p class="auth-switch">
-      Already have an account? <a href="login.html">Login</a>
+      <input type="text" id="referral" placeholder="Referral Code (optional)" />
+
+      <button type="submit" class="primary-btn">Create Account</button>
+
+      <p id="signupError" class="error"></p>
+      <p id="signupSuccess" class="success"></p>
+    </form>
+
+    <p class="switch">
+      Already have an account?
+      <a href="login.html">Login</a>
     </p>
-  </form>
+  </div>
 
-</div>
-
-<script type="module" src="auth.js"></script>
+  <script type="module" src="./auth.js"></script>
 </body>
 </html>
