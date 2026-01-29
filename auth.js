@@ -1,92 +1,148 @@
-import { auth } from "./firebase.js";
+import { auth, db } from "./firebase.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  onAuthStateChanged
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import {
+  ref,
+  set,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-/* =========================
-   LOGIN FORM
-========================= */
-const loginForm = document.getElementById("loginForm");
-const loginError = document.getElementById("loginError");
+/* =====================
+   SIGNUP
+===================== */
 
-if (loginForm) {
-  loginForm.addEventListener("submit", async (e) => {
+const signupForm = document.getElementById("signupForm");
+
+if (signupForm) {
+  signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    loginError.textContent = "";
 
-    const email = document.getElementById("loginEmail").value.trim();
-    const password = document.getElementById("loginPassword").value.trim();
+    const name = nameEl("name");
+    const email = nameEl("email");
+    const password = nameEl("password");
+    const referral = nameEl("referral");
 
-    if (!email || !password) {
-      loginError.textContent = "Enter email and password.";
+    const error = document.getElementById("signupError");
+    const success = document.getElementById("signupSuccess");
+    error.textContent = "";
+    success.textContent = "";
+
+    if (password.length < 6) {
+      error.textContent = "Password must be at least 6 characters.";
       return;
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = "dashboard.html";
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+      await set(ref(db, `users/${cred.user.uid}`), {
+        name,
+        email,
+        referralCode: "TZF" + Math.floor(100000 + Math.random() * 900000),
+        referredBy: referral || null,
+        createdAt: serverTimestamp(),
+        balances: {
+          deposit: 0,
+          earnings: 0,
+          referral: 0
+        }
+      });
+
+      success.textContent = "Account created successfully. Please login.";
+      signupForm.reset();
+
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1500);
+
     } catch (err) {
-      console.error(err);
-      loginError.textContent = "Invalid email or password.";
+      error.textContent = err.message.replace("Firebase: ", "");
     }
   });
 }
 
-/* =========================
+/* =====================
+   LOGIN
+===================== */
+
+const loginForm = document.getElementById("loginForm");
+
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = nameEl("loginEmail");
+    const password = nameEl("loginPassword");
+    const error = document.getElementById("loginError");
+    error.textContent = "";
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = "dashboard.html";
+    } catch {
+      error.textContent = "Invalid email or password.";
+    }
+  });
+}
+
+/* =====================
    RESET PASSWORD MODAL
-========================= */
-const resetModal = document.getElementById("resetModal");
-const openResetModal = document.getElementById("openResetModal");
-const closeResetModal = document.getElementById("closeResetModal");
-const sendResetEmail = document.getElementById("sendResetEmail");
-const resetEmailInput = document.getElementById("resetEmail");
-const resetMsg = document.getElementById("resetMsg");
+===================== */
 
-openResetModal.addEventListener("click", (e) => {
+const modal = document.getElementById("resetModal");
+
+document.getElementById("openReset")?.addEventListener("click", (e) => {
   e.preventDefault();
-  resetMsg.textContent = "";
-  resetEmailInput.value = "";
-  resetModal.style.display = "flex";
+  modal.style.display = "flex";
 });
 
-closeResetModal.addEventListener("click", () => {
-  resetModal.style.display = "none";
+document.getElementById("closeReset")?.addEventListener("click", () => {
+  modal.style.display = "none";
 });
 
-window.addEventListener("click", (e) => {
-  if (e.target === resetModal) {
-    resetModal.style.display = "none";
-  }
-});
+document.getElementById("sendReset")?.addEventListener("click", async () => {
+  const email = nameEl("resetEmail");
+  const msg = document.getElementById("resetMsg");
+  msg.textContent = "";
 
-sendResetEmail.addEventListener("click", async () => {
-  resetMsg.textContent = "";
-  const email = resetEmailInput.value.trim();
   if (!email) {
-    resetMsg.textContent = "Enter your email.";
-    resetMsg.className = "modal-msg error";
+    msg.textContent = "Enter your email address.";
     return;
   }
 
   try {
     await sendPasswordResetEmail(auth, email);
-    resetMsg.textContent = "Reset email sent! Check your inbox.";
-    resetMsg.className = "modal-msg success";
+    msg.textContent = "Password reset link sent. Check your email.";
   } catch (err) {
-    console.error(err);
-    resetMsg.textContent = "Failed to send reset email. Check your email.";
-    resetMsg.className = "modal-msg error";
+    msg.textContent = err.message.replace("Firebase: ", "");
   }
 });
 
-/* =========================
-   SESSION PROTECT
-========================= */
-onAuthStateChanged(auth, (user) => {
-  if (user && window.location.pathname.includes("login")) {
-    window.location.href = "dashboard.html";
-  }
+/* =====================
+   HELPER
+===================== */
+
+function nameEl(id) {
+  return document.getElementById(id)?.value.trim() || "";
+}
+/* =====================
+   PASSWORD VISIBILITY
+===================== */
+
+document.querySelectorAll(".toggle-eye").forEach(eye => {
+  eye.addEventListener("click", () => {
+    const input = document.getElementById(eye.dataset.target);
+    if (!input) return;
+
+    if (input.type === "password") {
+      input.type = "text";
+      eye.textContent = "🙈";
+    } else {
+      input.type = "password";
+      eye.textContent = "👁️";
+    }
+  });
 });
