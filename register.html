@@ -57,6 +57,18 @@
     input.type = input.type === "password" ? "text" : "password";
   }
 </script>
+  // Auto-fill referral code from URL
+  const params = new URLSearchParams(window.location.search);
+  const refCode = params.get("ref");
+
+  if (refCode) {
+    const referralInput = document.getElementById("referral");
+    if (referralInput) {
+      referralInput.value = refCode;
+      referralInput.readOnly = true; // optional but professional
+    }
+  }
+</script>
 
 <script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
