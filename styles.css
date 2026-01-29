@@ -1589,3 +1589,10 @@ nav .cta-row {
 .toggle-eye:hover {
   opacity: 1;
 }
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f7fdfc, #eef9f7);
+}
