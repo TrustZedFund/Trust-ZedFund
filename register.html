@@ -57,7 +57,11 @@
     input.type = input.type === "password" ? "text" : "password";
   }
 </script>
-  // Auto-fill referral code from URL
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="auth.js"></script>
+<script>
+// Auto-fill referral code from URL
   const params = new URLSearchParams(window.location.search);
   const refCode = params.get("ref");
 
@@ -69,9 +73,5 @@
     }
   }
 </script>
-
-<script type="module" src="firebase.js"></script>
-<script type="module" src="auth.js"></script>
-
 </body>
 </html>
