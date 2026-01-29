@@ -1675,17 +1675,22 @@ nav .cta-row {
   padding: 14px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(90deg, #00bfa6, #00c6ff);
-  color: white;
+  background: linear-gradient(
+    90deg,
+    var(--tzf-green-main),
+    var(--tzf-green-light)
+  );
+  color: var(--tzf-white);
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .primary-btn:hover {
-  opacity: 0.96;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(15, 111, 97, 0.25);
 }
-
 .auth-footer {
   margin-top: 16px;
   text-align: center;
@@ -1734,4 +1739,50 @@ nav .cta-row {
   text-align: center;
   font-size: 13px;
   color: #667085;
+}
+
+:root {
+  --tzf-bg-dark: #0a1f1c;        /* Deep trust green */
+  --tzf-green-main: #0f6f61;    /* Primary brand green */
+  --tzf-green-light: #1aa08a;   /* Highlights / hover */
+  --tzf-accent-gold: #f1e17b;   /* “Earn Safely” accent */
+  --tzf-text-dark: #0a2540;
+  --tzf-text-muted: #667085;
+  --tzf-white: #ffffff;
+}
+.auth-hero {
+  padding: 70px 20px 50px;
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    #0a1f1c 0%,
+    #0f6f61 100%
+  );
+  color: #ffffff;
+}
+
+.auth-hero h1 {
+  font-size: 30px;
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+
+.auth-hero p {
+  max-width: 680px;
+  margin: auto;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #e6f4f1;
+}
+.auth-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+}
+.brand-accent {
+  color: var(--tzf-accent-gold);
+  font-weight: 600;
 }
