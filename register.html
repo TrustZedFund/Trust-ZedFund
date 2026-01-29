@@ -9,28 +9,47 @@
 <body>
 
 <div class="auth-page">
-  <form id="signupForm" class="auth-card">
-    <h2>Create Account</h2>
-    <p class="auth-subtext">Join Trust ZedFund and grow with confidence</p>
 
-    <input id="name" placeholder="Full Name" required />
-    <input id="email" type="email" placeholder="Email Address" required />
+  <!-- HERO -->
+  <section class="auth-hero">
+    <h1>Build Your Financial Future</h1>
+    <p>
+      Trust ZedFund turns everyday Zambians into investors, and local businesses into success stories.
+      Join thousands of Zambians who are taking control of their financial future.
+    </p>
+  </section>
 
-    <div class="password-field">
-      <input id="password" type="password" placeholder="Password (min 6 chars)" required />
-      <span onclick="togglePassword('password')">👀</span>
-    </div>
+  <!-- SIGNUP -->
+  <section class="auth-section">
+    <form id="signupForm" class="auth-card">
+      <h2>Create Account</h2>
+      <p class="auth-subtext">Secure. Transparent. Built for Zambians.</p>
 
-    <input id="referral" placeholder="Referral Code (optional)" />
+      <input id="name" placeholder="Full Name" required />
+      <input id="email" type="email" placeholder="Email Address" required />
 
-    <div id="signupError" class="error-text"></div>
+      <div class="password-field">
+        <input id="password" type="password" placeholder="Password (min 6 chars)" required />
+        <span onclick="togglePassword('password')">👀</span>
+      </div>
 
-    <button class="primary-btn" type="submit">Create Account</button>
+      <input id="referral" placeholder="Referral Code (optional)" />
 
-    <div class="auth-footer">
-      Already have an account? <a href="login.html">Login</a>
-    </div>
-  </form>
+      <div id="signupError" class="error-text"></div>
+
+      <button class="primary-btn" type="submit">Create Account</button>
+
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Login</a>
+      </div>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="auth-site-footer">
+    © 2026 Trust ZedFund. All rights reserved.
+  </footer>
+
 </div>
 
 <script type="module" src="firebase.js"></script>
