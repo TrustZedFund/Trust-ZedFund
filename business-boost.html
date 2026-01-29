@@ -1,865 +1,276 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Boost - Trust ZedFund</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/global.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Business Boost | Trust ZedFund</title>
+
+  <!-- Core styles -->
+  <link rel="stylesheet" href="global.css">
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Page-only polish (scoped, safe) -->
+  <style>
+    .center { text-align: center; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.10);
+    }
+
+    .card i {
+      font-size: 32px;
+      color: var(--green-main);
+      margin-bottom: 14px;
+    }
+
+    .soft-bg { background: #f7fdfc; }
+
+    .stat-box {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat-box div {
+      text-align: center;
+    }
+
+    .stat-box strong {
+      font-size: 28px;
+      color: var(--green-main);
+    }
+
+    .business-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+      margin-top: 40px;
+    }
+
+    .business-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 26px rgba(0,0,0,0.07);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .business-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 38px rgba(0,0,0,0.12);
+    }
+
+    .business-header {
+      padding: 20px;
+      background: linear-gradient(135deg, #0f6f61, #1aa08a);
+      color: #fff;
+    }
+
+    .business-body {
+      padding: 22px;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #e6f5f2;
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 8px 0 14px;
+    }
+
+    .progress-bar span {
+      display: block;
+      height: 100%;
+      background: var(--green-main);
+    }
+
+    .apply-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      max-width: 900px;
+      margin: auto;
+    }
+  </style>
 </head>
+
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <a href="index.html" class="logo">
-                <span class="logo-icon">🤝</span>
-                <span class="logo-text">Trust <strong>ZedFund</strong></span>
-            </a>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="savings-circles.html">Savings Circles</a>
-                <a href="business-boost.html" class="active">Business Boost</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="about.html">About</a>
-                <a href="waitlist.html" class="btn-nav">Join Waitlist</a>
-            </div>
-            <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
+
+<!-- NAV -->
+<header class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">Trust <strong>ZedFund</strong></a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="business-boost.html" class="active">Business Boost</a>
+      <a href="about.html">About</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="register.html" class="btn-primary">Create Account</a>
     </nav>
+  </div>
+</header>
 
-    <!-- Hero Section -->
-    <section class="hero business-hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Fuel <span class="highlight">Zambian Dreams</span></h1>
-                <p class="subtitle">
-                    Fund the businesses you believe in. Earn great returns while helping Zambian entrepreneurs succeed.
-                </p>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <span class="number">42</span>
-                        <span class="label">Businesses Funded</span>
-                    </div>
-                    <div class="stat">
-                        <span class="number">8-15%</span>
-                        <span class="label">Average Returns</span>
-                    </div>
-                    <div class="stat">
-                        <span class="number">127</span>
-                        <span class="label">Jobs Created</span>
-                    </div>
-                </div>
-                <div class="hero-buttons">
-                    <a href="#invest" class="btn-primary">
-                        <i class="fas fa-chart-line"></i> Invest Now
-                    </a>
-                    <a href="#apply" class="btn-secondary">
-                        <i class="fas fa-business-time"></i> Apply for Funding
-                    </a>
-                </div>
-                <div class="trust-badges">
-                    <span class="badge"><i class="fas fa-shield-alt"></i> Vetted Businesses</span>
-                    <span class="badge"><i class="fas fa-eye"></i> Live Progress Tracking</span>
-                    <span class="badge"><i class="fas fa-users"></i> Community Backed</span>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="business-illustration">
-                    <div class="business-cards">
-                        <div class="biz-card" style="--delay: 0s">
-                            <div class="biz-icon">🍅</div>
-                            <div class="biz-info">
-                                <h4>Grace's Tomatoes</h4>
-                                <p>Funded: K15,000</p>
-                                <div class="biz-return">+12%</div>
-                            </div>
-                        </div>
-                        <div class="biz-card" style="--delay: 0.2s">
-                            <div class="biz-icon">🚚</div>
-                            <div class="biz-info">
-                                <h4>Kitwe Delivery</h4>
-                                <p>Funded: K8,000</p>
-                                <div class="biz-return">+9%</div>
-                            </div>
-                        </div>
-                        <div class="biz-card" style="--delay: 0.4s">
-                            <div class="biz-icon">💇‍♀️</div>
-                            <div class="biz-info">
-                                <h4>Ndola Salon</h4>
-                                <p>Funded: K5,000</p>
-                                <div class="biz-return">+11%</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="investment-flow">
-                        <div class="investor">
-                            <div class="investor-avatar">👤</div>
-                            <div class="investment-amount">K500</div>
-                        </div>
-                        <div class="flow-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                            <i class="fas fa-arrow-right"></i>
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                        <div class="business-growth">
-                            <div class="growth-chart">
-                                <div class="chart-bar" style="height: 60%"></div>
-                                <div class="chart-bar" style="height: 80%"></div>
-                                <div class="chart-bar" style="height: 100%"></div>
-                            </div>
-                            <div class="growth-label">400% Growth</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner center">
+    <h1>Fuel Zambian Businesses. Earn Responsibly.</h1>
+    <p>
+      Invest in vetted local businesses, earn steady returns,
+      and create jobs across Zambia.
+    </p>
 
-    <!-- How Business Boost Works -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title">How Business Boost Works</h2>
-            
-            <div class="boost-process">
-                <div class="process-visual">
-                    <div class="process-step">
-                        <div class="step-visual">1</div>
-                        <div class="step-content">
-                            <h3>Business Applies</h3>
-                            <p>Zambian entrepreneurs submit their business plans and funding needs.</p>
-                        </div>
-                    </div>
-                    <div class="process-arrow">
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
-                    <div class="process-step">
-                        <div class="step-visual">2</div>
-                        <div class="step-content">
-                            <h3>We Vet & Verify</h3>
-                            <p>Our team verifies the business, owners, and growth potential.</p>
-                        </div>
-                    </div>
-                    <div class="process-arrow">
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
-                    <div class="process-step">
-                        <div class="step-visual">3</div>
-                        <div class="step-content">
-                            <h3>You Invest</h3>
-                            <p>Browse vetted businesses and invest from K200.</p>
-                        </div>
-                    </div>
-                    <div class="process-arrow">
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
-                    <div class="process-step">
-                        <div class="step-visual">4</div>
-                        <div class="step-content">
-                            <h3>Business Grows</h3>
-                            <p>Track growth and receive monthly returns.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Investment Opportunities -->
-    <section id="invest" class="section light-bg">
-        <div class="container">
-            <h2 class="section-title">Investment Opportunities</h2>
-            <p class="section-subtitle">Browse vetted Zambian businesses seeking funding</p>
-            
-            <div class="investment-filters">
-                <div class="filter-group">
-                    <span class="filter-label">Filter by:</span>
-                    <div class="filter-buttons">
-                        <button class="filter-btn active">All</button>
-                        <button class="filter-btn">Agriculture</button>
-                        <button class="filter-btn">Retail</button>
-                        <button class="filter-btn">Services</button>
-                        <button class="filter-btn">Manufacturing</button>
-                    </div>
-                </div>
-                <div class="filter-group">
-                    <span class="filter-label">Sort by:</span>
-                    <select class="sort-select">
-                        <option>Highest Returns</option>
-                        <option>Most Funded</option>
-                        <option>Newest</option>
-                        <option>Ending Soon</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="business-grid">
-                <!-- Business 1 -->
-                <div class="business-card featured">
-                    <div class="business-badge">Featured</div>
-                    <div class="business-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                        <div class="business-icon">🍅</div>
-                    </div>
-                    <div class="business-content">
-                        <div class="business-header">
-                            <h3>Grace's Tomato Wholesale</h3>
-                            <span class="business-location"><i class="fas fa-map-marker-alt"></i> Soweto Market, Lusaka</span>
-                        </div>
-                        <p class="business-description">Expanding from retail stall to wholesale supplier for schools and restaurants.</p>
-                        
-                        <div class="business-stats">
-                            <div class="stat">
-                                <strong>12%</strong>
-                                <small>Monthly Return</small>
-                            </div>
-                            <div class="stat">
-                                <strong>6 months</strong>
-                                <small>Loan Term</small>
-                            </div>
-                            <div class="stat">
-                                <strong>2</strong>
-                                <small>Jobs to Create</small>
-                            </div>
-                        </div>
-                        
-                        <div class="funding-progress">
-                            <div class="progress-info">
-                                <span>K10,500 of K15,000</span>
-                                <span>70%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress" style="width: 70%"></div>
-                            </div>
-                            <div class="progress-details">
-                                <span>43 investors</span>
-                                <span>12 days left</span>
-                            </div>
-                        </div>
-                        
-                        <div class="business-actions">
-                            <button class="btn-primary invest-btn" data-business="Grace's Tomatoes">
-                                <i class="fas fa-coins"></i> Invest from K200
-                            </button>
-                            <a href="#" class="btn-link">
-                                <i class="fas fa-info-circle"></i> Details
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Business 2 -->
-                <div class="business-card">
-                    <div class="business-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                        <div class="business-icon">🚚</div>
-                    </div>
-                    <div class="business-content">
-                        <div class="business-header">
-                            <h3>Kitwe Express Delivery</h3>
-                            <span class="business-location"><i class="fas fa-map-marker-alt"></i> Kitwe</span>
-                        </div>
-                        <p class="business-description">Motorcycle delivery service expanding to e-commerce parcel delivery.</p>
-                        
-                        <div class="business-stats">
-                            <div class="stat">
-                                <strong>9%</strong>
-                                <small>Monthly Return</small>
-                            </div>
-                            <div class="stat">
-                                <strong>9 months</strong>
-                                <small>Loan Term</small>
-                            </div>
-                            <div class="stat">
-                                <strong>3</strong>
-                                <small>Jobs to Create</small>
-                            </div>
-                        </div>
-                        
-                        <div class="funding-progress">
-                            <div class="progress-info">
-                                <span>K6,200 of K8,000</span>
-                                <span>78%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress" style="width: 78%"></div>
-                            </div>
-                            <div class="progress-details">
-                                <span>31 investors</span>
-                                <span>18 days left</span>
-                            </div>
-                        </div>
-                        
-                        <div class="business-actions">
-                            <button class="btn-primary invest-btn" data-business="Kitwe Delivery">
-                                <i class="fas fa-coins"></i> Invest from K200
-                            </button>
-                            <a href="#" class="btn-link">
-                                <i class="fas fa-info-circle"></i> Details
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Business 3 -->
-                <div class="business-card">
-                    <div class="business-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                        <div class="business-icon">💇‍♀️</div>
-                    </div>
-                    <div class="business-content">
-                        <div class="business-header">
-                            <h3>Chanda's Beauty Salon</h3>
-                            <span class="business-location"><i class="fas fa-map-marker-alt"></i> Ndola</span>
-                        </div>
-                        <p class="business-description">Expanding from 2-chair salon to full-service beauty center with training.</p>
-                        
-                        <div class="business-stats">
-                            <div class="stat">
-                                <strong>11%</strong>
-                                <small>Monthly Return</small>
-                            </div>
-                            <div class="stat">
-                                <strong>12 months</strong>
-                                <small>Loan Term</small>
-                            </div>
-                            <div class="stat">
-                                <strong>4</strong>
-                                <small>Jobs to Create</small>
-                            </div>
-                        </div>
-                        
-                        <div class="funding-progress">
-                            <div class="progress-info">
-                                <span>K3,800 of K5,000</span>
-                                <span>76%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress" style="width: 76%"></div>
-                            </div>
-                            <div class="progress-details">
-                                <span>19 investors</span>
-                                <span>24 days left</span>
-                            </div>
-                        </div>
-                        
-                        <div class="business-actions">
-                            <button class="btn-primary invest-btn" data-business="Chanda's Salon">
-                                <i class="fas fa-coins"></i> Invest from K200
-                            </button>
-                            <a href="#" class="btn-link">
-                                <i class="fas fa-info-circle"></i> Details
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="text-center" style="margin-top: 3rem;">
-                <a href="#" class="btn-secondary">
-                    <i class="fas fa-eye"></i> View All Opportunities
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Apply for Funding -->
-    <section id="apply" class="section">
-        <div class="container">
-            <div class="apply-container">
-                <div class="apply-content">
-                    <h2>Need Funding for Your Business?</h2>
-                    <p>Get capital from people who believe in your vision, not banks that don't understand you.</p>
-                    
-                    <div class="benefits-list">
-                        <div class="benefit">
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <h4>K500 - K50,000 Loans</h4>
-                                <p>Flexible amounts for any business need</p>
-                            </div>
-                        </div>
-                        <div class="benefit">
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <h4>5-10% Monthly Interest</h4>
-                                <p>Affordable rates, not katapila rates</p>
-                            </div>
-                        </div>
-                        <div class="benefit">
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <h4>Community Support</h4>
-                                <p>Your customers can become your investors</p>
-                            </div>
-                        </div>
-                        <div class="benefit">
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <h4>Business Tools</h4>
-                                <p>Free sales tracking and growth analytics</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="apply-form">
-                    <h3>Start Your Application</h3>
-                    <form id="fundingForm">
-                        <div class="form-group">
-                            <label for="businessName">Business Name</label>
-                            <input type="text" id="businessName" placeholder="e.g., Mama Grace's Tomatoes" required>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="businessType">Business Type</label>
-                                <select id="businessType" required>
-                                    <option value="">Select type</option>
-                                    <option value="agriculture">Agriculture/Farming</option>
-                                    <option value="retail">Retail/Shop</option>
-                                    <option value="service">Service Business</option>
-                                    <option value="manufacturing">Manufacturing</option>
-                                    <option value="restaurant">Restaurant/Food</option>
-                                    <option value="transport">Transport/Logistics</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="yearsOperating">Years Operating</label>
-                                <select id="yearsOperating" required>
-                                    <option value="">Select</option>
-                                    <option value="0">Just starting</option>
-                                    <option value="1">1 year</option>
-                                    <option value="2">2 years</option>
-                                    <option value="3">3+ years</option>
-                                    <option value="5">5+ years</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="fundingAmount">Amount Needed</label>
-                            <div class="amount-slider">
-                                <input type="range" id="fundingAmount" min="500" max="50000" step="500" value="10000">
-                                <div class="slider-labels">
-                                    <span>K500</span>
-                                    <span id="amountValue">K10,000</span>
-                                    <span>K50,000</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="fundingPurpose">Purpose of Funds</label>
-                            <textarea id="fundingPurpose" rows="3" placeholder="What will you use the funds for? (e.g., Buy stock, equipment, expand premises)" required></textarea>
-                        </div>
-                        
-                        <button type="submit" class="btn-primary" style="width: 100%;">
-                            <i class="fas fa-paper-plane"></i> Submit Application
-                        </button>
-                        
-                        <p class="form-note">
-                            <i class="fas fa-clock"></i> Application review takes 2-5 business days
-                        </p>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Success Stories -->
-    <section class="section success-stories">
-        <div class="container">
-            <h2 class="section-title">Business Success Stories</h2>
-            
-            <div class="stories-carousel">
-                <div class="story-slide active">
-                    <div class="story-content">
-                        <div class="story-quote">
-                            "With K15,000 from 43 Trust ZedFund investors, I transformed my tomato stall into a wholesale business supplying 3 schools. We now employ 2 more people."
-                        </div>
-                        <div class="story-author">
-                            <div class="author-avatar">G</div>
-                            <div class="author-info">
-                                <h4>Grace M.</h4>
-                                <p>Tomato Wholesale, Lusaka</p>
-                            </div>
-                        </div>
-                        <div class="story-stats">
-                            <div class="stat">
-                                <strong>400%</strong>
-                                <small>Revenue Growth</small>
-                            </div>
-                            <div class="stat">
-                                <strong>12%</strong>
-                                <small>Investor Returns</small>
-                            </div>
-                            <div class="stat">
-                                <strong>2</strong>
-                                <small>Jobs Created</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="story-slide">
-                    <div class="story-content">
-                        <div class="story-quote">
-                            "As a recent UNZA graduate with no collateral, banks rejected me. Trust ZedFund gave me K8,000 to start my delivery service. Now I have 2 employees."
-                        </div>
-                        <div class="story-author">
-                            <div class="author-avatar">J</div>
-                            <div class="author-info">
-                                <h4>Joseph K.</h4>
-                                <p>Kitwe Express Delivery</p>
-                            </div>
-                        </div>
-                        <div class="story-stats">
-                            <div class="stat">
-                                <strong>K12,000</strong>
-                                <small>Monthly Revenue</small>
-                            </div>
-                            <div class="stat">
-                                <strong>9%</strong>
-                                <small>Investor Returns</small>
-                            </div>
-                            <div class="stat">
-                                <strong>3</strong>
-                                <small>Jobs Created</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="carousel-controls">
-                <button class="carousel-btn active" data-slide="0"></button>
-                <button class="carousel-btn" data-slide="1"></button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Investment Calculator -->
-    <section class="section light-bg">
-        <div class="container">
-            <div class="calculator-container">
-                <div class="calculator-content">
-                    <h2>Investment Calculator</h2>
-                    <p>See how much you could earn funding Zambian businesses</p>
-                    
-                    <div class="calculator-form">
-                        <div class="form-group">
-                            <label for="investmentAmount">Investment Amount</label>
-                            <div class="amount-input">
-                                <span class="currency">K</span>
-                                <input type="number" id="investmentAmount" value="1000" min="200">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="returnRate">Expected Return Rate</label>
-                            <div class="rate-slider">
-                                <input type="range" id="returnRate" min="5" max="15" value="10">
-                                <div class="slider-labels">
-                                    <span>5%</span>
-                                    <span id="rateValue">10%</span>
-                                    <span>15%</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="investmentPeriod">Investment Period (months)</label>
-                            <select id="investmentPeriod">
-                                <option value="3">3 months</option>
-                                <option value="6" selected>6 months</option>
-                                <option value="9">9 months</option>
-                                <option value="12">12 months</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="calculator-results">
-                    <div class="result-card">
-                        <h3>Your Potential Earnings</h3>
-                        <div class="result-amount">
-                            <div class="monthly">
-                                <small>Monthly Return</small>
-                                <div class="amount" id="monthlyReturn">K100</div>
-                            </div>
-                            <div class="total">
-                                <small>Total After 6 Months</small>
-                                <div class="amount" id="totalReturn">K1,600</div>
-                            </div>
-                        </div>
-                        <div class="result-comparison">
-                            <p>
-                                <i class="fas fa-chart-line"></i>
-                                <strong>3.3x better</strong> than bank savings accounts
-                            </p>
-                            <p>
-                                <i class="fas fa-briefcase"></i>
-                                Funds <strong>2-3 Zambian businesses</strong>
-                            </p>
-                            <p>
-                                <i class="fas fa-users"></i>
-                                Creates <strong>1-2 jobs</strong> in your community
-                            </p>
-                        </div>
-                        <button class="btn-primary" style="width: 100%;" onclick="window.location.href='#invest'">
-                            <i class="fas fa-rocket"></i> Start Investing
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <div class="logo">
-                        <span class="logo-icon">🤝</span>
-                        <span class="logo-text">Trust <strong>ZedFund</strong></span>
-                    </div>
-                    <p class="footer-tagline">Fueling Zambian entrepreneurship.</p>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>For Investors</h4>
-                    <ul>
-                        <li><a href="#invest">Browse Businesses</a></li>
-                        <li><a href="#">How Investing Works</a></li>
-                        <li><a href="#">Risk & Returns</a></li>
-                        <li><a href="#">Investor Education</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>For Businesses</h4>
-                    <ul>
-                        <li><a href="#apply">Apply for Funding</a></li>
-                        <li><a href="#">Success Stories</a></li>
-                        <li><a href="#">Business Resources</a></li>
-                        <li><a href="#">Growth Network</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>Legal & Support</h4>
-                    <ul>
-                        <li><a href="#">Risk Disclosure</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Contact Support</a></li>
-                        <li><a href="#">Compliance</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="disclaimer">
-                    <p><strong>⚠️ Important:</strong> Business investments carry risk. Past performance doesn't guarantee future returns. Only invest what you can afford to lose.</p>
-                </div>
-                <div class="footer-info">
-                    <p>© 2024 Trust ZedFund Zambia Limited • Reg: TZF2024001</p>
-                    <p>Investments are not covered by deposit protection schemes.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Investment Modal -->
-    <div class="modal" id="investmentModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Invest in <span id="modalBusinessName"></span></h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="investment-summary">
-                    <div class="summary-item">
-                        <span>Expected Return:</span>
-                        <strong id="modalReturn">12% monthly</strong>
-                    </div>
-                    <div class="summary-item">
-                        <span>Loan Term:</span>
-                        <strong id="modalTerm">6 months</strong>
-                    </div>
-                    <div class="summary-item">
-                        <span>Minimum Investment:</span>
-                        <strong id="modalMin">K200</strong>
-                    </div>
-                </div>
-                
-                <form id="investmentForm">
-                    <div class="form-group">
-                        <label for="investAmount">Investment Amount</label>
-                        <div class="amount-input">
-                            <span class="currency">K</span>
-                            <input type="number" id="investAmount" min="200" value="500" required>
-                        </div>
-                        <div class="amount-buttons">
-                            <button type="button" class="amount-btn" data-amount="200">K200</button>
-                            <button type="button" class="amount-btn" data-amount="500">K500</button>
-                            <button type="button" class="amount-btn" data-amount="1000">K1,000</button>
-                            <button type="button" class="amount-btn" data-amount="2000">K2,000</button>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="paymentMethod">Payment Method</label>
-                        <select id="paymentMethod" required>
-                            <option value="">Select method</option>
-                            <option value="airtel">Airtel Money</option>
-                            <option value="mtn">MTN Mobile Money</option>
-                            <option value="zamtel">Zamtel Kwacha</option>
-                            <option value="bank">Bank Transfer</option>
-                        </select>
-                    </div>
-                    
-                    <div class="investment-warning">
-                        <p><i class="fas fa-exclamation-triangle"></i> This investment is not guaranteed. Business performance may affect returns.</p>
-                    </div>
-                    
-                    <button type="submit" class="btn-primary" style="width: 100%;">
-                        <i class="fas fa-lock"></i> Confirm Investment
-                    </button>
-                </form>
-            </div>
-        </div>
+    <div class="stat-box">
+      <div><strong>42</strong><p>Businesses Funded</p></div>
+      <div><strong>8–15%</strong><p>Monthly Returns</p></div>
+      <div><strong>127</strong><p>Jobs Created</p></div>
     </div>
 
-    <script src="script.js"></script>
-    <script>
-        // Business Boost specific JavaScript
-        document.addEventListener('DOMContentLoaded', function() {
-            // Investment calculator
-            const amountInput = document.getElementById('investmentAmount');
-            const rateSlider = document.getElementById('returnRate');
-            const rateValue = document.getElementById('rateValue');
-            const periodSelect = document.getElementById('investmentPeriod');
-            const monthlyReturn = document.getElementById('monthlyReturn');
-            const totalReturn = document.getElementById('totalReturn');
-            
-            function updateCalculator() {
-                const amount = parseFloat(amountInput.value) || 1000;
-                const rate = parseFloat(rateSlider.value) || 10;
-                const period = parseFloat(periodSelect.value) || 6;
-                
-                const monthly = (amount * rate / 100).toFixed(2);
-                const total = (amount + (monthly * period)).toFixed(2);
-                
-                monthlyReturn.textContent = 'K' + monthly;
-                totalReturn.textContent = 'K' + total;
-                rateValue.textContent = rate + '%';
-            }
-            
-            if (amountInput && rateSlider) {
-                amountInput.addEventListener('input', updateCalculator);
-                rateSlider.addEventListener('input', updateCalculator);
-                periodSelect.addEventListener('change', updateCalculator);
-                updateCalculator();
-            }
-            
-            // Funding amount slider
-            const fundingSlider = document.getElementById('fundingAmount');
-            const amountValue = document.getElementById('amountValue');
-            
-            if (fundingSlider) {
-                fundingSlider.addEventListener('input', function() {
-                    amountValue.textContent = 'K' + parseInt(this.value).toLocaleString();
-                });
-            }
-            
-            // Investment buttons
-            const investButtons = document.querySelectorAll('.invest-btn');
-            const modal = document.getElementById('investmentModal');
-            const modalBusinessName = document.getElementById('modalBusinessName');
-            const modalClose = document.querySelector('.modal-close');
-            
-            investButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const business = this.getAttribute('data-business');
-                    modalBusinessName.textContent = business;
-                    modal.style.display = 'flex';
-                });
-            });
-            
-            if (modalClose) {
-                modalClose.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            }
-            
-            // Close modal when clicking outside
-            window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-            
-            // Amount buttons in modal
-            const amountButtons = document.querySelectorAll('.amount-btn');
-            const investAmountInput = document.getElementById('investAmount');
-            
-            amountButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const amount = this.getAttribute('data-amount');
-                    investAmountInput.value = amount;
-                });
-            });
-            
-            // Investment form submission
-            const investmentForm = document.getElementById('investmentForm');
-            if (investmentForm) {
-                investmentForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    alert('Investment submitted! You will be redirected to payment.');
-                    modal.style.display = 'none';
-                });
-            }
-            
-            // Funding form submission
-            const fundingForm = document.getElementById('fundingForm');
-            if (fundingForm) {
-                fundingForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    alert('Application submitted! Our team will review it within 2-5 business days.');
-                    this.reset();
-                    amountValue.textContent = 'K10,000';
-                });
-            }
-            
-            // Carousel
-            const carouselButtons = document.querySelectorAll('.carousel-btn');
-            const slides = document.querySelectorAll('.story-slide');
-            
-            carouselButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const slideIndex = this.getAttribute('data-slide');
-                    
-                    // Update buttons
-                    carouselButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Update slides
-                    slides.forEach(slide => slide.classList.remove('active'));
-                    slides[slideIndex].classList.add('active');
-                });
-            });
-            
-            // Filter buttons
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-        });
-    </script>
+    <div style="margin-top:30px">
+      <a href="#invest" class="btn-primary">Invest Now</a>
+      <a href="#apply" class="btn-secondary">Apply for Funding</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section soft-bg">
+  <div class="container center">
+    <h2 class="section-title">How Business Boost Works</h2>
+
+    <div class="card-grid">
+      <div class="card">
+        <i class="fa-solid fa-file-signature"></i>
+        <h3>Apply</h3>
+        <p>Businesses submit funding requests and growth plans.</p>
+      </div>
+
+      <div class="card">
+        <i class="fa-solid fa-shield-halved"></i>
+        <h3>Vet & Verify</h3>
+        <p>We verify owners, cash flow, and viability.</p>
+      </div>
+
+      <div class="card">
+        <i class="fa-solid fa-coins"></i>
+        <h3>Invest</h3>
+        <p>Invest from as low as K200 into vetted opportunities.</p>
+      </div>
+
+      <div class="card">
+        <i class="fa-solid fa-chart-line"></i>
+        <h3>Earn & Track</h3>
+        <p>Receive monthly returns and track progress.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INVEST -->
+<section id="invest" class="section">
+  <div class="container center">
+    <h2 class="section-title">Live Investment Opportunities</h2>
+
+    <div class="business-grid">
+
+      <div class="business-card">
+        <div class="business-header">
+          <h3>Grace’s Tomato Wholesale</h3>
+          <small>Lusaka • Agriculture</small>
+        </div>
+        <div class="business-body">
+          <p>Expanding tomato supply to schools and restaurants.</p>
+
+          <p><strong>12% monthly • 6 months</strong></p>
+
+          <div class="progress-bar">
+            <span style="width:70%"></span>
+          </div>
+          <small>K10,500 of K15,000 funded</small>
+
+          <div style="margin-top:16px">
+            <button class="btn-primary invest-btn" data-business="Grace’s Tomatoes">
+              Invest from K200
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="business-card">
+        <div class="business-header">
+          <h3>Kitwe Express Delivery</h3>
+          <small>Kitwe • Logistics</small>
+        </div>
+        <div class="business-body">
+          <p>Motorbike delivery expansion for e-commerce.</p>
+
+          <p><strong>9% monthly • 9 months</strong></p>
+
+          <div class="progress-bar">
+            <span style="width:78%"></span>
+          </div>
+          <small>K6,200 of K8,000 funded</small>
+
+          <div style="margin-top:16px">
+            <button class="btn-primary invest-btn" data-business="Kitwe Delivery">
+              Invest from K200
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- APPLY -->
+<section id="apply" class="section soft-bg">
+  <div class="container">
+    <div class="apply-box center">
+      <h2>Need Funding for Your Business?</h2>
+      <p>
+        Access capital from people who believe in your business —
+        not banks that don’t.
+      </p>
+
+      <a href="waitlist.html" class="btn-primary" style="margin-top:20px">
+        Start Application
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p>© 2026 Trust ZedFund. All rights reserved.</p>
+    <p class="disclaimer">
+      Investments carry risk. No guaranteed returns.
+    </p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
