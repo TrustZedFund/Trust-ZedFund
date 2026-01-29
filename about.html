@@ -5,16 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About Us | Trust ZedFund</title>
 
-  <!-- Global Styles -->
+  <!-- Core Styles -->
   <link rel="stylesheet" href="global.css">
   <link rel="stylesheet" href="styles.css">
 
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Page-only polish -->
+  <style>
+    .center { text-align: center; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 28px 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 34px rgba(0,0,0,0.10);
+    }
+
+    .card i {
+      font-size: 32px;
+      color: var(--green-main);
+      margin-bottom: 14px;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .card p {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .soft-bg {
+      background: #f7fdfc;
+    }
+
+    .cta {
+      background: linear-gradient(135deg, #0f6f61, #1aa08a);
+      color: #fff;
+      padding: 70px 20px;
+      text-align: center;
+    }
+
+    .cta h2 {
+      margin-bottom: 20px;
+      font-size: 32px;
+    }
+
+    .cta .btn-primary {
+      background: #ffffff;
+      color: #0f6f61;
+      padding: 14px 28px;
+      font-size: 16px;
+    }
+
+    .cta .btn-primary:hover {
+      background: #e6f5f2;
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- ================= NAVBAR ================= -->
+<!-- NAVBAR -->
 <header class="navbar">
   <div class="nav-container">
     <a href="index.html" class="logo">Trust <strong>ZedFund</strong></a>
@@ -27,148 +97,124 @@
   </div>
 </header>
 
-<!-- ================= HERO ================= -->
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-inner">
-    <h1>Building Trust. Growing Zambia.</h1>
+  <div class="hero-inner center">
+    <h1>Growing Zambia Through Trust</h1>
     <p>
-      Trust ZedFund turns everyday Zambians into investors, and local businesses
-      into success stories.
+      Trust ZedFund turns everyday Zambians into investors,
+      and local businesses into success stories.
     </p>
   </div>
 </section>
 
-<!-- ================= ABOUT CONTENT ================= -->
+<!-- WHO WE ARE -->
 <section class="section">
-  <div class="container narrow">
-
+  <div class="container narrow center">
     <h2 class="section-title">Who We Are</h2>
     <p class="section-text">
       Trust ZedFund is a Zambian-built digital savings and investment platform
       designed to help individuals grow wealth responsibly while supporting
-      local businesses and community development.
+      local businesses and communities.
     </p>
-
-    <p class="section-text">
-      We believe financial inclusion should be practical, transparent,
-      and built around trust — not complexity.
-    </p>
-
   </div>
 </section>
 
-<!-- ================= MISSION / VISION ================= -->
+<!-- MISSION / VISION / VALUES -->
 <section class="section soft-bg">
-  <div class="container grid-3">
+  <div class="container">
+    <div class="card-grid">
 
-    <div class="info-card">
-      <i class="fa-solid fa-bullseye"></i>
-      <h3>Our Mission</h3>
-      <p>
-        To empower Zambians with simple, secure tools to save, invest,
-        and grow wealth sustainably.
-      </p>
+      <div class="card center">
+        <i class="fa-solid fa-bullseye"></i>
+        <h3>Our Mission</h3>
+        <p>
+          To empower Zambians with secure, simple tools to save,
+          invest, and grow financial confidence.
+        </p>
+      </div>
+
+      <div class="card center">
+        <i class="fa-solid fa-eye"></i>
+        <h3>Our Vision</h3>
+        <p>
+          A Zambia where financial opportunity is accessible,
+          transparent, and community-driven.
+        </p>
+      </div>
+
+      <div class="card center">
+        <i class="fa-solid fa-handshake"></i>
+        <h3>Our Values</h3>
+        <p>
+          Trust, transparency, discipline, innovation,
+          and shared prosperity.
+        </p>
+      </div>
+
     </div>
-
-    <div class="info-card">
-      <i class="fa-solid fa-eye"></i>
-      <h3>Our Vision</h3>
-      <p>
-        A financially confident Zambia where communities grow together
-        through responsible investment.
-      </p>
-    </div>
-
-    <div class="info-card">
-      <i class="fa-solid fa-handshake"></i>
-      <h3>Our Values</h3>
-      <p>
-        Trust · Transparency · Community · Discipline · Innovation
-      </p>
-    </div>
-
   </div>
 </section>
 
-<!-- ================= WHY TRUST US ================= -->
+<!-- WHY TRUST ZEDFUND -->
 <section class="section">
-  <div class="container">
-
+  <div class="container center">
     <h2 class="section-title">Why Trust ZedFund</h2>
 
-    <div class="grid-2">
-      <div class="feature">
+    <div class="card-grid">
+
+      <div class="card">
         <i class="fa-solid fa-shield-halved"></i>
-        <div>
-          <h4>Security First</h4>
-          <p>We prioritise data protection, user safety, and transparent processes.</p>
-        </div>
+        <h3>Security First</h3>
+        <p>Strong data protection and transparent systems built for long-term trust.</p>
       </div>
 
-      <div class="feature">
+      <div class="card">
         <i class="fa-solid fa-scale-balanced"></i>
-        <div>
-          <h4>Regulatory Awareness</h4>
-          <p>We operate transparently and align with Bank of Zambia fintech guidelines.</p>
-        </div>
+        <h3>Regulatory Awareness</h3>
+        <p>Aligned with Bank of Zambia fintech principles and compliance standards.</p>
       </div>
 
-      <div class="feature">
+      <div class="card">
         <i class="fa-solid fa-users"></i>
-        <div>
-          <h4>Community-Driven</h4>
-          <p>Built for Zambians, shaped by Zambian realities.</p>
-        </div>
+        <h3>Community Focus</h3>
+        <p>Designed for real Zambian needs, not imported financial hype.</p>
       </div>
 
-      <div class="feature">
+      <div class="card">
         <i class="fa-solid fa-chart-line"></i>
-        <div>
-          <h4>Responsible Growth</h4>
-          <p>No hype. No false promises. Just disciplined financial progress.</p>
-        </div>
+        <h3>Responsible Growth</h3>
+        <p>We promote discipline and sustainability over unrealistic promises.</p>
       </div>
+
     </div>
-
   </div>
 </section>
 
-<!-- ================= COMPLIANCE ================= -->
+<!-- COMPLIANCE -->
 <section class="section soft-bg">
-  <div class="container narrow">
-
+  <div class="container narrow center">
     <h2 class="section-title">Compliance & Transparency</h2>
-
     <p class="section-text">
-      Trust ZedFund is a technology platform committed to transparency,
-      ethical practices, and user protection.
+      Trust ZedFund is committed to ethical operations,
+      user protection, and regulatory transparency.
     </p>
-
-    <ul class="check-list">
-      <li>✔ Clear user disclosures</li>
-      <li>✔ Secure infrastructure</li>
-      <li>✔ Data privacy compliance</li>
-      <li>✔ Continuous regulatory alignment</li>
-    </ul>
-
   </div>
 </section>
 
-<!-- ================= CTA ================= -->
+<!-- CTA -->
 <section class="cta">
-  <div class="cta-inner">
-    <h2>Join Thousands of Zambians Building Their Future</h2>
-    <a href="register.html" class="btn-primary btn-large">Create Your Account</a>
-  </div>
+  <h2>Join Thousands of Zambians Taking Control of Their Future</h2>
+  <a href="register.html" class="btn-primary">Create Your Account</a>
 </section>
 
-<!-- ================= FOOTER ================= -->
+<!-- FOOTER -->
 <footer class="footer">
   <div class="footer-inner">
     <p>© 2026 Trust ZedFund. All rights reserved.</p>
     <p class="disclaimer">
       Trust ZedFund is an educational savings & investment platform.
-      We do not provide guaranteed returns.
+      No guaranteed returns.
     </p>
   </div>
 </footer>
