@@ -1,453 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Trust ZedFund</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="global.css">
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us | Trust ZedFund</title>
+
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="global.css">
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <a href="index.html" class="logo">
-                <span class="logo-icon">🤝</span>
-                <span class="logo-text">Trust <strong>ZedFund</strong></span>
-            </a>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="savings-circles.html">Savings Circles</a>
-                <a href="business-boost.html">Business Boost</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="about.html" class="active">About</a>
-                <a href="waitlist.html" class="btn-nav">Join Waitlist</a>
-            </div>
-            <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">Trust <strong>ZedFund</strong></a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html" class="active">About</a>
+      <a href="login.html">Login</a>
+      <a href="register.html" class="btn-primary">Create Account</a>
     </nav>
+  </div>
+</header>
 
-    <!-- Hero Section -->
-    <section class="hero about-hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Growing Zambia <span class="highlight">Together</span></h1>
-                <p class="subtitle">
-                    We're building Zambia's community-powered financial ecosystem. By Zambians, for Zambia.
-                </p>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <span class="number">5,234+</span>
-                        <span class="label">Zambians Waiting</span>
-                    </div>
-                    <div class="stat">
-                        <span class="number">100%</span>
-                        <span class="label">Zambian-Owned</span>
-                    </div>
-                    <div class="stat">
-                        <span class="number">10+</span>
-                        <span class="label">Provinces Covered</span>
-                    </div>
-                </div>
-            </div>
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Building Trust. Growing Zambia.</h1>
+    <p>
+      Trust ZedFund turns everyday Zambians into investors, and local businesses
+      into success stories.
+    </p>
+  </div>
+</section>
+
+<!-- ================= ABOUT CONTENT ================= -->
+<section class="section">
+  <div class="container narrow">
+
+    <h2 class="section-title">Who We Are</h2>
+    <p class="section-text">
+      Trust ZedFund is a Zambian-built digital savings and investment platform
+      designed to help individuals grow wealth responsibly while supporting
+      local businesses and community development.
+    </p>
+
+    <p class="section-text">
+      We believe financial inclusion should be practical, transparent,
+      and built around trust — not complexity.
+    </p>
+
+  </div>
+</section>
+
+<!-- ================= MISSION / VISION ================= -->
+<section class="section soft-bg">
+  <div class="container grid-3">
+
+    <div class="info-card">
+      <i class="fa-solid fa-bullseye"></i>
+      <h3>Our Mission</h3>
+      <p>
+        To empower Zambians with simple, secure tools to save, invest,
+        and grow wealth sustainably.
+      </p>
+    </div>
+
+    <div class="info-card">
+      <i class="fa-solid fa-eye"></i>
+      <h3>Our Vision</h3>
+      <p>
+        A financially confident Zambia where communities grow together
+        through responsible investment.
+      </p>
+    </div>
+
+    <div class="info-card">
+      <i class="fa-solid fa-handshake"></i>
+      <h3>Our Values</h3>
+      <p>
+        Trust · Transparency · Community · Discipline · Innovation
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= WHY TRUST US ================= -->
+<section class="section">
+  <div class="container">
+
+    <h2 class="section-title">Why Trust ZedFund</h2>
+
+    <div class="grid-2">
+      <div class="feature">
+        <i class="fa-solid fa-shield-halved"></i>
+        <div>
+          <h4>Security First</h4>
+          <p>We prioritise data protection, user safety, and transparent processes.</p>
         </div>
-    </section>
+      </div>
 
-    <!-- Our Story -->
-    <section class="section">
-        <div class="container">
-            <div class="story-container">
-                <div class="story-image">
-                    <div class="image-placeholder">
-                        <div class="placeholder-content">
-                            <i class="fas fa-handshake"></i>
-                            <p>Building trust in Zambian communities</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="story-content">
-                    <h2>Our Story</h2>
-                    <p>Trust ZedFund was born from a simple observation: while walking through Lusaka's Soweto Market, our founder saw hundreds of hardworking Zambians with incredible business potential, but no access to capital.</p>
-                    
-                    <p>Banks required collateral they didn't have. Loan sharks charged predatory rates. Family savings stayed under mattresses, losing value to inflation.</p>
-                    
-                    <div class="quote">
-                        <i class="fas fa-quote-left"></i>
-                        <p>"What if we could connect the savings in our communities with the business opportunities right next door?"</p>
-                    </div>
-                    
-                    <p>That question became our mission. We're not a foreign fintech company. We're Zambians building solutions for Zambian challenges.</p>
-                </div>
-            </div>
+      <div class="feature">
+        <i class="fa-solid fa-scale-balanced"></i>
+        <div>
+          <h4>Regulatory Awareness</h4>
+          <p>We operate transparently and align with Bank of Zambia fintech guidelines.</p>
         </div>
-    </section>
+      </div>
 
-    <!-- Mission & Vision -->
-    <section class="section light-bg">
-        <div class="container">
-            <div class="mission-grid">
-                <div class="mission-card">
-                    <div class="mission-icon">🎯</div>
-                    <h3>Our Mission</h3>
-                    <p>To unlock Zambia's economic potential by connecting everyday savings with everyday business opportunities in a trusted, transparent community.</p>
-                </div>
-                
-                <div class="mission-card">
-                    <div class="mission-icon">👁️</div>
-                    <h3>Our Vision</h3>
-                    <p>A Zambia where every citizen has access to fair capital, every business can grow, and communities prosper together through shared financial success.</p>
-                </div>
-                
-                <div class="mission-card">
-                    <div class="mission-icon">💎</div>
-                    <h3>Our Values</h3>
-                    <p><strong>Trust:</strong> Transparency in everything<br>
-                       <strong>Community:</strong> We rise together<br>
-                       <strong>Empowerment:</strong> Tools for self-sufficiency<br>
-                       <strong>Innovation:</strong> Zambian solutions for Zambia</p>
-                </div>
-            </div>
+      <div class="feature">
+        <i class="fa-solid fa-users"></i>
+        <div>
+          <h4>Community-Driven</h4>
+          <p>Built for Zambians, shaped by Zambian realities.</p>
         </div>
-    </section>
+      </div>
 
-    <!-- Team -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title">Our Team</h2>
-            <p class="section-subtitle">Zambians building for Zambia</p>
-            
-            <div class="team-grid">
-                <div class="team-card">
-                    <div class="team-avatar">C</div>
-                    <div class="team-info">
-                        <h3>Chanda M.</h3>
-                        <p class="team-role">Founder & CEO</p>
-                        <p class="team-bio">Former microfinance specialist with 10+ years in Zambian financial inclusion.</p>
-                        <div class="team-social">
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="team-card">
-                    <div class="team-avatar">B</div>
-                    <div class="team-info">
-                        <h3>Bwalya K.</h3>
-                        <p class="team-role">CTO</p>
-                        <p class="team-bio">Software engineer with experience building fintech platforms for emerging markets.</p>
-                        <div class="team-social">
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                            <a href="#"><i class="fab fa-github"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="team-card">
-                    <div class="team-avatar">M</div>
-                    <div class="team-info">
-                        <h3>Mukuka L.</h3>
-                        <p class="team-role">Head of Compliance</p>
-                        <p class="team-bio">Former Bank of Zambia regulator with deep expertise in financial regulation.</p>
-                        <div class="team-social">
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="team-card">
-                    <div class="team-avatar">G</div>
-                    <div class="team-info">
-                        <h3>Grace N.</h3>
-                        <p class="team-role">Community Lead</p>
-                        <p class="team-bio">Community organizer with networks across Zambian markets and associations.</p>
-                        <div class="team-social">
-                            <a href="#"><i class="fab fa-whatsapp"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="team-note">
-                <p><i class="fas fa-users"></i> We're hiring! Join us in building Zambia's financial future. <a href="mailto:careers@trustzedfund.co.zm">careers@trustzedfund.co.zm</a></p>
-            </div>
+      <div class="feature">
+        <i class="fa-solid fa-chart-line"></i>
+        <div>
+          <h4>Responsible Growth</h4>
+          <p>No hype. No false promises. Just disciplined financial progress.</p>
         </div>
-    </section>
+      </div>
+    </div>
 
-    <!-- Regulatory Compliance -->
-    <section class="section light-bg">
-        <div class="container">
-            <h2 class="section-title">Regulatory Compliance</h2>
-            <p class="section-subtitle">Building trust through transparency and compliance</p>
-            
-            <div class="compliance-grid">
-                <div class="compliance-card">
-                    <div class="compliance-icon">
-                        <i class="fas fa-balance-scale"></i>
-                    </div>
-                    <h3>Bank of Zambia</h3>
-                    <p>Operating under BoZ's fintech guidelines while pursuing formal licensing. Regular reporting and full transparency.</p>
-                </div>
-                
-                <div class="compliance-card">
-                    <div class="compliance-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Consumer Protection</h3>
-                    <p>All users undergo KYC verification. Clear risk disclosures. Transparent fee structure. Dispute resolution system.</p>
-                </div>
-                
-                <div class="compliance-card">
-                    <div class="compliance-icon">
-                        <i class="fas fa-lock"></i>
-                    </div>
-                    <h3>Data Security</h3>
-                    <p>Bank-grade encryption. No sensitive data stored on devices. Regular security audits. GDPR-compliant privacy.</p>
-                </div>
-                
-                <div class="compliance-card">
-                    <div class="compliance-icon">
-                        <i class="fas fa-handshake"></i>
-                    </div>
-                    <h3>Partner Institutions</h3>
-                    <p>Working with licensed mobile money providers, banks, and microfinance institutions for fund custody and transfers.</p>
-                </div>
-            </div>
-            
-            <div class="compliance-documents">
-                <h4>Public Documents</h4>
-                <div class="document-links">
-                    <a href="#" class="doc-link">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Regulatory Status Statement</span>
-                    </a>
-                    <a href="#" class="doc-link">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Privacy Policy</span>
-                    </a>
-                    <a href="#" class="doc-link">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Terms & Conditions</span>
-                    </a>
-                    <a href="#" class="doc-link">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Risk Disclosure Framework</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+  </div>
+</section>
 
-    <!-- Advisory Board -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title">Advisory Board</h2>
-            
-            <div class="advisors-grid">
-                <div class="advisor-card">
-                    <div class="advisor-avatar">P</div>
-                    <div class="advisor-info">
-                        <h3>Prof. Patrick M.</h3>
-                        <p class="advisor-role">University of Zambia<br>Economics Department</p>
-                        <p class="advisor-expertise">Financial inclusion & development economics</p>
-                    </div>
-                </div>
-                
-                <div class="advisor-card">
-                    <div class="advisor-avatar">S</div>
-                    <div class="advisor-info">
-                        <h3>Sarah C.</h3>
-                        <p class="advisor-role">Former BoZ Executive<br>15 years central banking</p>
-                        <p class="advisor-expertise">Financial regulation & compliance</p>
-                    </div>
-                </div>
-                
-                <div class="advisor-card">
-                    <div class="advisor-avatar">J</div>
-                    <div class="advisor-info">
-                        <h3>John L.</h3>
-                        <p class="advisor-role">Successful Entrepreneur<br>3 exited Zambian startups</p>
-                        <p class="advisor-expertise">Business growth & investment</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ================= COMPLIANCE ================= -->
+<section class="section soft-bg">
+  <div class="container narrow">
 
-    <!-- Contact -->
-    <section class="section light-bg">
-        <div class="container">
-            <div class="contact-container">
-                <div class="contact-info">
-                    <h2>Get In Touch</h2>
-                    <p>We'd love to hear from you, whether you have questions, partnership ideas, or just want to learn more.</p>
-                    
-                    <div class="contact-methods">
-                        <div class="contact-method">
-                            <i class="fas fa-envelope"></i>
-                            <div>
-                                <h4>Email</h4>
-                                <p>hello@trustzedfund.co.zm</p>
-                            </div>
-                        </div>
-                        
-                        <div class="contact-method">
-                            <i class="fas fa-phone"></i>
-                            <div>
-                                <h4>Phone</h4>
-                                <p>+260 800 933 833</p>
-                                <small>Mon-Fri, 8AM-5PM</small>
-                            </div>
-                        </div>
-                        
-                        <div class="contact-method">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div>
-                                <h4>Office</h4>
-                                <p>Cairo Road<br>Lusaka, Zambia</p>
-                                <small>Opening soon</small>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-                
-                <div class="contact-form">
-                    <h3>Send us a message</h3>
-                    <form id="contactForm">
-                        <div class="form-group">
-                            <label for="contactName">Name</label>
-                            <input type="text" id="contactName" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="contactEmail">Email</label>
-                            <input type="email" id="contactEmail" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="contactSubject">Subject</label>
-                            <select id="contactSubject">
-                                <option value="general">General Inquiry</option>
-                                <option value="partnership">Partnership Opportunity</option>
-                                <option value="press">Press/Media</option>
-                                <option value="careers">Careers</option>
-                                <option value="support">Customer Support</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="contactMessage">Message</label>
-                            <textarea id="contactMessage" rows="4" required></textarea>
-                        </div>
-                        
-                        <button type="submit" class="btn-primary">
-                            <i class="fas fa-paper-plane"></i> Send Message
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+    <h2 class="section-title">Compliance & Transparency</h2>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <div class="logo">
-                        <span class="logo-icon">🤝</span>
-                        <span class="logo-text">Trust <strong>ZedFund</strong></span>
-                    </div>
-                    <p class="footer-tagline">By Zambians, for Zambia.</p>
-                    <p>Registration: TZF2024001</p>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="savings-circles.html">Savings Circles</a></li>
-                        <li><a href="business-boost.html">Business Boost</a></li>
-                        <li><a href="dashboard.html">Dashboard</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Press</a></li>
-                        <li><a href="#">Blog</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="#">Terms & Conditions</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Cookie Policy</a></li>
-                        <li><a href="#">Compliance</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="disclaimer">
-                    <p><strong>⚠️ Important:</strong> Trust ZedFund Zambia Limited is registered as a technology company. We are pursuing financial services licensing with Bank of Zambia.</p>
-                </div>
-                <div class="footer-info">
-                    <p>© 2024 Trust ZedFund Zambia Limited. All rights reserved.</p>
-                    <p>Made with ❤️ in Zambia for Zambia.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <p class="section-text">
+      Trust ZedFund is a technology platform committed to transparency,
+      ethical practices, and user protection.
+    </p>
 
-    <script src="script.js"></script>
-    <script>
-        // About page specific JavaScript
-        document.addEventListener('DOMContentLoaded', function() {
-            // Contact form submission
-            const contactForm = document.getElementById('contactForm');
-            if (contactForm) {
-                contactForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // Show loading state
-                    const submitBtn = contactForm.querySelector('button[type="submit"]');
-                    const originalText = submitBtn.innerHTML;
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                    submitBtn.disabled = true;
-                    
-                    // Simulate API call
-                    setTimeout(() => {
-                        // Show success message
-                        const successMessage = document.createElement('div');
-                        successMessage.className = 'success-message';
-                        successMessage.innerHTML = `
-                            <i class="fas fa-check-circle"></i>
-                            <h3>Message Sent!</h3>
-                            <p>Thank you for reaching out. Our team will respond within 1-2 business days.</p>
-                        `;
-                        
-                        contactForm.parentNode.replaceChild(successMessage, contactForm);
-                    }, 1500);
-                });
-            }
-        });
-    </script>
+    <ul class="check-list">
+      <li>✔ Clear user disclosures</li>
+      <li>✔ Secure infrastructure</li>
+      <li>✔ Data privacy compliance</li>
+      <li>✔ Continuous regulatory alignment</li>
+    </ul>
+
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta">
+  <div class="cta-inner">
+    <h2>Join Thousands of Zambians Building Their Future</h2>
+    <a href="register.html" class="btn-primary btn-large">Create Your Account</a>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p>© 2026 Trust ZedFund. All rights reserved.</p>
+    <p class="disclaimer">
+      Trust ZedFund is an educational savings & investment platform.
+      We do not provide guaranteed returns.
+    </p>
+  </div>
+</footer>
+
 </body>
 </html>
