@@ -1,224 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Trust ZedFund – Transparency & Membership</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Trust ZedFund Works</title>
 
-  <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.7;
-      margin: 0;
-      padding: 0;
-      background: #fafafa;
-      color: #222;
-    }
+<style>
+:root {
+  --bg-dark: #0a1f1c;
+  --card-dark: #0f2f2b;
+  --green-main: #0f6f61;
+  --green-light: #1aa08a;
+  --gold: #f1e17b;
+  --text-light: #e6f4f1;
+  --text-muted: #9bbfba;
+  --border-soft: rgba(26,160,138,0.25);
+}
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 40px 20px;
-    }
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-light);
+  line-height: 1.7;
+}
 
-    h1, h2, h3 {
-      margin-top: 40px;
-    }
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 50px 20px 80px;
+}
 
-    h1 {
-      font-size: 2.2em;
-    }
+/* HEADINGS */
+h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+  color: #fff;
+}
 
-    h2 {
-      font-size: 1.6em;
-      border-bottom: 2px solid #ddd;
-      padding-bottom: 6px;
-    }
+h2 {
+  font-size: 26px;
+  margin-top: 50px;
+  margin-bottom: 10px;
+  color: #fff;
+}
 
-    h3 {
-      font-size: 1.2em;
-    }
+h3 {
+  font-size: 18px;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
 
-    p {
-      margin: 15px 0;
-    }
+p {
+  color: var(--text-light);
+  font-size: 16px;
+}
 
-    ul {
-      margin-left: 20px;
-    }
+ul {
+  margin-left: 18px;
+}
 
-    li {
-      margin-bottom: 10px;
-    }
+li {
+  margin-bottom: 8px;
+  color: var(--text-light);
+}
 
-    .notice {
-      background: #fff;
-      border-left: 4px solid #999;
-      padding: 15px 20px;
-      margin: 30px 0;
-    }
+/* SECTIONS AS CARDS */
+.section-card {
+  background: linear-gradient(
+    180deg,
+    rgba(15,111,97,0.85),
+    rgba(10,31,28,0.95)
+  );
+  border-radius: 18px;
+  padding: 26px;
+  margin-top: 30px;
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.45);
+}
 
-    .faq {
-      margin-top: 20px;
-    }
+/* NOTES */
+.note {
+  background: rgba(241,225,123,0.08);
+  border-left: 4px solid var(--gold);
+  padding: 16px 18px;
+  border-radius: 10px;
+  margin-top: 18px;
+  color: var(--text-light);
+}
 
-    .faq h3 {
-      margin-bottom: 5px;
-    }
+/* DIVIDER */
+.divider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,255,255,0.2),
+    transparent
+  );
+  margin: 60px 0;
+}
 
-    footer {
-      margin-top: 60px;
-      padding-top: 20px;
-      border-top: 1px solid #ddd;
-      font-size: 0.9em;
-    }
-  </style>
+/* CARDS GRID */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin-top: 30px;
+}
+
+.card {
+  background: var(--card-dark);
+  border-radius: 16px;
+  padding: 22px;
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  transition: transform .25s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* FOOTER */
+footer {
+  margin-top: 60px;
+  color: var(--text-muted);
+  font-size: 14px;
+  text-align: center;
+}
+</style>
 </head>
+
 <body>
 
 <div class="container">
 
-  <h1>Trust ZedFund</h1>
-  <p>
-    Trust ZedFund is a community-focused financial platform for Zambians.
-    We exist to help individuals and communities understand money, save together responsibly,
-    and support real projects — without being a bank, without promising returns,
-    and without forcing participation.
-  </p>
+<h1>Trust ZedFund</h1>
+<p>A community-focused financial coordination platform for Zambians.</p>
 
-  <div class="notice">
-    <strong>Important:</strong> If you are looking for guaranteed profits, fast money,
-    or someone to invest on your behalf, Trust ZedFund is not for you.
-  </div>
+<div class="divider"></div>
 
-  <h2>Who This Platform Is For</h2>
-  <p>Trust ZedFund is designed for:</p>
-  <ul>
-    <li>Individuals starting with small amounts (K100–K500)</li>
-    <li>People who want to learn before risking money</li>
-    <li>Communities that want transparency and structure</li>
-    <li>Users who prefer clarity over promises</li>
-  </ul>
+<div class="section-card">
+<h2>What Trust ZedFund Is</h2>
+<p>
+Trust ZedFund helps individuals, groups, and communities organize money responsibly, learn financial discipline, and support real economic activity. We provide structure, transparency, education, and coordination — without being a bank or offering regulated investment products.
+</p>
+</div>
 
-  <p>Trust ZedFund is <strong>not</strong> for:</p>
-  <ul>
-    <li>People seeking guaranteed or fixed returns</li>
-    <li>People who want passive income without involvement</li>
-    <li>People uncomfortable with real-world risk</li>
-  </ul>
+<div class="section-card">
+<h2>What Trust ZedFund Is Not</h2>
+<ul>
+<li>Not a bank or microfinance institution</li>
+<li>Not a licensed investment fund</li>
+<li>Not a profit-guaranteeing platform</li>
+<li>Not a money-doubling scheme</li>
+</ul>
+</div>
 
-  <h2>What Trust ZedFund Does (And Does Not Do)</h2>
+<div class="section-card">
+<h2>Why Trust ZedFund Exists</h2>
+<p>
+Many people want to save, learn, or support businesses but lack structure, trust, or financial clarity. Trust ZedFund exists to solve this gap by providing a transparent system where people can observe, learn, coordinate, and participate voluntarily.
+</p>
+</div>
 
-  <h3>What We Do</h3>
-  <ul>
-    <li>Provide financial education and learning tools</li>
-    <li>Show how savings circles and community projects work</li>
-    <li>Offer transparency, records, and tracking systems</li>
-    <li>Help members make informed, voluntary decisions</li>
-  </ul>
+<div class="section-card">
+<h2>Membership Types</h2>
 
-  <h3>What We Do Not Do</h3>
-  <ul>
-    <li>We do not take deposits like a bank</li>
-    <li>We do not invest money on your behalf</li>
-    <li>We do not guarantee profits or outcomes</li>
-    <li>We do not pressure anyone to contribute funds</li>
-  </ul>
+<h3>1. Learner / Observer Membership</h3>
+<p>Designed for individuals who are starting alone, cautious, or simply want to understand how community finance works before committing money.</p>
+<ul>
+<li>Access to financial education and practical insights</li>
+<li>Visibility into how savings circles and pooled funds operate</li>
+<li>No obligation to contribute money</li>
+<li>No investment risk</li>
+</ul>
 
-  <h2>Learner / Observer Membership</h2>
-  <p>
-    This membership is for individuals who want to understand how collective saving
-    and community projects work before participating financially.
-  </p>
+<h3>2. Community Saver Membership</h3>
+<p>For groups such as families, friends, churches, cooperatives, or clubs that want to pool funds responsibly using clear rules and accountability.</p>
+<ul>
+<li>Group-defined contribution rules</li>
+<li>Transparent tracking and reporting</li>
+<li>Funds remain under community control</li>
+<li>Trust ZedFund provides structure, not decisions</li>
+</ul>
 
-  <p>
-    The membership fee exists because Trust ZedFund is a serious platform.
-    It supports education, record-keeping, transparency tools, and platform operations.
-    There are no free trials or test accounts.
-  </p>
+<h3>3. Contributor / Venture Support Membership</h3>
+<p>For individuals or groups who want to support small businesses or community ventures with clear understanding of risk.</p>
+<ul>
+<li>Access to vetted opportunities</li>
+<li>Clear documentation and reporting</li>
+<li>No guaranteed returns</li>
+<li>Value depends on real economic performance</li>
+</ul>
+</div>
 
-  <h3>What You Receive</h3>
-  <ul>
-    <li>Structured financial education</li>
-    <li>Real examples and case studies</li>
-    <li>View-only access to how groups operate</li>
-    <li>Simulated scenarios and learning tools</li>
-    <li>Time to decide without pressure</li>
-  </ul>
+<div class="section-card">
+<h2>How Pooled Funds Work</h2>
+<p>
+Pooled funds belong to members or communities. Accounts are purpose-specific and governed by agreed rules. Trust ZedFund does not secretly use, trade, or lend funds.
+</p>
 
-  <h3>What You Do Not Receive</h3>
-  <ul>
-    <li>No access to pooled funds</li>
-    <li>No investment rights</li>
-    <li>No promised or expected returns</li>
-    <li>No obligation to upgrade or participate</li>
-  </ul>
+<div class="note">
+Value only increases when real activities succeed. There are no artificial returns or promises.
+</div>
+</div>
 
-  <h2>About Money, Risk, and Value Growth</h2>
-  <p>
-    Trust ZedFund does not grow money.
-    Any increase in value comes only from real economic activity chosen and managed by members,
-    such as community projects or small businesses.
-  </p>
+<div class="section-card">
+<h2>Membership & Pricing</h2>
 
-  <p>
-    If a project succeeds, members may benefit.
-    If it fails, losses are possible.
-    This is real life — not a financial product.
-  </p>
+<div class="cards">
+<div class="card">
+<h3>Learner / Observer</h3>
+<p>For individuals who want to learn, observe, and build confidence before participating.</p>
+<ul>
+<li>Access to financial education</li>
+<li>View real community finance models</li>
+<li>No pooling required</li>
+</ul>
+<p><strong>Fee:</strong> Low access fee</p>
+</div>
 
-  <h2>Fees and Fairness</h2>
-  <p>
-    Fees are charged for access to tools, education, and transparency —
-    not for access to money or profit.
-  </p>
+<div class="card">
+<h3>Community Saver</h3>
+<p>For groups pooling funds together with agreed rules and accountability.</p>
+<ul>
+<li>Group fund tracking</li>
+<li>Transparent reporting</li>
+<li>Shared visibility</li>
+</ul>
+<p><strong>Fee:</strong> Shared group admin fee</p>
+</div>
 
-  <p>
-    Paying a membership fee does not make you an investor.
-    It makes you an informed participant or learner.
-  </p>
+<div class="card">
+<h3>Contributor / Venture Support</h3>
+<p>For members supporting small businesses or community ventures.</p>
+<ul>
+<li>Documented opportunities</li>
+<li>Clear disclosures</li>
+<li>Ongoing reporting</li>
+</ul>
+<p><strong>Fee:</strong> Platform access fee</p>
+</div>
+</div>
+</div>
 
-  <h2>Your Freedom and Right to Walk Away</h2>
-  <p>
-    You are free to leave Trust ZedFund at any time.
-    We would rather lose a user than push someone into financial decisions
-    they do not fully understand.
-  </p>
+<div class="section-card">
+<h2>Legal & Disclaimers</h2>
 
-  <h2>Frequently Asked Questions (FAQ)</h2>
+<div class="note">
+<strong>Important:</strong> Trust ZedFund is not a bank, microfinance institution, or licensed investment fund. We do not guarantee profits.
+</div>
 
-  <div class="faq">
-    <h3>Is Trust ZedFund a bank?</h3>
-    <p>No. Trust ZedFund is not a bank and does not accept deposits.</p>
+<ul>
+<li>Participation is voluntary</li>
+<li>Members control their decisions</li>
+<li>Outcomes depend on real economic activity</li>
+<li>Past results do not guarantee future results</li>
+</ul>
+</div>
 
-    <h3>Is Trust ZedFund an investment fund?</h3>
-    <p>No. We do not invest money on behalf of users or promise returns.</p>
-
-    <h3>Why do I have to pay if I’m only learning?</h3>
-    <p>Because education, transparency, and systems cost money to maintain.
-       The fee ensures seriousness and sustainability.</p>
-
-    <h3>Can I lose money?</h3>
-    <p>If you later choose to participate in community projects, yes — losses are possible.
-       Learning alone does not risk your money.</p>
-
-    <h3>Can I join and never contribute?</h3>
-    <p>Yes. Learning does not require participation.</p>
-
-    <h3>Who controls pooled funds?</h3>
-    <p>Members and groups control their own funds under agreed rules.
-       Trust ZedFund does not own member funds.</p>
-
-    <h3>Is participation forced after paying?</h3>
-    <p>No. There is no forced participation or upgrade.</p>
-  </div>
-
-  <footer>
-    <p>
-      Trust ZedFund operates as a community-focused financial platform under PACRA registration.
-      We prioritize clarity, responsibility, and long-term trust over growth at any cost.
-    </p>
-  </footer>
+<footer>
+<p>
+Trust ZedFund operates under PACRA registration for financial service coordination activities. Transparency and responsibility come first.
+</p>
+</footer>
 
 </div>
 
