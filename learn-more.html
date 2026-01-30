@@ -401,32 +401,29 @@ Value only increases when real activities succeed. There are no artificial retur
 
 <style>
 .faq-item { margin-bottom: 15px; }
+
 .faq-question {
   width: 100%;
-  background: #0A2540; /* dark blue */
-  color: #fff; /* question text stays white */
+  background: #0A2540; /* dark blue button */
+  color: #fff;          /* question text */
   border: none;
   text-align: left;
   padding: 12px 15px;
   font-size: 16px;
-  cursor: pointer;
   border-radius: 4px;
-  transition: background 0.2s ease;
+  cursor: default;      /* not clickable anymore */
 }
-.faq-question:hover { background: #0f3a60; }
 
-/* FAQ answer text readable on white background */
-.faq-answer { 
-  display: none; 
-  padding: 12px 15px; 
-  border-left: 4px solid #0A2540; 
-  background: #f5f7f9; 
+.faq-answer {
+  display: block;       /* always visible */
+  padding: 12px 15px;
+  border-left: 4px solid #0A2540;
+  background: #f5f7f9;  /* light background for readability */
+  color: #1aa08a;       /* dark green text */
   border-radius: 0 4px 4px 0;
   margin-top: 5px;
-  color: #1aa08a; /* dark green text for readability */
 }
 </style>
-
 <script>
 const faqButtons = document.querySelectorAll('.faq-question');
 faqButtons.forEach(btn => {
