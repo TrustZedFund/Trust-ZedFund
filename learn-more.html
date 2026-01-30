@@ -321,6 +321,123 @@ Value only increases when real activities succeed. There are no artificial retur
 <div class="note">
 <strong>Important:</strong> Trust ZedFund is not a bank, microfinance institution, or licensed investment fund. We do not guarantee profits.
 </div>
+<h2>Frequently Asked Questions (FAQ)</h2>
+
+<div class="faq">
+  <div class="faq-item">
+    <button class="faq-question">1. What is Trust ZedFund?</button>
+    <div class="faq-answer">
+      <p>Trust ZedFund is a community-focused platform that helps individuals and groups save, learn, and support local ventures responsibly. We provide structure, transparency, and education — but we are not a bank or licensed investment fund.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">2. Who can become a member?</button>
+    <div class="faq-answer">
+      <p>Anyone can join. We have three membership types: Learner/Observer (to learn and observe), Community Saver (groups pooling funds), and Contributor/Venture Support (supporting projects). All members must register to participate.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">3. How much does membership cost?</button>
+    <div class="faq-answer">
+      <p>Learner/Observer: One-time ZMW 250 (lifetime) or ZMW 39/month. <br>
+         Community Saver: ZMW 200 per cycle (split among members). <br>
+         Contributor/Venture Support: ZMW 100 platform fee per project supported.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">4. Are returns guaranteed?</button>
+    <div class="faq-answer">
+      <p>No. Trust ZedFund does not guarantee profits. Returns, if any, depend on real economic outcomes of community or venture activities.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">5. Who runs projects?</button>
+    <div class="faq-answer">
+      <p>Projects are owned and run by verified project owners who must be members of Trust ZedFund. Contributors provide support, and the platform facilitates documentation, tracking, and reporting.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">6. Can I join if I am alone?</button>
+    <div class="faq-answer">
+      <p>Yes. Learner/Observer membership is designed for individuals who want to learn and observe before contributing money or joining a community circle.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">7. What obligations does Trust ZedFund have to members?</button>
+    <div class="faq-answer">
+      <ul>
+        <li>Provide educational content and resources</li>
+        <li>Maintain platform access for paid members</li>
+        <li>Communicate honestly with no promises of returns</li>
+        <li>Protect member data and privacy</li>
+        <li>Provide support when needed</li>
+        <li>Treat all members fairly</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">8. Can I leave the platform?</button>
+    <div class="faq-answer">
+      <p>Yes. Membership is voluntary. You can cancel monthly subscriptions or stop using the platform anytime. One-time fees remain for lifetime access, but you are free to stop using the platform.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">9. How are community/group fees shared?</button>
+    <div class="faq-answer">
+      <p>Example: A group of 5 members pays ZMW 200 per cycle. This is split equally → each member pays ZMW 40. All members have access to tracking, reporting, and governance tools.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">10. Is my contribution to a project safe?</button>
+    <div class="faq-answer">
+      <p>All contributions are visible and tracked on the platform. Trust ZedFund ensures transparency, but contributors must understand that funds are managed by the project owners and that there is risk involved.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.faq-item { margin-bottom: 15px; }
+.faq-question {
+  width: 100%;
+  background: #0A2540;
+  color: #fff;
+  border: none;
+  text-align: left;
+  padding: 12px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+.faq-question:hover { background: #0f3a60; }
+.faq-answer { 
+  display: none; 
+  padding: 12px 15px; 
+  border-left: 4px solid #0A2540; 
+  background: #f5f7f9; 
+  border-radius: 0 4px 4px 0;
+  margin-top: 5px;
+}
+</style>
+
+<script>
+const faqButtons = document.querySelectorAll('.faq-question');
+faqButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const answer = btn.nextElementSibling;
+    answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+  });
+});
+</script>
 
 <ul>
 <li>Participation is voluntary</li>
