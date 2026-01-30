@@ -4,361 +4,121 @@
   <meta charset="UTF-8" />
   <title>Trust ZedFund – Learn. Grow. Earn Safely.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css" />
-<link rel="stylesheet" href="assets/css/global.css">
+
+  <link rel="stylesheet" href="assets/css/global.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background: var(--tzf-bg-dark);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .hero {
+      padding: 140px 20px;
+      text-align: center;
+      background: linear-gradient(180deg, #0a1f1c, #0f6f61);
+    }
+
+    .hero h1 {
+      font-size: 46px;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 20px auto;
+      color: #d4f5ee;
+    }
+
+    .btn-row {
+      margin-top: 30px;
+    }
+
+    .btn-primary {
+      padding: 14px 30px;
+      border-radius: 12px;
+      background: var(--tzf-accent-gold);
+      color: #000;
+      font-weight: 600;
+      text-decoration: none;
+      margin: 8px;
+      display: inline-block;
+    }
+
+    .section {
+      padding: 90px 20px;
+      background: #f7fdfc;
+      color: var(--tzf-text-dark);
+    }
+
+    .grid {
+      max-width: 1100px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 14px 36px rgba(0,0,0,.12);
+      transition: .25s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+    }
+  </style>
 </head>
+
 <body>
 
 <header class="navbar">
-  <div class="logo">
-    <img src="https://raw.githubusercontent.com/TrustZedFund/Trust-ZedFund/main/images/Trust%20ZedFund.png" 
-         alt="Trust ZedFund Logo" width="60">
+  <div class="nav-container">
+    <a href="index.html" class="logo">Trust <strong>ZedFund</strong></a>
+    <nav>
+      <a href="savings-circles.html">Savings Circles</a>
+      <a href="business-boost.html">Business Boost</a>
+      <a href="waitlist.html" class="btn-primary">Join Waitlist</a>
+    </nav>
   </div>
-  <nav>
-  <div class="top-links">
-    <a href="#features" class="nav-btn">Features</a>
-    <a href="#how" class="nav-btn">How It Works</a>
-  </div>
-
-  <div class="cta-row">
-    <a href="register.html" class="nav-btn get-started">Get Started</a>
-  </div>
-</nav>
 </header>
 
-<!-- HERO (NO reveal class so it always shows) -->
 <section class="hero">
-  <h1>Learn. Grow. Earn Safely.</h1>
-  <p>A modern platform for Zambians and other Africans to Save safely with friends • Earn real returns • or Fund Zambian businesses. We help any users to invest responsibly,and grow wealth transparently.</p>
-  <div class="hero-buttons">
-    <a href="register.html" class="btn-primary">Get Started</a>
-    <a href="#features" class="btn-secondary">Learn More</a>
-  </div>
-</section>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Grow Your Money <span class="highlight">WITH</span> Your Community</h1>
-                <p class="subtitle">
-                    Trust ZedFund turns everyday Zambians into investors, and local businesses into success stories.
-                </p>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <span class="number">5,234</span>
-                        <span class="label">Zambians Waiting</span>
-                    </div>
-                    <div class="stat">
-                        <span class="number">K1.2M</span>
-                        <span class="label">Pledged to Businesses</span>
-                    </div>
-                    <div class="stat">
-                        <span class="number">127</span>
-                        <span class="label">Savings Circles</span>
-                    </div>
-                </div>
-                <div class="hero-buttons">
-                    <a href="waitlist.html" class="btn-primary">
-                        <i class="fas fa-rocket"></i> Join Waitlist
-                    </a>
-                    <a href="#how-it-works" class="btn-secondary">
-                        <i class="fas fa-play-circle"></i> Watch Demo
-                    </a>
-                </div>
-                <div class="trust-badges">
-                    <span class="badge"><i class="fas fa-shield-alt"></i> 100% Zambian-Owned</span>
-                    <span class="badge"><i class="fas fa-balance-scale"></i> BoZ Compliant</span>
-                    <span class="badge"><i class="fas fa-users"></i> Community-First</span>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="phone-mockup">
-                    <div class="phone-screen">
-                        <div class="app-dashboard">
-                            <div class="app-header">
-                                <span class="app-logo">ZF</span>
-                                <span>Trust ZedFund</span>
-                            </div>
-                            <div class="app-balance">
-                                <small>Your Balance</small>
-                                <div class="amount">K2,450</div>
-                                <div class="change">+K245 this month</div>
-                            </div>
-                            <div class="app-circles">
-                                <div class="circle">
-                                    <span class="circle-name">Market Circle</span>
-                                    <span class="circle-amount">K15,000</span>
-                                </div>
-                                <div class="circle">
-                                    <span class="circle-name">Family Pool</span>
-                                    <span class="circle-amount">K8,500</span>
-                                </div>
-                            </div>
-                            <div class="app-investments">
-                                <h4>Your Investments</h4>
-                                <div class="investment">
-                                    <span>Grace's Tomatoes</span>
-                                    <span class="return">+12%</span>
-                                </div>
-                                <div class="investment">
-                                    <span>Kitwe Bikes</span>
-                                    <span class="return">+9%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- How It Works -->
-    <section id="how-it-works" class="section works">
-        <div class="container">
-            <h2 class="section-title">How Trust ZedFund Works</h2>
-            <p class="section-subtitle">Save safely with friends • Earn real returns • Fund Zambian businesses</p>
-            
-            <div class="steps">
-                <div class="step">
-                    <div class="step-icon">👥</div>
-                    <h3>1. Start Safe in Circles</h3>
-                    <p>Join or create Savings Circles with people you trust - family, market mates, church group. Save together digitally.</p>
-                    <div class="step-meta">
-                        <span><i class="fas fa-coins"></i> From K50/week</span>
-                        <span><i class="fas fa-shield-alt"></i> Community-backed</span>
-                    </div>
-                </div>
-                
-                <div class="step">
-                    <div class="step-icon">📈</div>
-                    <h3>2. Make Money Work</h3>
-                    <p>Your savings don't sleep! Earn 5-15% monthly returns by lending to vetted community members.</p>
-                    <div class="step-meta">
-                        <span><i class="fas fa-percentage"></i> 5-15% monthly</span>
-                        <span><i class="fas fa-chart-line"></i> Bank-beating returns</span>
-                    </div>
-                </div>
-                
-                <div class="step">
-                    <div class="step-icon">🚀</div>
-                    <h3>3. Boost Businesses</h3>
-                    <p>Fund Zambian businesses you believe in. Or get funding for YOUR business from people who know you.</p>
-                    <div class="step-meta">
-                        <span><i class="fas fa-business-time"></i> K500 - K50,000 loans</span>
-                        <span><i class="fas fa-eye"></i> Track growth live</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-<section id="features" class="features">
-  <h2 class="reveal">Why Trust ZedFund?</h2>
-  <div class="card-grid">
-    <div class="card reveal">
-      <h3>📘 Learn First</h3>
-      <p>Crypto & investing lessons before you deposit anything.</p>
-    </div>
-    <div class="card reveal">
-      <h3>🔐 Secure Vault</h3>
-      <p>Manual verification, transparency, and human support.</p>
-    </div>
-    <div class="card reveal">
-      <h3>💸 Earn Smart</h3>
-      <p>Responsible earning with no fake profit promises.</p>
-    </div>
-  </div>
-</section>
-
-<section id="how" class="how-it-works">
-  <h2 class="reveal">How It Works</h2>
-  <div class="steps">
-    <div class="step reveal">1️⃣ Register</div>
-    <div class="step reveal">2️⃣ Learn Basics</div>
-    <div class="step reveal">3️⃣ Deposit</div>
-    <div class="step reveal">4️⃣ Track Growth</div>
-  </div>
-</section>
- <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-links">
-                <a href="index.html" class="active">Home</a>
-                <a href="savings-circles.html">Savings Circles</a>
-                <a href="business-boost.html">Business Boost</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="about.html">About</a>
-                <a href="waitlist.html" class="btn-nav">Join Waitlist</a>
-            </div>
-            <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </nav>
-
-
-    <!-- Success Stories -->
-    <section class="section stories">
-        <div class="container">
-            <h2 class="section-title">Real Zambian Success Stories</h2>
-            
-            <div class="story-grid">
-                <div class="story-card">
-                    <div class="story-header">
-                        <div class="avatar">G</div>
-                        <div class="story-info">
-                            <h4>Mama Grace</h4>
-                            <p>Soweto Market, Lusaka</p>
-                        </div>
-                    </div>
-                    <p class="story-quote">"My K5,000 tomato stall became K25,000 wholesale business thanks to 60 Trust ZedFund investors."</p>
-                    <div class="story-stats">
-                        <div class="stat">
-                            <strong>400%</strong>
-                            <small>Business Growth</small>
-                        </div>
-                        <div class="stat">
-                            <strong>2</strong>
-                            <small>Jobs Created</small>
-                        </div>
-                        <div class="stat">
-                            <strong>9%</strong>
-                            <small>Investor Returns</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="story-card">
-                    <div class="story-header">
-                        <div class="avatar">J</div>
-                        <div class="story-info">
-                            <h4>Joseph M.</h4>
-                            <p>Kitwe Delivery Service</p>
-                        </div>
-                    </div>
-                    <p class="story-quote">"Fresh from UNZA with no collateral, Trust ZedFund helped me start my delivery business."</p>
-                    <div class="story-stats">
-                        <div class="stat">
-                            <strong>K12,000</strong>
-                            <small>Monthly Revenue</small>
-                        </div>
-                        <div class="stat">
-                            <strong>40</strong>
-                            <small>Investors</small>
-                        </div>
-                        <div class="stat">
-                            <strong>11%</strong>
-                            <small>Monthly Returns</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="story-card">
-                    <div class="story-header">
-                        <div class="avatar">C</div>
-                        <div class="story-info">
-                            <h4>Church Circle</h4>
-                            <p>Ndola Women's Group</p>
-                        </div>
-                    </div>
-                    <p class="story-quote">"Our savings circle helped 3 members start businesses this year. We're growing together!"</p>
-                    <div class="story-stats">
-                        <div class="stat">
-                            <strong>K48,000</strong>
-                            <small>Total Saved</small>
-                        </div>
-                        <div class="stat">
-                            <strong>7</strong>
-                            <small>Loans Given</small>
-                        </div>
-                        <div class="stat">
-                            <strong>3</strong>
-                            <small>Businesses Started</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="section cta">
-        <div class="container">
-            <div class="cta-content">
-                <h2>Ready to Grow With Your Community?</h2>
-                <p>Join thousands of Zambians who are taking control of their financial future.</p>
-                <a href="waitlist.html" class="btn-primary btn-large">
-                    <i class="fas fa-lock"></i> Secure Your Spot on Waitlist
-                </a>
-                <p class="cta-note">
-                    <i class="fas fa-gift"></i> Early members get lower fees & priority access
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <p class="footer-tagline">Growing Zambia together, one circle at a time.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>For Savers</h4>
-                    <ul>
-                        <li><a href="savings-circles.html">Savings Circles</a></li>
-                        <li><a href="#how-it-works">How It Works</a></li>
-                        <li><a href="dashboard.html">Investment Dashboard</a></li>
-                        <li><a href="#">Safety & Security</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>For Businesses</h4>
-                    <ul>
-                        <li><a href="business-boost.html">Business Boost</a></li>
-                        <li><a href="#">Apply for Funding</a></li>
-                        <li><a href="#">Success Stories</a></li>
-                        <li><a href="#">Business Resources</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="#">Regulatory Status</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="waitlist.html">Join Waitlist</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="disclaimer">
-                    <p><strong>⚠️ Important:</strong> Trust ZedFund is a technology platform operating under Bank of Zambia fintech guidelines. All investments carry risk. Only invest what you can afford to lose.</p>
-                </div>
-
-<footer>
-  <p>© 2026 Trust ZedFund. All rights reserved.</p>
+  <h1>Grow Your Money With Your Community</h1>
   <p>
-    <a href="about.html">About</a> |
-    <a href="terms.html">Terms</a> |
-    <a href="disclaimer.html">Risk Disclaimer</a>
+    Save safely with friends, earn real returns,
+    and fund Zambian businesses transparently.
   </p>
-  <p class="disclaimer">Educational platform. No guaranteed profits.</p>
+  <div class="btn-row">
+    <a href="waitlist.html" class="btn-primary">Join Waitlist</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="grid">
+    <div class="card">
+      <h3>👥 Savings Circles</h3>
+      <p>Digital chilimbas with people you trust.</p>
+    </div>
+    <div class="card">
+      <h3>📈 Earn Returns</h3>
+      <p>5–15% monthly from real community lending.</p>
+    </div>
+    <div class="card">
+      <h3>🚀 Business Boost</h3>
+      <p>Fund or grow real Zambian businesses.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>© 2026 Trust ZedFund Zambia Ltd</p>
+  <p class="disclaimer">All investments carry risk.</p>
 </footer>
- <script src="script.js"></script>
 
 </body>
 </html>
