@@ -400,28 +400,38 @@ Value only increases when real activities succeed. There are no artificial retur
 </div>
 
 <style>
-.faq-item { margin-bottom: 15px; }
+.faq-item { 
+  margin-bottom: 15px; 
+}
 
+/* Question button */
 .faq-question {
   width: 100%;
-  background: #0A2540; /* dark blue button */
-  color: #fff;          /* question text */
+  background: #0A2540;  /* dark blue button */
+  color: #fff;          /* white text */
   border: none;
   text-align: left;
   padding: 12px 15px;
   font-size: 16px;
+  cursor: pointer;      /* clickable */
   border-radius: 4px;
-  cursor: default;      /* not clickable anymore */
+  transition: background 0.2s ease;
+}
+.faq-question:hover { 
+  background: #0f3a60; /* slightly darker on hover */
 }
 
-.faq-answer {
-  display: block;       /* always visible */
+/* Answer box */
+.faq-answer { 
+  display: none;           /* hidden by default */
   padding: 12px 15px;
   border-left: 4px solid #0A2540;
-  background: #f5f7f9;  /* light background for readability */
-  color: #1aa08a;       /* dark green text */
+  background: #1aa08a;     /* dark green background */
+  color: #fff !important;  /* white text for readability */
   border-radius: 0 4px 4px 0;
   margin-top: 5px;
+  transition: all 0.3s ease; /* smooth expand/collapse */
+  line-height: 1.5;
 }
 </style>
 <script>
