@@ -6,107 +6,151 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: #f4f6f9;
-      margin: 0;
-      padding: 0;
-      color: #222;
-    }
+:root {
+  --tzf-bg-dark: #0a1f1c;
+  --tzf-green-main: #0f6f61;
+  --tzf-green-light: #1aa08a;
+  --tzf-accent-gold: #f1e17b;
+  --tzf-text-dark: #0a2540;
+  --tzf-text-muted: #667085;
+  --tzf-white: #ffffff;
+}
 
-    .wallet-container {
-      max-width: 500px;
-      margin: auto;
-      padding: 20px;
-    }
+/* BASE */
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(180deg, #f2fbf8, #ffffff);
+  margin: 0;
+  padding: 0;
+  color: var(--tzf-text-dark);
+}
 
-    h2 {
-      text-align: center;
-      margin-bottom: 5px;
-    }
+/* CONTAINER */
+.wallet-container {
+  max-width: 500px;
+  margin: auto;
+  padding: 24px 18px 40px;
+}
 
-    .subtext {
-      text-align: center;
-      color: #777;
-      margin-bottom: 20px;
-    }
+/* HEADINGS */
+h2 {
+  text-align: center;
+  margin-bottom: 6px;
+  color: var(--tzf-green-main);
+}
 
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 18px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
+.subtext {
+  text-align: center;
+  color: var(--tzf-text-muted);
+  margin-bottom: 22px;
+}
 
-    .card h3 {
-      margin-top: 0;
-      font-size: 18px;
-    }
+/* CARDS */
+.card {
+  background: var(--tzf-white);
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 12px 30px rgba(15, 111, 97, 0.08);
+  border: 1px solid rgba(15, 111, 97, 0.08);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
 
-    input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      margin-top: 10px;
-      font-size: 15px;
-    }
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 38px rgba(15, 111, 97, 0.12);
+}
 
-    button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 12px;
-    }
+.card h3 {
+  margin-top: 0;
+  font-size: 17px;
+  color: var(--tzf-text-dark);
+}
 
-    .btn-primary {
-      background: #2e7dff;
-      color: #fff;
-    }
+/* AMOUNTS */
+.amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--tzf-green-main);
+}
 
-    .btn-airtel {
-      background: #e60000;
-      color: #fff;
-    }
+/* INPUTS */
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(15, 111, 97, 0.25);
+  margin-top: 12px;
+  font-size: 15px;
+  outline: none;
+}
 
-    .btn-mtn {
-      background: #ffcc00;
-      color: #000;
-    }
+input:focus {
+  border-color: var(--tzf-green-main);
+  box-shadow: 0 0 0 3px rgba(15, 111, 97, 0.15);
+}
 
-    .provider-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-    }
+/* BUTTONS */
+button {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 14px;
+  font-weight: 600;
+}
 
-    .provider-buttons button {
-      flex: 1;
-    }
+/* PRIMARY */
+.btn-primary {
+  background: linear-gradient(135deg, var(--tzf-green-main), var(--tzf-green-light));
+  color: var(--tzf-white);
+}
 
-    .hidden {
-      display: none;
-    }
+.btn-primary:hover {
+  opacity: 0.92;
+}
 
-    .center {
-      text-align: center;
-    }
+/* PROVIDERS */
+.provider-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
 
-    .list-item {
-      padding: 10px 0;
-      border-bottom: 1px solid #eee;
-      font-size: 14px;
-    }
+.provider-buttons button {
+  flex: 1;
+  font-weight: 600;
+}
 
-    .amount {
-      font-size: 22px;
-      font-weight: bold;
-    }
-  </style>
+/* Airtel */
+.btn-airtel {
+  background: #e60000;
+  color: #fff;
+}
+
+/* MTN */
+.btn-mtn {
+  background: #ffcc00;
+  color: #1f1f1f;
+}
+
+/* UTILS */
+.hidden {
+  display: none;
+}
+
+.center {
+  text-align: center;
+}
+
+.list-item {
+  padding: 10px 0;
+  border-bottom: 1px dashed rgba(15, 111, 97, 0.2);
+  font-size: 14px;
+}
+</style>
 </head>
 
 <body>
