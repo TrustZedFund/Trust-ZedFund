@@ -1,218 +1,212 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Savings Circles | Trust ZedFund</title>
-
-  <!-- Core Styles -->
-  <link rel="stylesheet" href="assets/css/global.css">
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Trust ZedFund | Savings Circles</title>
 
   <style>
-    .center { text-align: center; }
-    .soft-bg { background: #f7fdfc; }
-
-    .section-wrap {
-      max-width: 1100px;
-      margin: auto;
+    :root {
+      --tzf-bg-dark: #0a1f1c;        /* Deep trust green */
+      --tzf-green-main: #0f6f61;    /* Primary brand green */
+      --tzf-green-light: #1aa08a;   /* Highlights / hover */
+      --tzf-accent-gold: #f1e17b;   /* Accent */
+      --tzf-text-dark: #0a2540;
+      --tzf-text-muted: #8fa7a3;
+      --tzf-white: #ffffff;
     }
 
-    .hero-box {
-      background: linear-gradient(135deg, #e9fbf6, #ffffff);
-      border-radius: 28px;
-      padding: 70px 40px;
-      box-shadow: 0 18px 45px rgba(0,0,0,.08);
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      margin-top: 36px;
-      flex-wrap: wrap;
+    body {
+      background: linear-gradient(160deg, var(--tzf-bg-dark), #06201c);
+      color: var(--tzf-white);
+      min-height: 100vh;
     }
 
-    .hero-stats strong {
-      font-size: 30px;
-      color: var(--green-main);
+    .page-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px 80px;
+      text-align: center;
     }
 
-    .card-grid {
+    .page-header h1 {
+      font-size: 2.6rem;
+      margin-bottom: 12px;
+      color: var(--tzf-accent-gold);
+    }
+
+    .page-header p {
+      max-width: 720px;
+      margin: 0 auto 50px;
+      color: var(--tzf-text-muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .circles-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 28px;
-      margin-top: 48px;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 32px;
-      box-shadow: 0 10px 28px rgba(0,0,0,.08);
-      transition: all .25s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 18px 44px rgba(0,0,0,.12);
-    }
-
-    .card-icon {
-      font-size: 36px;
-      color: var(--green-main);
-      margin-bottom: 14px;
     }
 
     .circle-card {
-      border-left: 5px solid var(--green-main);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
+      padding: 30px 24px 34px;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.35s ease, box-shadow 0.35s ease, border 0.35s ease;
+      cursor: default;
     }
 
-    .cta-box {
-      background: linear-gradient(135deg, var(--green-main), #0fb9a8);
-      color: #fff;
-      border-radius: 26px;
-      padding: 60px 40px;
-      box-shadow: 0 18px 40px rgba(0,0,0,.15);
+    .circle-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--tzf-green-light);
     }
 
-    .cta-box p {
-      opacity: .95;
+    .circle-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--tzf-green-light), var(--tzf-green-main));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+    }
+
+    .circle-card h3 {
+      margin-bottom: 12px;
+      font-size: 1.25rem;
+      color: var(--tzf-white);
+    }
+
+    .circle-card p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--tzf-text-muted);
+      margin-bottom: 22px;
+    }
+
+    .circle-meta {
+      font-size: 0.85rem;
+      color: #b8d6d0;
+      margin-bottom: 18px;
+    }
+
+    .join-btn {
+      display: inline-block;
+      padding: 10px 22px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--tzf-green-light), var(--tzf-green-main));
+      color: var(--tzf-white);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+    }
+
+    .join-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+      opacity: 0.95;
+    }
+
+    .coming-soon {
+      opacity: 0.5;
+    }
+
+    .coming-soon .join-btn {
+      background: rgba(255, 255, 255, 0.15);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    @media (max-width: 600px) {
+      .page-header h1 {
+        font-size: 2.1rem;
+      }
+
+      .page-wrapper {
+        padding-top: 40px;
+      }
     }
   </style>
-</head>
 
+</head>
 <body>
 
-<!-- NAV -->
-<header class="navbar">
-  <div class="nav-container">
-    <a href="index.html" class="logo">Trust <strong>ZedFund</strong></a>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="savings-circles.html" class="active">Savings Circles</a>
-      <a href="business-boost.html">Business Boost</a>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="waitlist.html" class="btn-primary">Join Waitlist</a>
-    </nav>
+  <div class="page-wrapper">
+
+```
+<div class="page-header">
+  <h1>Savings Circles</h1>
+  <p>
+    Community-powered saving groups designed for discipline, transparency,
+    and steady financial growth. Save together, stay accountable, and grow safely.
+  </p>
+</div>
+
+<div class="circles-grid">
+
+  <div class="circle-card">
+    <div class="circle-icon">👥</div>
+    <h3>Friends & Family Circle</h3>
+    <p>
+      A private savings group for people who already trust each other.
+      Fixed monthly contributions with clear payout rotation.
+    </p>
+    <div class="circle-meta">• Min 3 members • Monthly cycle</div>
+    <a href="#" class="join-btn">Join Circle</a>
   </div>
-</header>
 
-<!-- HERO -->
-<section class="section">
-  <div class="section-wrap center">
-    <div class="hero-box">
-      <h1>Save Together. Grow Together.</h1>
-      <p>
-        Digital chilimba for modern Zambia.  
-        Transparent, disciplined, and built on trust.
-      </p>
-
-      <div class="hero-stats">
-        <div><strong>127</strong><p>Active Circles</p></div>
-        <div><strong>K2.1M</strong><p>Total Saved</p></div>
-        <div><strong>4–8%</strong><p>Monthly Returns</p></div>
-      </div>
-
-      <div style="margin-top:40px">
-        <a href="#create-circle" class="btn-primary btn-large">Create a Circle</a>
-        <a href="#browse-circles" class="btn-secondary btn-large">Browse Circles</a>
-      </div>
-    </div>
+  <div class="circle-card">
+    <div class="circle-icon">💼</div>
+    <h3>Business Savings Circle</h3>
+    <p>
+      Designed for SMEs, hustlers, and cooperatives saving toward inventory,
+      equipment, or expansion goals.
+    </p>
+    <div class="circle-meta">• Min 5 members • Weekly or monthly</div>
+    <a href="#" class="join-btn">Join Circle</a>
   </div>
-</section>
 
-<!-- HOW IT WORKS -->
-<section class="section soft-bg">
-  <div class="section-wrap center">
-    <h2 class="section-title">How Savings Circles Work</h2>
-    <p class="section-subtitle">Traditional chilimba, secured by technology</p>
-
-    <div class="card-grid">
-      <div class="card">
-        <div class="card-icon"><i class="fas fa-users"></i></div>
-        <h3>Create a Circle</h3>
-        <p>Invite trusted members and define contribution rules.</p>
-      </div>
-
-      <div class="card">
-        <div class="card-icon"><i class="fas fa-wallet"></i></div>
-        <h3>Contribute Securely</h3>
-        <p>Save via mobile money with real-time transparency.</p>
-      </div>
-
-      <div class="card">
-        <div class="card-icon"><i class="fas fa-chart-line"></i></div>
-        <h3>Grow & Support</h3>
-        <p>Earn returns and access internal lending.</p>
-      </div>
-    </div>
+  <div class="circle-card">
+    <div class="circle-icon">🎓</div>
+    <h3>Education Circle</h3>
+    <p>
+      Save collaboratively for school fees, certifications, or training.
+      Ideal for parents, students, and study groups.
+    </p>
+    <div class="circle-meta">• Goal-based • Flexible duration</div>
+    <a href="#" class="join-btn">Join Circle</a>
   </div>
-</section>
 
-<!-- TYPES -->
-<section class="section">
-  <div class="section-wrap center">
-    <h2 class="section-title">Types of Savings Circles</h2>
-
-    <div class="card-grid">
-      <div class="card">👨‍👩‍👧 Family Circles<br><small>Emergencies & milestones</small></div>
-      <div class="card">🏪 Business Circles<br><small>Stock & expansion</small></div>
-      <div class="card">🎓 Education Circles<br><small>School fees planning</small></div>
-      <div class="card">🙏 Faith Circles<br><small>Community support</small></div>
-    </div>
+  <div class="circle-card coming-soon">
+    <div class="circle-icon">🌍</div>
+    <h3>Open Community Circle</h3>
+    <p>
+      Join verified members across the Trust ZedFund community and save
+      together transparently under platform governance.
+    </p>
+    <div class="circle-meta">• Moderated • Public participation</div>
+    <a href="#" class="join-btn">Coming Soon</a>
   </div>
-</section>
 
-<!-- BROWSE -->
-<section id="browse-circles" class="section soft-bg">
-  <div class="section-wrap center">
-    <h2 class="section-title">Browse Open Circles</h2>
+</div>
+```
 
-    <div class="card-grid">
-      <div class="card circle-card">
-        <h3>Lusaka Market Traders</h3>
-        <p>K300/week • 6/10 members</p>
-        <a class="btn-primary" href="#">Request to Join</a>
-      </div>
-
-      <div class="card circle-card">
-        <h3>Kitwe Youth Entrepreneurs</h3>
-        <p>K200/week • 8/12 members</p>
-        <a class="btn-primary" href="#">Request to Join</a>
-      </div>
-
-      <div class="card circle-card">
-        <h3>Ndola School Fees Pool</h3>
-        <p>K500/week • 4/8 members</p>
-        <a class="btn-primary" href="#">Request to Join</a>
-      </div>
-    </div>
   </div>
-</section>
-
-<!-- CTA -->
-<section class="section">
-  <div class="section-wrap center">
-    <div class="cta-box">
-      <h2>Start Saving Smarter Today</h2>
-      <p>Join thousands of Zambians building wealth together.</p>
-      <a href="waitlist.html" class="btn-secondary btn-large">Join Waitlist</a>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-inner center">
-    <p>© 2026 Trust ZedFund Zambia Ltd</p>
-    <p class="disclaimer">Save responsibly. Only join circles you trust.</p>
-  </div>
-</footer>
 
 </body>
 </html>
