@@ -11,67 +11,71 @@
   --tzf-green-main: #0f6f61;
   --tzf-green-light: #1aa08a;
   --tzf-accent-gold: #f1e17b;
-  --tzf-text-dark: #0a2540;
-  --tzf-text-muted: #667085;
+  --tzf-text-light: #e6f4f1;
+  --tzf-text-muted: #9bbfba;
   --tzf-white: #ffffff;
 }
 
-/* BASE */
+/* PAGE */
 body {
   font-family: "Segoe UI", sans-serif;
-  background: linear-gradient(180deg, #f2fbf8, #ffffff);
+  background: var(--tzf-bg-dark);
   margin: 0;
   padding: 0;
-  color: var(--tzf-text-dark);
+  color: var(--tzf-text-light);
 }
 
 /* CONTAINER */
 .wallet-container {
-  max-width: 500px;
+  max-width: 520px;
   margin: auto;
-  padding: 24px 18px 40px;
+  padding: 28px 18px 60px;
 }
 
-/* HEADINGS */
+/* HEADERS */
 h2 {
   text-align: center;
   margin-bottom: 6px;
-  color: var(--tzf-green-main);
+  color: var(--tzf-white);
 }
 
 .subtext {
   text-align: center;
   color: var(--tzf-text-muted);
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 }
 
-/* CARDS */
+/* CARDS (MATCH SAVINGS CIRCLES) */
 .card {
-  background: var(--tzf-white);
+  background: linear-gradient(
+    180deg,
+    rgba(15,111,97,0.85),
+    rgba(10,31,28,0.9)
+  );
   border-radius: 18px;
   padding: 18px;
   margin-bottom: 18px;
-  box-shadow: 0 12px 30px rgba(15, 111, 97, 0.08);
-  border: 1px solid rgba(15, 111, 97, 0.08);
+  border: 1px solid rgba(26,160,138,0.25);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
   transition: transform .25s ease, box-shadow .25s ease;
 }
 
 .card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 18px 38px rgba(15, 111, 97, 0.12);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
 }
 
 .card h3 {
   margin-top: 0;
-  font-size: 17px;
-  color: var(--tzf-text-dark);
+  font-size: 16px;
+  color: var(--tzf-white);
 }
 
 /* AMOUNTS */
 .amount {
   font-size: 24px;
   font-weight: 700;
-  color: var(--tzf-green-main);
+  color: var(--tzf-accent-gold);
 }
 
 /* INPUTS */
@@ -79,15 +83,17 @@ input {
   width: 100%;
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid rgba(15, 111, 97, 0.25);
+  border: 1px solid rgba(26,160,138,0.4);
   margin-top: 12px;
   font-size: 15px;
+  background: rgba(255,255,255,0.95);
+  color: #111;
   outline: none;
 }
 
 input:focus {
-  border-color: var(--tzf-green-main);
-  box-shadow: 0 0 0 3px rgba(15, 111, 97, 0.15);
+  border-color: var(--tzf-accent-gold);
+  box-shadow: 0 0 0 3px rgba(241,225,123,0.25);
 }
 
 /* BUTTONS */
@@ -102,9 +108,13 @@ button {
   font-weight: 600;
 }
 
-/* PRIMARY */
+/* PRIMARY (SAME AS INDEX) */
 .btn-primary {
-  background: linear-gradient(135deg, var(--tzf-green-main), var(--tzf-green-light));
+  background: linear-gradient(
+    135deg,
+    var(--tzf-green-light),
+    var(--tzf-green-main)
+  );
   color: var(--tzf-white);
 }
 
@@ -121,22 +131,20 @@ button {
 
 .provider-buttons button {
   flex: 1;
-  font-weight: 600;
 }
 
-/* Airtel */
+/* Airtel / MTN stay brand-correct */
 .btn-airtel {
   background: #e60000;
   color: #fff;
 }
 
-/* MTN */
 .btn-mtn {
   background: #ffcc00;
   color: #1f1f1f;
 }
 
-/* UTILS */
+/* UTILITIES */
 .hidden {
   display: none;
 }
@@ -147,8 +155,9 @@ button {
 
 .list-item {
   padding: 10px 0;
-  border-bottom: 1px dashed rgba(15, 111, 97, 0.2);
+  border-bottom: 1px dashed rgba(255,255,255,0.15);
   font-size: 14px;
+  color: var(--tzf-text-muted);
 }
 </style>
 </head>
