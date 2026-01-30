@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Savings Circles | Trust ZedFund</title>
 
-  <!-- Core styles -->
+  <!-- Core Styles -->
   <link rel="stylesheet" href="assets/css/global.css">
   <link rel="stylesheet" href="style.css">
 
@@ -14,139 +14,74 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    /* Page-specific polish */
-    .hero {
-      padding: 100px 20px 60px;
-      background: var(--bg-main);
-      text-align: center;
+    .center { text-align: center; }
+    .soft-bg { background: #f7fdfc; }
+
+    .section-wrap {
+      max-width: 1100px;
+      margin: auto;
     }
 
-    .hero h1 {
-      font-size: 2.8rem;
-      font-weight: 700;
-      color: var(--blue-dark);
-      margin-bottom: 16px;
-    }
-
-    .hero p {
-      font-size: 1.15rem;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto 32px;
+    .hero-box {
+      background: linear-gradient(135deg, #e9fbf6, #ffffff);
+      border-radius: 28px;
+      padding: 70px 40px;
+      box-shadow: 0 18px 45px rgba(0,0,0,.08);
     }
 
     .hero-stats {
       display: flex;
       justify-content: center;
-      gap: 36px;
+      gap: 48px;
+      margin-top: 36px;
       flex-wrap: wrap;
-      margin-bottom: 32px;
-    }
-
-    .hero-stats div {
-      background: var(--green-light);
-      padding: 20px 28px;
-      border-radius: 16px;
-      color: #fff;
-      min-width: 140px;
-      transition: transform .25s ease, box-shadow .25s ease;
-    }
-
-    .hero-stats div:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
     }
 
     .hero-stats strong {
-      display: block;
-      font-size: 28px;
-      font-weight: 700;
+      font-size: 30px;
+      color: var(--green-main);
     }
 
     .card-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 26px;
-      margin-top: 40px;
+      gap: 28px;
+      margin-top: 48px;
     }
 
-    .card, .circle-card {
+    .card {
       background: #fff;
-      border-radius: 16px;
-      padding: 28px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-      transition: transform .25s ease, box-shadow .25s ease;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 10px 28px rgba(0,0,0,.08);
+      transition: all .25s ease;
     }
 
-    .card:hover, .circle-card:hover {
+    .card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 16px 38px rgba(0,0,0,0.12);
+      box-shadow: 0 18px 44px rgba(0,0,0,.12);
     }
 
     .card-icon {
       font-size: 36px;
-      margin-bottom: 14px;
       color: var(--green-main);
+      margin-bottom: 14px;
     }
 
-    .section-title {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--blue-dark);
-      margin-bottom: 12px;
+    .circle-card {
+      border-left: 5px solid var(--green-main);
     }
 
-    .section-subtitle {
-      color: #555;
-      margin-bottom: 36px;
-      font-size: 1rem;
-    }
-
-    .btn-primary {
-      background: var(--btn-gradient);
+    .cta-box {
+      background: linear-gradient(135deg, var(--green-main), #0fb9a8);
       color: #fff;
-      padding: 14px 28px;
-      border-radius: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: transform .2s ease, box-shadow .2s ease;
-      display: inline-block;
-      margin: 8px;
+      border-radius: 26px;
+      padding: 60px 40px;
+      box-shadow: 0 18px 40px rgba(0,0,0,.15);
     }
 
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.14);
-    }
-
-    .btn-secondary {
-      background: #f1f1f1;
-      color: var(--blue-dark);
-      padding: 14px 28px;
-      border-radius: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-block;
-      margin: 8px;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-
-    .btn-secondary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-    }
-
-    footer.footer {
-      background: var(--blue-dark);
-      color: #fff;
-      padding: 40px 20px;
-      text-align: center;
-    }
-
-    footer .disclaimer {
-      font-size: 0.875rem;
-      color: #ddd;
-      margin-top: 12px;
+    .cta-box p {
+      opacity: .95;
     }
   </style>
 </head>
@@ -161,7 +96,6 @@
       <a href="index.html">Home</a>
       <a href="savings-circles.html" class="active">Savings Circles</a>
       <a href="business-boost.html">Business Boost</a>
-      <a href="about.html">About</a>
       <a href="dashboard.html">Dashboard</a>
       <a href="waitlist.html" class="btn-primary">Join Waitlist</a>
     </nav>
@@ -169,41 +103,52 @@
 </header>
 
 <!-- HERO -->
-<section class="hero">
-  <h1>Save Together. Grow Together.</h1>
-  <p>Digital chilimba for modern Zambia. Build discipline, trust, and wealth with people you know.</p>
+<section class="section">
+  <div class="section-wrap center">
+    <div class="hero-box">
+      <h1>Save Together. Grow Together.</h1>
+      <p>
+        Digital chilimba for modern Zambia.  
+        Transparent, disciplined, and built on trust.
+      </p>
 
-  <div class="hero-stats">
-    <div><strong>127</strong>Active Circles</div>
-    <div><strong>K2.1M</strong>Total Saved</div>
-    <div><strong>4–8%</strong>Monthly Returns</div>
+      <div class="hero-stats">
+        <div><strong>127</strong><p>Active Circles</p></div>
+        <div><strong>K2.1M</strong><p>Total Saved</p></div>
+        <div><strong>4–8%</strong><p>Monthly Returns</p></div>
+      </div>
+
+      <div style="margin-top:40px">
+        <a href="#create-circle" class="btn-primary btn-large">Create a Circle</a>
+        <a href="#browse-circles" class="btn-secondary btn-large">Browse Circles</a>
+      </div>
+    </div>
   </div>
-
-  <a href="#create-circle" class="btn-primary">Create Circle</a>
-  <a href="#browse-circles" class="btn-secondary">Browse Circles</a>
 </section>
 
 <!-- HOW IT WORKS -->
 <section class="section soft-bg">
-  <div class="container center">
+  <div class="section-wrap center">
     <h2 class="section-title">How Savings Circles Work</h2>
-    <p class="section-subtitle">Traditional chilimba meets secure technology</p>
+    <p class="section-subtitle">Traditional chilimba, secured by technology</p>
 
     <div class="card-grid">
       <div class="card">
         <div class="card-icon"><i class="fas fa-users"></i></div>
         <h3>Create a Circle</h3>
-        <p>Invite 3–20 people you trust and set contribution rules.</p>
+        <p>Invite trusted members and define contribution rules.</p>
       </div>
+
       <div class="card">
-        <div class="card-icon"><i class="fas fa-coins"></i></div>
-        <h3>Save Together</h3>
-        <p>Contribute regularly via mobile money with full transparency.</p>
+        <div class="card-icon"><i class="fas fa-wallet"></i></div>
+        <h3>Contribute Securely</h3>
+        <p>Save via mobile money with real-time transparency.</p>
       </div>
+
       <div class="card">
         <div class="card-icon"><i class="fas fa-chart-line"></i></div>
-        <h3>Grow & Lend</h3>
-        <p>Earn returns and support members through internal lending.</p>
+        <h3>Grow & Support</h3>
+        <p>Earn returns and access internal lending.</p>
       </div>
     </div>
   </div>
@@ -211,64 +156,63 @@
 
 <!-- TYPES -->
 <section class="section">
-  <div class="container center">
+  <div class="section-wrap center">
     <h2 class="section-title">Types of Savings Circles</h2>
 
     <div class="card-grid">
-      <div class="card">👨‍👩‍👧 <h3>Family Circles</h3><p>Save together for emergencies, housing, or major events.</p></div>
-      <div class="card">🏪 <h3>Business Circles</h3><p>Pool capital for wholesale buying and expansion.</p></div>
-      <div class="card">🎓 <h3>Education Circles</h3><p>Plan school fees and education costs collectively.</p></div>
-      <div class="card">🙏 <h3>Faith Circles</h3><p>Support community projects and mutual assistance.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- CREATE CIRCLE FORM -->
-<section id="create-circle" class="section soft-bg">
-  <div class="container center">
-    <h2 class="section-title">Create Your Circle</h2>
-    <p class="section-subtitle">Start your own savings group with ease</p>
-
-    <div class="form-container">
-      <!-- Retain your existing multi-step form here -->
+      <div class="card">👨‍👩‍👧 Family Circles<br><small>Emergencies & milestones</small></div>
+      <div class="card">🏪 Business Circles<br><small>Stock & expansion</small></div>
+      <div class="card">🎓 Education Circles<br><small>School fees planning</small></div>
+      <div class="card">🙏 Faith Circles<br><small>Community support</small></div>
     </div>
   </div>
 </section>
 
 <!-- BROWSE -->
-<section id="browse-circles" class="section">
-  <div class="container center">
+<section id="browse-circles" class="section soft-bg">
+  <div class="section-wrap center">
     <h2 class="section-title">Browse Open Circles</h2>
-    <p class="section-subtitle">Join circles currently accepting members</p>
 
     <div class="card-grid">
-      <div class="circle-card">
+      <div class="card circle-card">
         <h3>Lusaka Market Traders</h3>
-        <p>Soweto Market • K300/week • 6/10 members</p>
+        <p>K300/week • 6/10 members</p>
         <a class="btn-primary" href="#">Request to Join</a>
       </div>
-      <div class="circle-card">
+
+      <div class="card circle-card">
         <h3>Kitwe Youth Entrepreneurs</h3>
-        <p>Kitwe • K200/week • 8/12 members</p>
+        <p>K200/week • 8/12 members</p>
         <a class="btn-primary" href="#">Request to Join</a>
       </div>
-      <div class="circle-card">
+
+      <div class="card circle-card">
         <h3>Ndola School Fees Pool</h3>
-        <p>Ndola • K500/week • 4/8 members</p>
+        <p>K500/week • 4/8 members</p>
         <a class="btn-primary" href="#">Request to Join</a>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+  <div class="section-wrap center">
+    <div class="cta-box">
+      <h2>Start Saving Smarter Today</h2>
+      <p>Join thousands of Zambians building wealth together.</p>
+      <a href="waitlist.html" class="btn-secondary btn-large">Join Waitlist</a>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer class="footer">
-  <div class="footer-inner">
+  <div class="footer-inner center">
     <p>© 2026 Trust ZedFund Zambia Ltd</p>
-    <p class="disclaimer">Savings circles involve risk. Only save with people you trust.</p>
+    <p class="disclaimer">Save responsibly. Only join circles you trust.</p>
   </div>
 </footer>
 
-<script src="script.js"></script>
 </body>
 </html>
