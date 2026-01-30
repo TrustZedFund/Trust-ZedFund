@@ -5,272 +5,264 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Business Boost | Trust ZedFund</title>
 
-  <!-- Core styles -->
-  <link rel="stylesheet" href="global.css">
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <!-- Page-only polish (scoped, safe) -->
   <style>
+    :root {
+      --tzf-bg-dark: #0a1f1c;
+      --tzf-green-main: #0f6f61;
+      --tzf-green-light: #1aa08a;
+      --tzf-accent-gold: #f1e17b;
+      --tzf-text-muted: #8fa7a3;
+      --tzf-white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(160deg, var(--tzf-bg-dark), #06201c);
+      color: var(--tzf-white);
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    header {
+      padding: 22px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav a {
+      margin-left: 26px;
+      opacity: .9;
+    }
+
+    .btn-primary {
+      padding: 10px 20px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--tzf-green-light), var(--tzf-green-main));
+      font-weight: 600;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: auto;
+      padding: 60px 20px 90px;
+    }
+
     .center { text-align: center; }
 
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      margin-top: 40px;
+    /* HERO */
+    .hero h1 {
+      font-size: 2.7rem;
+      color: var(--tzf-accent-gold);
+      margin-bottom: 16px;
     }
 
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 28px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-      transition: transform .25s ease, box-shadow .25s ease;
+    .hero p {
+      max-width: 720px;
+      margin: auto;
+      color: var(--tzf-text-muted);
+      line-height: 1.6;
+      font-size: 1.05rem;
     }
 
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 14px 36px rgba(0,0,0,0.10);
-    }
-
-    .card i {
-      font-size: 32px;
-      color: var(--green-main);
-      margin-bottom: 14px;
-    }
-
-    .soft-bg { background: #f7fdfc; }
-
-    .stat-box {
+    .stats {
       display: flex;
       justify-content: center;
-      gap: 40px;
-      margin-top: 30px;
+      gap: 50px;
+      margin: 40px 0;
       flex-wrap: wrap;
     }
 
-    .stat-box div {
-      text-align: center;
-    }
-
-    .stat-box strong {
+    .stats strong {
       font-size: 28px;
-      color: var(--green-main);
+      color: var(--tzf-accent-gold);
     }
 
-    .business-grid {
+    /* GLASS CARD GRID */
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 28px;
-      margin-top: 40px;
+      margin-top: 50px;
     }
 
-    .business-card {
-      background: #fff;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 8px 26px rgba(0,0,0,0.07);
-      transition: transform .25s ease, box-shadow .25s ease;
+    .card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 18px;
+      padding: 30px;
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(6px);
+      transition: all .35s ease;
     }
 
-    .business-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 16px 38px rgba(0,0,0,0.12);
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: var(--tzf-green-light);
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
     }
 
-    .business-header {
-      padding: 20px;
-      background: linear-gradient(135deg, #0f6f61, #1aa08a);
-      color: #fff;
+    .card h3 {
+      margin-bottom: 12px;
     }
 
-    .business-body {
+    .card p {
+      color: var(--tzf-text-muted);
+      line-height: 1.6;
+      font-size: .95rem;
+    }
+
+    /* BUSINESS CARDS */
+    .biz-header {
+      background: linear-gradient(135deg, var(--tzf-green-light), var(--tzf-green-main));
+      padding: 18px;
+      border-radius: 14px 14px 0 0;
+    }
+
+    .biz-body {
       padding: 22px;
     }
 
-    .progress-bar {
+    .progress {
       height: 8px;
-      background: #e6f5f2;
+      background: rgba(255,255,255,.15);
       border-radius: 6px;
       overflow: hidden;
-      margin: 8px 0 14px;
+      margin: 10px 0;
     }
 
-    .progress-bar span {
+    .progress span {
       display: block;
       height: 100%;
-      background: var(--green-main);
+      background: var(--tzf-accent-gold);
     }
 
-    .apply-box {
-      background: #fff;
-      border-radius: 16px;
-      padding: 40px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      max-width: 900px;
-      margin: auto;
+    .cta-box {
+      background: rgba(255,255,255,0.06);
+      border-radius: 22px;
+      padding: 50px;
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(6px);
+      margin-top: 70px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--tzf-text-muted);
+      font-size: .9rem;
+    }
+
+    @media(max-width:600px){
+      .hero h1 { font-size: 2.2rem; }
     }
   </style>
 </head>
 
 <body>
 
-<!-- NAV -->
-<header class="navbar">
-  <div class="nav-container">
-    <a href="index.html" class="logo">Trust <strong>ZedFund</strong></a>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="business-boost.html" class="active">Business Boost</a>
-      <a href="about.html">About</a>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="register.html" class="btn-primary">Create Account</a>
-    </nav>
-  </div>
+<header>
+  <strong>Trust ZedFund</strong>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="business-boost.html">Business Boost</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="register.html" class="btn-primary">Create Account</a>
+  </nav>
 </header>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-inner center">
-    <h1>Fuel Zambian Businesses. Earn Responsibly.</h1>
+<section class="page hero center">
+  <h1>Fuel Zambian Businesses. Earn Responsibly.</h1>
+  <p>
+    Invest in vetted local businesses, earn steady returns,
+    and help create sustainable jobs across Zambia.
+  </p>
+
+  <div class="stats">
+    <div><strong>42</strong><p>Businesses Funded</p></div>
+    <div><strong>8–15%</strong><p>Monthly Returns</p></div>
+    <div><strong>127</strong><p>Jobs Created</p></div>
+  </div>
+
+  <a href="#invest" class="btn-primary">Browse Opportunities</a>
+</section>
+
+<section class="page center">
+  <h2>How Business Boost Works</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Apply</h3>
+      <p>Businesses submit funding requests with growth plans.</p>
+    </div>
+    <div class="card">
+      <h3>Vet & Verify</h3>
+      <p>Owners, cashflow and viability are reviewed.</p>
+    </div>
+    <div class="card">
+      <h3>Invest</h3>
+      <p>Invest from as low as K200 in vetted businesses.</p>
+    </div>
+    <div class="card">
+      <h3>Earn</h3>
+      <p>Track monthly returns transparently.</p>
+    </div>
+  </div>
+</section>
+
+<section id="invest" class="page center">
+  <h2>Live Opportunities</h2>
+
+  <div class="grid">
+    <div class="card">
+      <div class="biz-header">
+        <strong>Grace’s Tomato Wholesale</strong><br>
+        <small>Lusaka • Agriculture</small>
+      </div>
+      <div class="biz-body">
+        <p>12% monthly • 6 months</p>
+        <div class="progress"><span style="width:70%"></span></div>
+        <small>K10,500 of K15,000 funded</small><br><br>
+        <a class="btn-primary">Invest from K200</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="biz-header">
+        <strong>Kitwe Express Delivery</strong><br>
+        <small>Kitwe • Logistics</small>
+      </div>
+      <div class="biz-body">
+        <p>9% monthly • 9 months</p>
+        <div class="progress"><span style="width:78%"></span></div>
+        <small>K6,200 of K8,000 funded</small><br><br>
+        <a class="btn-primary">Invest from K200</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page center">
+  <div class="cta-box">
+    <h2>Need Capital for Your Business?</h2>
     <p>
-      Invest in vetted local businesses, earn steady returns,
-      and create jobs across Zambia.
-    </p>
-
-    <div class="stat-box">
-      <div><strong>42</strong><p>Businesses Funded</p></div>
-      <div><strong>8–15%</strong><p>Monthly Returns</p></div>
-      <div><strong>127</strong><p>Jobs Created</p></div>
-    </div>
-
-    <div style="margin-top:30px">
-      <a href="#invest" class="btn-primary">Invest Now</a>
-      <a href="#apply" class="btn-secondary">Apply for Funding</a>
-    </div>
+      Access funding from people who believe in your vision —
+      not banks that shut you out.
+    </p><br>
+    <a href="waitlist.html" class="btn-primary">Start Application</a>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="section soft-bg">
-  <div class="container center">
-    <h2 class="section-title">How Business Boost Works</h2>
-
-    <div class="card-grid">
-      <div class="card">
-        <i class="fa-solid fa-file-signature"></i>
-        <h3>Apply</h3>
-        <p>Businesses submit funding requests and growth plans.</p>
-      </div>
-
-      <div class="card">
-        <i class="fa-solid fa-shield-halved"></i>
-        <h3>Vet & Verify</h3>
-        <p>We verify owners, cash flow, and viability.</p>
-      </div>
-
-      <div class="card">
-        <i class="fa-solid fa-coins"></i>
-        <h3>Invest</h3>
-        <p>Invest from as low as K200 into vetted opportunities.</p>
-      </div>
-
-      <div class="card">
-        <i class="fa-solid fa-chart-line"></i>
-        <h3>Earn & Track</h3>
-        <p>Receive monthly returns and track progress.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- INVEST -->
-<section id="invest" class="section">
-  <div class="container center">
-    <h2 class="section-title">Live Investment Opportunities</h2>
-
-    <div class="business-grid">
-
-      <div class="business-card">
-        <div class="business-header">
-          <h3>Grace’s Tomato Wholesale</h3>
-          <small>Lusaka • Agriculture</small>
-        </div>
-        <div class="business-body">
-          <p>Expanding tomato supply to schools and restaurants.</p>
-
-          <p><strong>12% monthly • 6 months</strong></p>
-
-          <div class="progress-bar">
-            <span style="width:70%"></span>
-          </div>
-          <small>K10,500 of K15,000 funded</small>
-
-          <div style="margin-top:16px">
-            <button class="btn-primary invest-btn" data-business="Grace’s Tomatoes">
-              Invest from K200
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="business-card">
-        <div class="business-header">
-          <h3>Kitwe Express Delivery</h3>
-          <small>Kitwe • Logistics</small>
-        </div>
-        <div class="business-body">
-          <p>Motorbike delivery expansion for e-commerce.</p>
-
-          <p><strong>9% monthly • 9 months</strong></p>
-
-          <div class="progress-bar">
-            <span style="width:78%"></span>
-          </div>
-          <small>K6,200 of K8,000 funded</small>
-
-          <div style="margin-top:16px">
-            <button class="btn-primary invest-btn" data-business="Kitwe Delivery">
-              Invest from K200
-            </button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- APPLY -->
-<section id="apply" class="section soft-bg">
-  <div class="container">
-    <div class="apply-box center">
-      <h2>Need Funding for Your Business?</h2>
-      <p>
-        Access capital from people who believe in your business —
-        not banks that don’t.
-      </p>
-
-      <a href="waitlist.html" class="btn-primary" style="margin-top:20px">
-        Start Application
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-inner">
-    <p>© 2026 Trust ZedFund. All rights reserved.</p>
-    <p class="disclaimer">
-      Investments carry risk. No guaranteed returns.
-    </p>
-  </div>
+<footer>
+  © 2026 Trust ZedFund • Investments carry risk • No guaranteed returns
 </footer>
 
-<script src="script.js"></script>
 </body>
 </html>
