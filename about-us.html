@@ -92,6 +92,67 @@
   border: 2px dashed rgba(255, 215, 0, 0.4);
   box-shadow: none;
 }
+/* CTA Section */
+.cta {
+  margin-top: 60px;
+  padding: 60px 30px;
+  background: linear-gradient(135deg, #0b3d2e, #0e4a37);
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.cta h2 {
+  color: var(--white);
+  font-size: 1.8rem;
+  line-height: 1.4;
+  margin-bottom: 28px;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 14px 36px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #06271d;
+  background-color: var(--yellow);
+  border-radius: 40px;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.btn-primary:hover {
+  background-color: #ffdf33;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+/* Footer */
+.footer {
+  margin-top: 80px;
+  padding: 40px 20px;
+  background-color: #041c15;
+  border-top: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.footer-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer p {
+  margin: 8px 0;
+  font-size: 0.9rem;
+  color: #d9f0ea;
+}
+
+.footer .disclaimer {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 760px;
+  margin: 12px auto 0;
+}
 
   </style>
 </head>
@@ -248,6 +309,27 @@
     </section>
 
   </div>
+<!-- CTA -->
+<section class="cta">
+  <h2>
+    Join thousands of individuals pooling money, community groups,
+    informal cooperatives, families, investment clubs, and associations
+    empowered by our digital platform.
+  </h2>
+  <a href="register.html" class="btn-primary">Create Your Account</a>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p>© 2026 Trust ZedFund. All rights reserved.</p>
+    <p class="disclaimer">
+      Trust ZedFund is a digital platform that helps people and organizations
+      safely manage shared money with clear rules and transparency.
+      No guaranteed returns.
+    </p>
+  </div>
+</footer>
 
 </body>
 </html>
