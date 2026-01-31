@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trust ZedFund Ventures</title>
 <style>
-body { font-family:'Segoe UI', sans-serif; background:#f5f7f9; margin:0; padding:20px; }
+body { font-family:sans-serif; background:#f5f7f9; margin:0; padding:20px; }
 h1,h2 { color:#0A2540; }
 .wallet, .topup { margin-bottom:20px; }
-.venture-card { border:1px solid #0A2540; border-radius:10px; background:#fff; padding:15px; margin-bottom:15px; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition: transform 0.2s; }
+.venture-card { border:1px solid #0A2540; border-radius:10px; background:#fff; padding:15px; margin-bottom:15px; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition:0.2s; }
 .venture-card:hover { transform:scale(1.02); }
 .venture-header { display:flex; justify-content:space-between; align-items:center; }
 .venture-progress { background:#e0e0e0; height:12px; border-radius:6px; overflow:hidden; margin-top:5px; }
@@ -40,39 +40,39 @@ button:disabled { opacity:0.6; cursor:not-allowed; }
 <div id="transactionsList"></div>
 
 <script type="module">
-import { initUser, addToWallet, allocateToVenture, onWalletChange, onTransactionsChange, onVenturesChange, seedDemoVentures, db, ref, set } from './firebase.js';
+import { initUserBalances, updateUserBalance, onBalanceChange, onUserTransactionsChange, seedVentures, contributeToVenture, onVenturesChange } from './firebase.js';
 
-const userId = "demo_user"; // replace with actual logged-in user
-await initUser(userId, "Demo User", "demo@example.com");
-await seedDemoVentures();
+const userId = "demo_user"; // Replace with actual user ID
+await initUserBalances(userId);
+await seedVentures();
 
-// ------------------- WALLET -------------------
-const walletBalanceEl = document.getElementById('walletBalance');
-onWalletChange(userId, wallet => { walletBalanceEl.textContent = wallet.available.toFixed(2); });
+// WALLET
+const walletEl = document.getElementById('walletBalance');
+onBalanceChange(userId, balances => walletEl.textContent = ((balances.deposit||0)+(balances.earnings||0)).toFixed(2));
 
-// ------------------- TOP-UP -------------------
-document.getElementById('btnTopup').addEventListener('click', async () => {
+// TOP-UP
+document.getElementById('btnTopup').addEventListener('click', async ()=>{
   const amt = Number(document.getElementById('topupAmount').value);
-  if(!amt || amt<=0){ alert("Enter valid amount"); return; }
-  await addToWallet(userId, amt);
+  if(!amt||amt<=0){ alert("Enter valid amount"); return; }
+  await updateUserBalance(userId, 'deposit', amt);
   document.getElementById('topupAmount').value='';
 });
 
-// ------------------- TRANSACTIONS -------------------
-const transactionsList = document.getElementById('transactionsList');
-onTransactionsChange(userId, txns => {
-  transactionsList.innerHTML='';
+// TRANSACTIONS
+const txList = document.getElementById('transactionsList');
+onUserTransactionsChange(userId, txns=>{
+  txList.innerHTML='';
   Object.values(txns).sort((a,b)=> new Date(b.date)-new Date(a.date)).forEach(t=>{
-    const div=document.createElement('div');
+    const div = document.createElement('div');
     div.textContent = `${t.date.split("T")[0]}: ${t.type} ZMW ${t.amount} → ${t.to} [${t.status}]`;
-    transactionsList.appendChild(div);
+    txList.appendChild(div);
   });
 });
 
-// ------------------- VENTURES -------------------
-const venturesList = document.getElementById('venturesList');
-onVenturesChange(ventures => {
-  venturesList.innerHTML='';
+// VENTURES
+const venturesDiv = document.getElementById('venturesList');
+onVenturesChange(ventures=>{
+  venturesDiv.innerHTML='';
   Object.keys(ventures).forEach(id=>{
     const v = ventures[id];
     const div = document.createElement('div');
@@ -80,25 +80,25 @@ onVenturesChange(ventures => {
     div.innerHTML=`
       <div class="venture-header">
         <h3>${v.name}</h3>
-        <p>Total Raised: ZMW <span id="total_${id}">${v.totalAllocated || 0}</span></p>
+        <p>Total Raised: ZMW <span id="total_${id}">${v.totalAllocated||0}</span></p>
       </div>
       <p>${v.description}</p>
       <div class="venture-progress"><div id="bar_${id}" class="venture-progress-inner" style="width:${Math.min((v.totalAllocated/1000)*100,100)}%"></div></div>
       <input type="number" placeholder="Amount ZMW" id="amt_${id}" />
       <button id="btn_${id}">Support Venture</button>
     `;
-    venturesList.appendChild(div);
+    venturesDiv.appendChild(div);
 
     document.getElementById(`btn_${id}`).addEventListener('click', async ()=>{
       const amt = Number(document.getElementById(`amt_${id}`).value);
-      if(!amt || amt<=0){ alert("Enter valid amount"); return; }
+      if(!amt||amt<=0){ alert("Enter valid amount"); return; }
       const btn = document.getElementById(`btn_${id}`);
       btn.disabled=true;
       try{
-        const result = await allocateToVenture(userId,id,amt);
-        document.getElementById(`total_${id}`).textContent=result.ventureTotal;
-        document.getElementById(`bar_${id}`).style.width=Math.min((result.ventureTotal/1000)*100,100)+'%';
-        alert(`Success! Wallet: ZMW ${result.newWallet}, Venture Total: ZMW ${result.ventureTotal}`);
+        const res = await contributeToVenture(userId, id, amt);
+        document.getElementById(`total_${id}`).textContent=res.ventureTotal;
+        document.getElementById(`bar_${id}`).style.width=Math.min((res.ventureTotal/1000)*100,100)+'%';
+        alert(`Success! Wallet: ZMW ${((res.balances.deposit||0)+(res.balances.earnings||0)).toFixed(2)}, Venture Total: ZMW ${res.ventureTotal}`);
       }catch(err){ alert(err.message); }
       btn.disabled=false;
       document.getElementById(`amt_${id}`).value='';
@@ -106,6 +106,5 @@ onVenturesChange(ventures => {
   });
 });
 </script>
-
 </body>
 </html>
