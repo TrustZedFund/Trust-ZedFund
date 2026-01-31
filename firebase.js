@@ -1,140 +1,125 @@
 // firebase.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { getDatabase, ref, set, update, get, onValue } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import { getDatabase, ref, set, get, update, onValue, push } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-// =====================
-// FIREBASE CONFIG
-// =====================
+// Firebase config
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
   authDomain: "trust-zedfund.firebaseapp.com",
   databaseURL: "https://trust-zedfund-default-rtdb.firebaseio.com",
   projectId: "trust-zedfund",
   storageBucket: "trust-zedfund.firebasestorage.app",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  messagingSenderId: "129257684900",
+  appId: "1:129257684900:web:95e94293366a26f9448b31"
 };
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
 export const db = getDatabase(app);
 
-// =====================
-// USER WALLET & TRANSACTIONS
-// =====================
+// ------------------- USER INIT -------------------
 export async function initUser(userId, name, email) {
   const userRef = ref(db, `users/${userId}`);
   const snap = await get(userRef);
   if (!snap.exists()) {
     await set(userRef, {
-      profile: { name, email, role: "member", createdAt: new Date().toISOString() },
-      wallet: { available: 0, locked: 0 },
+      name,
+      email,
+      wallet: { available: 0 },
       transactions: {}
     });
   }
 }
 
+// ------------------- WALLET -------------------
 export async function addToWallet(userId, amount) {
+  if(amount <=0) throw new Error("Amount must be > 0");
   const walletRef = ref(db, `users/${userId}/wallet`);
   const snap = await get(walletRef);
-  const wallet = snap.exists() ? snap.val() : { available: 0, locked: 0 };
-  const newAvailable = (wallet.available || 0) + amount;
-  await update(walletRef, { available: newAvailable });
+  let current = snap.exists() ? snap.val().available : 0;
+  current += amount;
+  await update(walletRef, { available: current });
 
-  const txnId = "txn_" + Date.now();
-  await set(ref(db, `users/${userId}/transactions/${txnId}`), {
-    type: "deposit",
+  // log transaction
+  const txRef = ref(db, `users/${userId}/transactions`);
+  const txId = "tx_" + Date.now();
+  await set(ref(db, `users/${userId}/transactions/${txId}`), {
+    type: "Wallet Top-up",
     amount,
-    from: "external",
-    to: "wallet",
-    status: "completed",
-    reference: txnId,
+    to: "Wallet",
+    status: "Completed",
     date: new Date().toISOString()
   });
 
-  return newAvailable;
+  return current;
 }
 
+// ------------------- VENTURES -------------------
 export async function allocateToVenture(userId, ventureId, amount) {
-  const walletRef = ref(db, `users/${userId}/wallet`);
-  const walletSnap = await get(walletRef);
-  const wallet = walletSnap.exists() ? walletSnap.val() : { available: 0 };
-  if (wallet.available < amount) throw new Error("Insufficient wallet balance");
+  // check wallet
+  const walletSnap = await get(ref(db, `users/${userId}/wallet`));
+  let wallet = walletSnap.exists() ? walletSnap.val().available : 0;
+  if(amount > wallet) throw new Error("Insufficient wallet balance");
 
-  await update(walletRef, { available: wallet.available - amount });
+  // deduct wallet
+  wallet -= amount;
+  await update(ref(db, `users/${userId}/wallet`), { available: wallet });
 
+  // update venture
   const ventureRef = ref(db, `ventures/${ventureId}`);
   const ventureSnap = await get(ventureRef);
-  const venture = ventureSnap.exists() ? ventureSnap.val() : { totalAllocated: 0, contributors: {} };
-  const contributors = venture.contributors || {};
-  contributors[userId] = (contributors[userId] || 0) + amount;
+  if(!ventureSnap.exists()) throw new Error("Venture not found");
+  const venture = ventureSnap.val();
+  venture.totalAllocated = (venture.totalAllocated || 0) + amount;
+  venture.contributors = venture.contributors || {};
+  venture.contributors[userId] = (venture.contributors[userId] || 0) + amount;
+  await update(ventureRef, venture);
 
-  await update(ventureRef, { totalAllocated: (venture.totalAllocated || 0) + amount, contributors });
-
-  const txnId = "txn_" + Date.now();
-  await set(ref(db, `users/${userId}/transactions/${txnId}`), {
-    type: "venture_allocation",
+  // log transaction
+  const txId = "tx_" + Date.now();
+  await set(ref(db, `users/${userId}/transactions/${txId}`), {
+    type: "Venture Contribution",
     amount,
-    from: "wallet",
-    to: ventureId,
-    status: "completed",
-    reference: txnId,
+    to: venture.name,
+    status: "Completed",
     date: new Date().toISOString()
   });
 
-  return { newWallet: wallet.available - amount, ventureTotal: venture.totalAllocated + amount };
+  return { newWallet: wallet, ventureTotal: venture.totalAllocated };
 }
 
-export async function allocateToCircle(userId, circleId, amount) {
-  const walletRef = ref(db, `users/${userId}/wallet`);
-  const walletSnap = await get(walletRef);
-  const wallet = walletSnap.exists() ? walletSnap.val() : { available: 0 };
-  if (wallet.available < amount) throw new Error("Insufficient wallet balance");
-
-  await update(walletRef, { available: wallet.available - amount });
-
-  const circleRef = ref(db, `savingsCircles/${circleId}`);
-  const circleSnap = await get(circleRef);
-  const circle = circleSnap.exists() ? circleSnap.val() : { totalAllocated: 0, contributors: {} };
-  const contributors = circle.contributors || {};
-  contributors[userId] = (contributors[userId] || 0) + amount;
-
-  await update(circleRef, { totalAllocated: (circle.totalAllocated || 0) + amount, contributors });
-
-  const txnId = "txn_" + Date.now();
-  await set(ref(db, `users/${userId}/transactions/${txnId}`), {
-    type: "circle_allocation",
-    amount,
-    from: "wallet",
-    to: circleId,
-    status: "completed",
-    reference: txnId,
-    date: new Date().toISOString()
-  });
-
-  return { newWallet: wallet.available - amount, circleTotal: circle.totalAllocated + amount };
-}
-
-// =====================
-// REAL-TIME LISTENERS
-// =====================
+// ------------------- REAL-TIME LISTENERS -------------------
 export function onWalletChange(userId, callback) {
   const walletRef = ref(db, `users/${userId}/wallet`);
-  onValue(walletRef, snap => callback(snap.exists() ? snap.val() : { available: 0, locked: 0 }));
+  onValue(walletRef, snap => {
+    callback(snap.exists() ? snap.val() : { available:0 });
+  });
 }
 
 export function onTransactionsChange(userId, callback) {
-  const txnRef = ref(db, `users/${userId}/transactions`);
-  onValue(txnRef, snap => callback(snap.exists() ? snap.val() : {}));
+  const txRef = ref(db, `users/${userId}/transactions`);
+  onValue(txRef, snap => {
+    callback(snap.exists() ? snap.val() : {});
+  });
 }
 
 export function onVenturesChange(callback) {
-  const venturesRef = ref(db, `ventures`);
-  onValue(venturesRef, snap => callback(snap.exists() ? snap.val() : {}));
+  const vRef = ref(db, `ventures`);
+  onValue(vRef, snap => {
+    callback(snap.exists() ? snap.val() : {});
+  });
 }
 
-export function onCirclesChange(callback) {
-  const circlesRef = ref(db, `savingsCircles`);
-  onValue(circlesRef, snap => callback(snap.exists() ? snap.val() : {}));
+// ------------------- SEED DEMO VENTURES -------------------
+export async function seedDemoVentures() {
+  const venturesSnap = await get(ref(db, `ventures`));
+  if(!venturesSnap.exists()){
+    const demoVentures = {
+      "v_001": { name:"Mary & James Bakery", description:"Community bakery in Lusaka", totalAllocated:0, contributors:{} },
+      "v_002": { name:"Eco Solar Kits", description:"Solar kits for rural homes", totalAllocated:0, contributors:{} },
+      "v_003": { name:"Local Artisans Hub", description:"Support local crafts", totalAllocated:0, contributors:{} }
+    };
+    for(const id in demoVentures){
+      await set(ref(db, `ventures/${id}`), demoVentures[id]);
+    }
+  }
 }
