@@ -5,21 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trust ZedFund Ventures</title>
 <style>
-body { font-family: sans-serif; background: #f5f7f9; padding: 20px; }
-h1,h2 { color:#0A2540; }
-.venture-card { border: 1px solid #0A2540; border-radius: 8px; padding: 15px; margin-bottom: 15px; background: #fff; transition: transform 0.2s; }
-.venture-card:hover { transform: scale(1.02); }
-button { background: #0A2540; color: #fff; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; }
-button:disabled { opacity: 0.6; cursor: not-allowed; }
+  body { font-family: 'Segoe UI', sans-serif; background:#f5f7f9; margin:0; padding:20px; }
+  h1,h2 { color:#0A2540; }
+  .wallet, .topup { margin-bottom:20px; }
+  .venture-card { 
+    border:1px solid #0A2540; border-radius:10px; background:#fff; 
+    padding:15px; margin-bottom:15px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+  }
+  .venture-card:hover { transform:scale(1.02); }
+  .venture-header { display:flex; justify-content:space-between; align-items:center; }
+  .venture-progress { background:#e0e0e0; height:12px; border-radius:6px; overflow:hidden; margin-top:5px; }
+  .venture-progress-inner { background:#1aa08a; height:100%; width:0%; transition: width 0.3s; }
+  input[type=number] { padding:5px; width:100px; margin-right:10px; }
+  button { padding:6px 12px; background:#0A2540; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+  button:disabled { opacity:0.6; cursor:not-allowed; }
+  #transactionsList div { background:#fff; padding:8px; margin-bottom:5px; border-radius:4px; border-left:4px solid #1aa08a; }
 </style>
 </head>
 <body>
 
-<h1>Available Ventures</h1>
-<div id="venturesList"></div>
+<h1>Trust ZedFund Ventures</h1>
 
-<h2>My Wallet</h2>
-<p>Available Balance: ZMW <span id="walletBalance">0</span></p>
+<div class="wallet">
+  <h2>My Wallet</h2>
+  <p>Available Balance: ZMW <span id="walletBalance">0</span></p>
+</div>
+
+<div class="topup">
+  <input type="number" id="topupAmount" placeholder="Top-up ZMW">
+  <button id="btnTopup">Add to Wallet</button>
+</div>
+
+<h2>Available Ventures</h2>
+<div id="venturesList"></div>
 
 <h2>Transaction History</h2>
 <div id="transactionsList"></div>
@@ -29,34 +48,54 @@ import {
   initUser, addToWallet, allocateToVenture, onWalletChange, onTransactionsChange, onVenturesChange 
 } from './firebase.js';
 
-const userId = "demo_user"; // Replace with actual auth.uid
+const userId = "demo_user"; // replace with actual logged-in user
 await initUser(userId, "Demo User", "demo@example.com");
 
-// -------------------
-// LIVE WALLET
-// -------------------
+// ------------------- WALLET -------------------
 const walletBalanceEl = document.getElementById('walletBalance');
 onWalletChange(userId, wallet => {
-  walletBalanceEl.textContent = wallet.available;
+  walletBalanceEl.textContent = wallet.available.toFixed(2);
 });
 
-// -------------------
-// LIVE TRANSACTIONS
-// -------------------
+// ------------------- TOP-UP -------------------
+document.getElementById('btnTopup').addEventListener('click', async () => {
+  const amt = Number(document.getElementById('topupAmount').value);
+  if (!amt || amt <=0) { alert("Enter valid amount"); return; }
+  await addToWallet(userId, amt);
+  document.getElementById('topupAmount').value = '';
+});
+
+// ------------------- TRANSACTIONS -------------------
 const transactionsList = document.getElementById('transactionsList');
 onTransactionsChange(userId, txns => {
   transactionsList.innerHTML = '';
-  Object.values(txns).forEach(t => {
+  Object.values(txns).sort((a,b)=> new Date(b.date)-new Date(a.date)).forEach(t => {
     const div = document.createElement('div');
-    div.textContent = `${t.date}: ${t.type} ZMW ${t.amount} → ${t.to} [${t.status}]`;
+    div.textContent = `${t.date.split("T")[0]}: ${t.type} ZMW ${t.amount} → ${t.to} [${t.status}]`;
     transactionsList.appendChild(div);
   });
 });
 
-// -------------------
-// LIVE VENTURES
-// -------------------
+// ------------------- VENTURES -------------------
 const venturesList = document.getElementById('venturesList');
+
+// Seed demo ventures if none exist
+const demoVentures = {
+  "v_001": { name:"Mary & James Bakery", description:"Community bakery in Lusaka", totalAllocated:0, contributors:{} },
+  "v_002": { name:"Eco Solar Kits", description:"Solar kits for rural homes", totalAllocated:0, contributors:{} },
+  "v_003": { name:"Local Artisans Hub", description:"Support local crafts and small businesses", totalAllocated:0, contributors:{} }
+};
+
+// Populate Firebase with demo ventures if empty
+onVenturesChange(async ventures => {
+  if(!ventures || Object.keys(ventures).length===0) {
+    for(const id in demoVentures){
+      const vRef = demoVentures[id];
+      await set(ref(db, `ventures/${id}`), vRef);
+    }
+  }
+});
+
 onVenturesChange(ventures => {
   venturesList.innerHTML = '';
   Object.keys(ventures).forEach(id => {
@@ -64,27 +103,34 @@ onVenturesChange(ventures => {
     const div = document.createElement('div');
     div.className = 'venture-card';
     div.innerHTML = `
-      <h3>${v.name}</h3>
+      <div class="venture-header">
+        <h3>${v.name}</h3>
+        <p>Total Raised: ZMW <span id="total_${id}">${v.totalAllocated || 0}</span></p>
+      </div>
       <p>${v.description}</p>
-      <p>Total Raised: ZMW ${v.totalAllocated || 0}</p>
+      <div class="venture-progress"><div id="bar_${id}" class="venture-progress-inner" style="width:${Math.min((v.totalAllocated/1000)*100,100)}%"></div></div>
       <input type="number" placeholder="Amount ZMW" id="amt_${id}" />
       <button id="btn_${id}">Support Venture</button>
     `;
     venturesList.appendChild(div);
 
-    const btn = document.getElementById(`btn_${id}`);
-    btn.addEventListener('click', async () => {
+    document.getElementById(`btn_${id}`).addEventListener('click', async ()=>{
       const amt = Number(document.getElementById(`amt_${id}`).value);
-      if (!amt || amt <= 0) { alert("Enter valid amount"); return; }
-      btn.disabled = true;
-      try {
+      if(!amt || amt<=0){ alert("Enter valid amount"); return; }
+      const btn = document.getElementById(`btn_${id}`);
+      btn.disabled=true;
+      try{
         const result = await allocateToVenture(userId, id, amt);
-        alert(`Success! New wallet: ZMW ${result.newWallet}, Venture Total: ZMW ${result.ventureTotal}`);
-      } catch(err) { alert(err.message); }
-      btn.disabled = false;
+        document.getElementById(`total_${id}`).textContent=result.ventureTotal;
+        document.getElementById(`bar_${id}`).style.width=Math.min((result.ventureTotal/1000)*100,100)+'%';
+        alert(`Success! Wallet: ZMW ${result.newWallet}, Venture Total: ZMW ${result.ventureTotal}`);
+      }catch(err){ alert(err.message); }
+      btn.disabled=false;
+      document.getElementById(`amt_${id}`).value='';
     });
   });
 });
+
 </script>
 
 </body>
