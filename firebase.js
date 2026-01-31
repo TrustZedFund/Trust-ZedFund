@@ -157,3 +157,69 @@ export function onVenturesChange(callback){
   const venturesRef = ref(db, 'ventures');
   onValue(venturesRef, snap => callback(snap.exists()? snap.val() : {}));
 }
+/* ==================================
+   COMMUNITY SAVINGS / TRUST CIRCLES
+================================== */
+
+// Initialize demo circles if empty
+export async function seedCircles() {
+  const circlesSnap = await get(ref(db, 'circles'));
+  if (!circlesSnap.exists()) {
+    const demo = {
+      "c_001": { name:"Family Circle", totalAllocated:0, members:{}, contributions:{} },
+      "c_002": { name:"Friends Circle", totalAllocated:0, members:{}, contributions:{} },
+      "c_003": { name:"Community Circle", totalAllocated:0, members:{}, contributions:{} }
+    };
+    for (const id in demo) {
+      await set(ref(db, `circles/${id}`), demo[id]);
+    }
+  }
+}
+
+// Join a circle
+export async function joinCircle(userId, circleId) {
+  const circleRef = ref(db, `circles/${circleId}/members/${userId}`);
+  await set(circleRef, { joinedAt: new Date().toISOString() });
+}
+
+// Contribute to a circle
+export async function contributeToCircle(userId, circleId, amount) {
+  const balSnap = await get(ref(db, `users/${userId}/balances`));
+  const balances = balSnap.exists() ? balSnap.val() : { deposit:0, earnings:0, referralWallet:0 };
+  const totalAvailable = (balances.deposit||0) + (balances.earnings||0);
+
+  if (amount > totalAvailable) throw new Error("Insufficient funds");
+
+  let depositDeduct = Math.min(amount, balances.deposit||0);
+  let earningsDeduct = amount - depositDeduct;
+  balances.deposit -= depositDeduct;
+  balances.earnings -= earningsDeduct;
+  await update(ref(db, `users/${userId}/balances`), balances);
+
+  const circleRef = ref(db, `circles/${circleId}`);
+  const circleSnap = await get(circleRef);
+  if (!circleSnap.exists()) throw new Error("Circle not found");
+
+  const circle = circleSnap.val();
+  circle.totalAllocated = (circle.totalAllocated||0) + amount;
+  circle.contributions = circle.contributions || {};
+  circle.contributions[userId] = (circle.contributions[userId]||0) + amount;
+  await update(circleRef, circle);
+
+  const txId = "tx_" + Date.now();
+  await set(ref(db, `users/${userId}/transactions/${txId}`), {
+    type:"Circle Contribution",
+    amount,
+    to:circle.name,
+    status:"Completed",
+    date:new Date().toISOString()
+  });
+
+  return { balances, circleTotal: circle.totalAllocated };
+}
+
+// Real-time updates for circles
+export function onCirclesChange(callback){
+  const circlesRef = ref(db, 'circles');
+  onValue(circlesRef, snap => callback(snap.exists()? snap.val() : {}));
+}
