@@ -1,229 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Get Started | Trust ZedFund</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust ZedFund | Guided Setup</title>
 
-  <style>
-    :root {
-      --dark-green: #0b3d2e;
-      --dark-green-hover: #0e4a37;
-      --yellow: #ffd700;
-      --white: #ffffff;
-    }
+<style>
+:root {
+  --dark-green: #0b3d2e;
+  --dark-green-hover: #0e4a37;
+  --yellow: #ffd700;
+  --white: #ffffff;
+}
 
-    body {
-      margin: 0;
-      padding: 40px 20px;
-      background-color: #06271d;
-      color: var(--white);
-      font-family: Arial, Helvetica, sans-serif;
-    }
+body {
+  background:#06271d;
+  color:var(--white);
+  font-family: Arial, sans-serif;
+  padding:40px 20px;
+}
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+.container {
+  max-width:900px;
+  margin:auto;
+}
 
-    /* Progress Bar */
-    .progress {
-      height: 6px;
-      background: rgba(255,255,255,0.15);
-      border-radius: 6px;
-      margin-bottom: 28px;
-      overflow: hidden;
-    }
+.progress {
+  height:6px;
+  background:rgba(255,255,255,.2);
+  border-radius:6px;
+  overflow:hidden;
+  margin-bottom:24px;
+}
 
-    .progress-bar {
-      width: 33%;
-      height: 100%;
-      background-color: var(--yellow);
-      transition: width 0.4s ease;
-    }
+.progress-bar {
+  height:100%;
+  width:20%;
+  background:var(--yellow);
+  transition:.4s;
+}
 
-    .card {
-      background-color: var(--dark-green);
-      padding: 32px;
-      border-radius: 16px;
-      margin-bottom: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-      transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
-      animation: fadeUp 0.5s ease;
-    }
+.card {
+  background:var(--dark-green);
+  padding:32px;
+  border-radius:16px;
+  margin-bottom:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
+  animation:fade .4s ease;
+}
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+@keyframes fade {
+  from {opacity:0; transform:translateY(8px);}
+  to {opacity:1; transform:translateY(0);}
+}
 
-    .card:hover {
-      background-color: var(--dark-green-hover);
-      transform: translateY(-3px);
-    }
+h2 {color:var(--yellow); margin-top:0;}
+p {line-height:1.6;}
 
-    h2 {
-      color: var(--yellow);
-      margin-top: 0;
-    }
+.btn {
+  padding:14px 30px;
+  border-radius:40px;
+  background:var(--yellow);
+  color:#06271d;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.3s;
+}
 
-    p {
-      line-height: 1.6;
-    }
+.btn:hover {
+  transform:translateY(-2px);
+}
 
-    .options {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 24px;
-    }
+.btn-outline {
+  background:transparent;
+  border:2px solid var(--yellow);
+  color:var(--yellow);
+}
 
-    .option-btn {
-      padding: 18px;
-      border-radius: 14px;
-      border: 2px solid var(--yellow);
-      background: transparent;
-      color: var(--yellow);
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
-    }
+.options {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+  margin-top:20px;
+}
 
-    .option-btn:hover {
-      background-color: var(--yellow);
-      color: #06271d;
-      transform: translateY(-2px);
-    }
+.hidden {display:none;}
 
-    .hidden {
-      display: none;
-    }
+.preview {
+  background:#06271d;
+  border-radius:12px;
+  padding:16px;
+  margin-top:16px;
+  font-size:.9rem;
+}
 
-    ul {
-      padding-left: 20px;
-    }
+label {
+  display:block;
+  margin-top:12px;
+}
 
-    .cta-btn {
-      display: inline-block;
-      margin-top: 24px;
-      padding: 14px 34px;
-      background-color: var(--yellow);
-      color: #06271d;
-      font-weight: bold;
-      border-radius: 40px;
-      text-decoration: none;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .cta-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-    }
-
-    .trust-signals {
-      margin-top: 18px;
-      font-size: 0.85rem;
-      opacity: 0.9;
-    }
-
-    .trust-signals span {
-      margin-right: 12px;
-    }
-
-  </style>
+input, select {
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin-top:6px;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <!-- Progress -->
-  <div class="progress">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
+<div class="progress">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
 
-  <!-- STEP 1 -->
-  <section class="card" id="step1">
-    <h2>Welcome to Trust ZedFund</h2>
-    <p>
-      You’re about to set up a secure way to manage money with others.
-      Let’s start by choosing who this is for.
-    </p>
+<!-- STEP 1 -->
+<section class="card" id="step1">
+<h2>Welcome to Trust ZedFund</h2>
+<p>Let’s set up your shared money space safely and correctly.</p>
 
-    <div class="options">
-      <button class="option-btn" onclick="selectPath('individual')">👤 Individual</button>
-      <button class="option-btn" onclick="selectPath('community')">👥 Community</button>
-      <button class="option-btn" onclick="selectPath('organization')">🏢 Organization</button>
-    </div>
+<div class="options">
+  <button class="btn-outline btn" onclick="chooseType('Individual')">👤 Individual</button>
+  <button class="btn-outline btn" onclick="chooseType('Community')">👥 Community</button>
+  <button class="btn-outline btn" onclick="chooseType('Organization')">🏢 Organization</button>
+</div>
 
-    <div class="trust-signals">
-      <span>🔒 Rule-based</span>
-      <span>👁 Transparent</span>
-      <span>🤝 Trust-first</span>
-    </div>
-  </section>
+<p style="margin-top:16px;opacity:.8">🔒 Rules enforced • 👁 Transparent • 🤝 Trust-first</p>
+</section>
 
-  <!-- INDIVIDUAL -->
-  <section class="card hidden" id="individual">
-    <h2>👤 Individuals</h2>
-    <p>
-      Perfect when money is shared between two or a few people.
-    </p>
-    <ul>
-      <li>Name your shared wallet</li>
-      <li>Invite the other person</li>
-      <li>Set approval rules</li>
-      <li>Track everything clearly</li>
-    </ul>
-    <p><strong>Nothing moves unless everyone agrees.</strong></p>
-    <a href="register.html?type=individual" class="cta-btn">Create a Shared Wallet</a>
-  </section>
+<!-- STEP 2 -->
+<section class="card hidden" id="step2">
+<h2>Name Your Fund</h2>
+<p>This name will appear on all transactions.</p>
 
-  <!-- COMMUNITY -->
-  <section class="card hidden" id="community">
-    <h2>👥 Communities</h2>
-    <p>
-      Built for groups raising or managing funds together.
-    </p>
-    <ul>
-      <li>Create a community fund</li>
-      <li>Assign coordinators</li>
-      <li>Set contribution rules</li>
-      <li>Give members full visibility</li>
-    </ul>
-    <p><strong>Everyone sees how money is used.</strong></p>
-    <a href="register.html?type=community" class="cta-btn">Start a Community Fund</a>
-  </section>
+<input id="fundName" placeholder="e.g. School Project Fund">
 
-  <!-- ORGANIZATION -->
-  <section class="card hidden" id="organization">
-    <h2>🏢 Organizations</h2>
-    <p>
-      Designed for professional fund governance and accountability.
-    </p>
-    <ul>
-      <li>Define approval layers</li>
-      <li>Control spending limits</li>
-      <li>Enable audit trails</li>
-      <li>Generate reports instantly</li>
-    </ul>
-    <p><strong>Institution-grade control without complexity.</strong></p>
-    <a href="register.html?type=organization" class="cta-btn">Request Organization Account</a>
-  </section>
+<button class="btn" style="margin-top:20px" onclick="goStep(3)">Continue</button>
+</section>
+
+<!-- STEP 3 -->
+<section class="card hidden" id="step3">
+<h2>Set Basic Rules</h2>
+
+<label>Who can approve spending?</label>
+<select id="approvals">
+  <option>All members</option>
+  <option>Majority approval</option>
+  <option>Admin only</option>
+</select>
+
+<label>When can money be released?</label>
+<select id="release">
+  <option>After approval</option>
+  <option>On specific date</option>
+  <option>On milestone completion</option>
+</select>
+
+<button class="btn" style="margin-top:20px" onclick="goStep(4)">Continue</button>
+</section>
+
+<!-- STEP 4 -->
+<section class="card hidden" id="step4">
+<h2>AI-Assisted Recommendation</h2>
+<p>Based on your setup, we recommend:</p>
+
+<div class="preview">
+✔ Dual approval for withdrawals<br>
+✔ Real-time visibility for all members<br>
+✔ Spending limits per transaction
+</div>
+
+<p style="opacity:.8;margin-top:12px">
+You can change these anytime.
+</p>
+
+<button class="btn" onclick="goStep(5)">Looks Good</button>
+</section>
+
+<!-- STEP 5 -->
+<section class="card hidden" id="step5">
+<h2>Preview Your Fund</h2>
+
+<div class="preview">
+<strong>Fund:</strong> <span id="previewName"></span><br>
+<strong>Type:</strong> <span id="previewType"></span><br>
+<strong>Approval:</strong> <span id="previewApproval"></span><br>
+<strong>Release:</strong> <span id="previewRelease"></span><br>
+<br>
+Balance: $0.00<br>
+Status: Locked until rules are met
+</div>
+
+<button class="btn" style="margin-top:20px" onclick="finish()">Create My Fund</button>
+</section>
+
+<!-- FINAL -->
+<section class="card hidden" id="final">
+<h2>🎉 You’re Ready</h2>
+<p>Your trust structure is ready. Next step: invite others and start funding.</p>
+
+<a href="register.html" class="btn">Create Account</a>
+
+<p style="margin-top:12px;font-size:.85rem;opacity:.8">
+Setup saved • You can resume anytime
+</p>
+</section>
 
 </div>
 
 <script>
-  function selectPath(type) {
-    document.getElementById('individual').classList.add('hidden');
-    document.getElementById('community').classList.add('hidden');
-    document.getElementById('organization').classList.add('hidden');
+let state = JSON.parse(localStorage.getItem('tzf')) || {};
+const progress = document.getElementById('progressBar');
 
-    document.getElementById(type).classList.remove('hidden');
-    document.getElementById('progressBar').style.width = '66%';
+function chooseType(type){
+  state.type = type;
+  save();
+  goStep(2);
+}
 
-    document.getElementById(type).scrollIntoView({ behavior: 'smooth' });
-  }
+function goStep(step){
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+  document.getElementById('step'+step)?.classList.remove('hidden');
+  progress.style.width = (step*20)+'%';
+  save();
+}
+
+function finish(){
+  document.getElementById('previewName').innerText = state.fundName;
+  document.getElementById('previewType').innerText = state.type;
+  document.getElementById('previewApproval').innerText = document.getElementById('approvals').value;
+  document.getElementById('previewRelease').innerText = document.getElementById('release').value;
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+  document.getElementById('final').classList.remove('hidden');
+  progress.style.width='100%';
+}
+
+function save(){
+  state.fundName = document.getElementById('fundName')?.value || state.fundName;
+  localStorage.setItem('tzf', JSON.stringify(state));
+}
+
+if(state.type){
+  document.getElementById('step1').classList.add('hidden');
+  document.getElementById('step2').classList.remove('hidden');
+}
 </script>
 
 </body>
