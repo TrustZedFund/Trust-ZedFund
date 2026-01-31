@@ -26,13 +26,35 @@
       margin: 0 auto;
     }
 
+    /* Progress Bar */
+    .progress {
+      height: 6px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 6px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 33%;
+      height: 100%;
+      background-color: var(--yellow);
+      transition: width 0.4s ease;
+    }
+
     .card {
       background-color: var(--dark-green);
       padding: 32px;
       border-radius: 16px;
       margin-bottom: 24px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-      transition: background-color 0.3s ease, transform 0.3s ease;
+      transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+      animation: fadeUp 0.5s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .card:hover {
@@ -97,6 +119,17 @@
       transform: translateY(-3px);
       box-shadow: 0 12px 30px rgba(0,0,0,0.4);
     }
+
+    .trust-signals {
+      margin-top: 18px;
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .trust-signals span {
+      margin-right: 12px;
+    }
+
   </style>
 </head>
 
@@ -104,84 +137,91 @@
 
 <div class="container">
 
+  <!-- Progress -->
+  <div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
   <!-- STEP 1 -->
-  <section class="card">
+  <section class="card" id="step1">
     <h2>Welcome to Trust ZedFund</h2>
     <p>
-      Let’s set this up properly.  
-      First, tell us who you’re managing money with.
+      You’re about to set up a secure way to manage money with others.
+      Let’s start by choosing who this is for.
     </p>
 
     <div class="options">
-      <button class="option-btn" onclick="showJourney('individual')">👤 Individual</button>
-      <button class="option-btn" onclick="showJourney('community')">👥 Community</button>
-      <button class="option-btn" onclick="showJourney('organization')">🏢 Organization</button>
+      <button class="option-btn" onclick="selectPath('individual')">👤 Individual</button>
+      <button class="option-btn" onclick="selectPath('community')">👥 Community</button>
+      <button class="option-btn" onclick="selectPath('organization')">🏢 Organization</button>
+    </div>
+
+    <div class="trust-signals">
+      <span>🔒 Rule-based</span>
+      <span>👁 Transparent</span>
+      <span>🤝 Trust-first</span>
     </div>
   </section>
 
-  <!-- INDIVIDUAL JOURNEY -->
+  <!-- INDIVIDUAL -->
   <section class="card hidden" id="individual">
-    <h2>👤 Individuals — Your First Steps</h2>
+    <h2>👤 Individuals</h2>
     <p>
-      Trust ZedFund helps you manage money together — safely and fairly.
+      Perfect when money is shared between two or a few people.
     </p>
     <ul>
       <li>Name your shared wallet</li>
       <li>Invite the other person</li>
       <li>Set approval rules</li>
-      <li>Track every action clearly</li>
+      <li>Track everything clearly</li>
     </ul>
-    <p>
-      Nothing moves unless everyone agrees.
-    </p>
+    <p><strong>Nothing moves unless everyone agrees.</strong></p>
     <a href="register.html?type=individual" class="cta-btn">Create a Shared Wallet</a>
   </section>
 
-  <!-- COMMUNITY JOURNEY -->
+  <!-- COMMUNITY -->
   <section class="card hidden" id="community">
-    <h2>👥 Communities — Your First Steps</h2>
+    <h2>👥 Communities</h2>
     <p>
-      Perfect for groups raising or managing money together.
+      Built for groups raising or managing funds together.
     </p>
     <ul>
-      <li>Create your community fund</li>
+      <li>Create a community fund</li>
       <li>Assign coordinators</li>
-      <li>Set contribution & approval rules</li>
-      <li>Give members transparent visibility</li>
+      <li>Set contribution rules</li>
+      <li>Give members full visibility</li>
     </ul>
-    <p>
-      Everyone sees how money is used — no doubts, no confusion.
-    </p>
+    <p><strong>Everyone sees how money is used.</strong></p>
     <a href="register.html?type=community" class="cta-btn">Start a Community Fund</a>
   </section>
 
-  <!-- ORGANIZATION JOURNEY -->
+  <!-- ORGANIZATION -->
   <section class="card hidden" id="organization">
-    <h2>🏢 Organizations — Your First Steps</h2>
+    <h2>🏢 Organizations</h2>
     <p>
-      Built for professional fund governance and accountability.
+      Designed for professional fund governance and accountability.
     </p>
     <ul>
-      <li>Set up your organization workspace</li>
       <li>Define approval layers</li>
       <li>Control spending limits</li>
-      <li>Generate audit-ready records</li>
+      <li>Enable audit trails</li>
+      <li>Generate reports instantly</li>
     </ul>
-    <p>
-      Your fund becomes transparent, controlled, and trusted.
-    </p>
+    <p><strong>Institution-grade control without complexity.</strong></p>
     <a href="register.html?type=organization" class="cta-btn">Request Organization Account</a>
   </section>
 
 </div>
 
 <script>
-  function showJourney(type) {
+  function selectPath(type) {
     document.getElementById('individual').classList.add('hidden');
     document.getElementById('community').classList.add('hidden');
     document.getElementById('organization').classList.add('hidden');
 
     document.getElementById(type).classList.remove('hidden');
+    document.getElementById('progressBar').style.width = '66%';
+
     document.getElementById(type).scrollIntoView({ behavior: 'smooth' });
   }
 </script>
