@@ -1,52 +1,94 @@
-// 🔹 Firebase config (REPLACE)
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com"
-};
+import { auth, db } from "./firebase.js";
+import { ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+// ==============================
+// AUTH CHECK
+// ==============================
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    alert("Please log in to access community ventures.");
+    window.location.href = "index.html";
+    return;
+  }
 
-// TEMP logged-in member
-const memberId = "user_001";
-
-// Load ventures
-db.ref("ventures").on("value", snapshot => {
-  const container = document.getElementById("ventures");
-  container.innerHTML = "";
-
-  snapshot.forEach(child => {
-    const v = child.val();
-    const id = child.key;
-
-    container.innerHTML += `
-      <div class="venture-card">
-        <h3>${v.name}</h3>
-        <p>${v.description}</p>
-
-        <input type="number" id="amt-${id}" placeholder="Amount (ZMW)">
-        <button onclick="contribute('${id}')">Support Project</button>
-
-        <small>Contributions are tracked and subject to admin confirmation.</small>
-      </div>
-    `;
-  });
+  loadVentures(user.uid);
 });
 
-// Submit contribution
-function contribute(ventureId) {
-  const amount = document.getElementById("amt-" + ventureId).value;
-  if (!amount || amount <= 0) return alert("Enter a valid amount");
+// ==============================
+// LOAD VENTURES (REAL-TIME)
+// ==============================
+function loadVentures(userId) {
+  const venturesRef = ref(db, "ventures");
+  const container = document.getElementById("ventures");
 
-  const ref = db.ref("contributions").push();
-  ref.set({
-    memberId,
+  onValue(venturesRef, snapshot => {
+    container.innerHTML = "";
+
+    if (!snapshot.exists()) {
+      container.innerHTML = "<p>No active ventures available.</p>";
+      return;
+    }
+
+    snapshot.forEach(child => {
+      const venture = child.val();
+      const ventureId = child.key;
+
+      if (venture.status !== "open") return;
+
+      const card = document.createElement("div");
+      card.className = "venture-card";
+
+      card.innerHTML = `
+        <h3>${venture.name}</h3>
+        <p>${venture.description}</p>
+
+        <input 
+          type="number" 
+          min="1"
+          placeholder="Contribution amount (ZMW)"
+          id="amount-${ventureId}"
+        />
+
+        <button data-id="${ventureId}">
+          Submit Contribution
+        </button>
+
+        <div class="meta">
+          Contributions are recorded as <strong>pending</strong> until confirmed.
+        </div>
+      `;
+
+      card.querySelector("button").addEventListener("click", () => {
+        submitContribution(userId, ventureId);
+      });
+
+      container.appendChild(card);
+    });
+  });
+}
+
+// ==============================
+// SUBMIT CONTRIBUTION (PENDING)
+// ==============================
+function submitContribution(userId, ventureId) {
+  const input = document.getElementById(`amount-${ventureId}`);
+  const amount = Number(input.value);
+
+  if (!amount || amount <= 0) {
+    alert("Please enter a valid amount.");
+    return;
+  }
+
+  const contribRef = push(ref(db, "ventureContributions"));
+
+  set(contribRef, {
+    uid: userId,
     ventureId,
-    amount: Number(amount),
+    amount,
     status: "pending",
-    timestamp: Date.now()
+    createdAt: Date.now()
   });
 
-  alert("Contribution recorded. Awaiting confirmation.");
+  input.value = "";
+  alert("Contribution recorded. Awaiting admin confirmation.");
 }
