@@ -208,27 +208,28 @@ h1, h2, h3, h4 {
 #who-its-for {
   color: var(--tzf-text-dark);
 }
-/* HARD FIX: Force readable text in Who-It’s-For section */
-#who-its-for .who-card {
-  background: #ffffff !important;
-}
-
-#who-its-for .who-card.for {
-  border-top: 6px solid #1aa08a !important;
-}
-
-#who-its-for .who-card.not-for {
-  border-top: 6px solid #c0392b !important;
-}
-/* Make ONLY the Who-It’s-For list text readable */
+/* FORCE readability ONLY for Who-It’s-For text */
 #who-its-for .who-card h3,
-#who-its-for .who-card ul li {
-  color: #0A2540 !important;
+#who-its-for .who-card ul {
+  background: rgba(10, 37, 64, 0.95); /* dark blue */
+  color: #ffffff !important;
+  padding: 18px 20px;
+  border-radius: 12px;
 }
 
-/* Slight emphasis for clarity */
-#who-its-for .who-card ul li strong {
-  color: #0f6f61 !important;
+/* List spacing */
+#who-its-for .who-card ul li {
+  color: #ffffff !important;
+  margin-bottom: 8px;
+}
+
+/* Icons / emphasis */
+#who-its-for .who-card.for h3 {
+  border-left: 6px solid #1aa08a;
+}
+
+#who-its-for .who-card.not-for h3 {
+  border-left: 6px solid #c0392b;
 }
 
 </style>
