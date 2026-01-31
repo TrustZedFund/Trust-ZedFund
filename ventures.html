@@ -6,6 +6,7 @@
 <title>Trust ZedFund Ventures</title>
 <style>
 body { font-family: sans-serif; background: #f5f7f9; padding: 20px; }
+h1,h2 { color:#0A2540; }
 .venture-card { border: 1px solid #0A2540; border-radius: 8px; padding: 15px; margin-bottom: 15px; background: #fff; transition: transform 0.2s; }
 .venture-card:hover { transform: scale(1.02); }
 button { background: #0A2540; color: #fff; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; }
@@ -24,20 +25,25 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
 <div id="transactionsList"></div>
 
 <script type="module">
-import { auth, db, onWalletChange, onTransactionsChange, onVenturesChange, allocateToVenture } from './firebase.js';
+import { 
+  initUser, addToWallet, allocateToVenture, onWalletChange, onTransactionsChange, onVenturesChange 
+} from './firebase.js';
 
-const userId = "USER_ID_HERE"; // Replace with actual logged-in user
+const userId = "demo_user"; // Replace with actual auth.uid
+await initUser(userId, "Demo User", "demo@example.com");
 
-const venturesList = document.getElementById('venturesList');
+// -------------------
+// LIVE WALLET
+// -------------------
 const walletBalanceEl = document.getElementById('walletBalance');
-const transactionsList = document.getElementById('transactionsList');
-
-// Live wallet
 onWalletChange(userId, wallet => {
   walletBalanceEl.textContent = wallet.available;
 });
 
-// Live transactions
+// -------------------
+// LIVE TRANSACTIONS
+// -------------------
+const transactionsList = document.getElementById('transactionsList');
 onTransactionsChange(userId, txns => {
   transactionsList.innerHTML = '';
   Object.values(txns).forEach(t => {
@@ -47,7 +53,10 @@ onTransactionsChange(userId, txns => {
   });
 });
 
-// Live ventures
+// -------------------
+// LIVE VENTURES
+// -------------------
+const venturesList = document.getElementById('venturesList');
 onVenturesChange(ventures => {
   venturesList.innerHTML = '';
   Object.keys(ventures).forEach(id => {
@@ -71,7 +80,7 @@ onVenturesChange(ventures => {
       try {
         const result = await allocateToVenture(userId, id, amt);
         alert(`Success! New wallet: ZMW ${result.newWallet}, Venture Total: ZMW ${result.ventureTotal}`);
-      } catch (err) { alert(err.message); }
+      } catch(err) { alert(err.message); }
       btn.disabled = false;
     });
   });
