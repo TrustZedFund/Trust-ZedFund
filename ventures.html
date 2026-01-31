@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support Ventures | Trust ZedFund</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#F7FDFC;color:#0A2540;}
+header{background:#1aa08a;color:#fff;text-align:center;padding:40px 20px;}
+header h1{margin:0;font-size:2em;}
+header p{margin-top:8px;}
+.dashboard{max-width:1100px;margin:30px auto;padding:0 20px;}
+.wallet-summary{background:#fff;padding:25px;border-radius:14px;box-shadow:0 6px 15px rgba(0,0,0,0.08);margin-bottom:30px;}
+.wallet-summary h2{margin-top:0;color:#0A2540;}
+.ventures-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;}
+.venture-card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 6px 15px rgba(0,0,0,0.08);transition: transform 0.3s ease;}
+.venture-card:hover{transform:translateY(-6px);box-shadow:0 12px 25px rgba(0,0,0,0.12);}
+.venture-card h3{margin-top:0;color:#0A2540;}
+.venture-card p{line-height:1.5;color:#444;}
+.venture-card .simulate{margin:10px 0;background:#1aa08a;color:#fff;padding:6px 10px;border-radius:6px;display:inline-block;font-size:0.95em;}
+.contribute{margin-top:10px;}
+.contribute input[type="number"]{padding:6px 8px;width:90px;margin-right:8px;border-radius:6px;border:1px solid #ccc;}
+.contribute button{background:#0A2540;color:#fff;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;transition: background 0.2s ease;}
+.contribute button:hover{background:#0f3a60;}
+table{width:100%;border-collapse: collapse;margin-top:30px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 6px 15px rgba(0,0,0,0.08);}
+th,td{padding:12px 15px;text-align:left;border-bottom:1px solid #eee;}
+th{background:#0A2540;color:#fff;}
+td{color:#444;}
+.disclaimer{max-width:900px;margin:40px auto;background:#fff3cd;color:#856404;padding:20px;border-radius:12px;border-left:6px solid #ffeeba;line-height:1.5;}
+.chart-container{background:#fff;padding:20px;border-radius:14px;box-shadow:0 6px 15px rgba(0,0,0,0.08);margin-top:30px;}
+@media(max-width:768px){.ventures-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Support Ventures & Projects</h1>
+  <p>Track contributions and see illustrative growth in real-time.</p>
+</header>
+
+<div class="dashboard">
+  <div class="wallet-summary">
+    <h2>Wallet Summary</h2>
+    <p>Total Contributions: <strong id="wallet-total">ZMW 0</strong></p>
+  </div>
+
+  <div class="ventures-grid" id="ventures-grid"></div>
+
+  <table>
+    <thead>
+      <tr><th>Project</th><th>Contribution (ZMW)</th><th>Status</th></tr>
+    </thead>
+    <tbody id="contrib-table">
+      <tr><td colspan="3" style="text-align:center;">No contributions yet</td></tr>
+    </tbody>
+  </table>
+
+  <div class="chart-container">
+    <canvas id="growthChart"></canvas>
+  </div>
+
+  <div class="disclaimer">
+    <strong>Important:</strong> Contributions are verified manually by the admin. Illustrative growth is for motivation only and not guaranteed.
+  </div>
+</div>
+
+<script>
+  // --- Firebase config ---
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const memberId = "member_1"; // example member
+
+  // Load ventures dynamically
+  db.collection("ventures").onSnapshot(snapshot=>{
+    const grid = document.getElementById('ventures-grid');
+    grid.innerHTML='';
+    snapshot.forEach(doc=>{
+      const v = doc.data();
+      const id = doc.id;
+      const card = document.createElement('div');
+      card.className='venture-card';
+      card.innerHTML = `
+        <h3>${v.name}</h3>
+        <p>${v.description}</p>
+        <div class="simulate">Illustrative Growth: +15%</div>
+        <div class="contribute">
+          <input type="number" placeholder="ZMW" min="1" id="input-${id}">
+          <button onclick="contribute('${id}')">Contribute</button>
+        </div>`;
+      grid.appendChild(card);
+    });
+  });
+
+  function contribute(ventureId){
+    const input = document.getElementById(`input-${ventureId}`);
+    const amount = parseFloat(input.value);
+    if(!amount || amount <=0){ alert('Enter a valid amount'); return; }
+
+    db.collection("contributions").add({
+      memberId,
+      ventureId,
+      amount,
+      status: "pending",
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    input.value='';
+    alert("Contribution submitted! Waiting for admin approval.");
+  }
+
+  // Member contributions real-time
+  let chart; // global chart variable
+  db.collection("contributions").where("memberId","==",memberId)
+    .onSnapshot(snapshot=>{
+      const tbody = document.getElementById('contrib-table');
+      let total=0;
+      tbody.innerHTML='';
+      const labels=[], growthData=[];
+      let dayCount = 1;
+
+      if(snapshot.empty){
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No contributions yet</td></tr>`;
+      } else {
+        snapshot.forEach(doc=>{
+          const c = doc.data();
+          let ventureName="Unknown";
+          db.collection("ventures").doc(c.ventureId).get().then(vdoc=>{
+            if(vdoc.exists) ventureName=vdoc.data().name;
+            const tr = document.createElement('tr');
+            tr.innerHTML=`<td>${ventureName}</td><td>ZMW ${c.amount.toFixed(2)}</td><td>${c.status}</td>`;
+            tbody.appendChild(tr);
+          });
+          if(c.status==="approved") total+=c.amount;
+
+          // Illustrative growth: +5% per approved contribution for chart
+          if(c.status==="approved"){
+            labels.push("Day "+dayCount);
+            growthData.push(total * 1.05); // simple illustrative growth
+            dayCount++;
+          }
+        });
+      }
+      document.getElementById('wallet-total').innerText=`ZMW ${total.toFixed(2)}`;
+
+      // Update chart
+      if(chart) chart.destroy();
+      const ctx=document.getElementById('growthChart').getContext('2d');
+      chart=new Chart(ctx,{
+        type:'line',
+        data:{
+          labels:labels,
+          datasets:[{
+            label:'Illustrative Growth',
+            data:growthData,
+            borderColor:'#1aa08a',
+            backgroundColor:'rgba(26,160,138,0.2)',
+            fill:true,
+            tension:0.3
+          }]
+        },
+        options:{
+          responsive:true,
+          scales:{y:{beginAtZero:true}}
+        }
+      });
+    });
+</script>
+
+</body>
+</html>
