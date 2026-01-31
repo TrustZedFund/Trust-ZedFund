@@ -208,6 +208,23 @@ h1, h2, h3, h4 {
 #who-its-for {
   color: var(--tzf-text-dark);
 }
+/* HARD FIX: Force readable text in Who-It’s-For section */
+#who-its-for,
+#who-its-for * {
+  color: #0A2540 !important;
+}
+
+#who-its-for .who-card {
+  background: #ffffff !important;
+}
+
+#who-its-for .who-card.for {
+  border-top: 6px solid #1aa08a !important;
+}
+
+#who-its-for .who-card.not-for {
+  border-top: 6px solid #c0392b !important;
+}
 
 </style>
 </head>
