@@ -1,107 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Community Ventures | Trust ZedFund</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #F7FDFC;
-      color: #0A2540;
-      padding: 20px;
-    }
-
-    h2 {
-      margin-bottom: 10px;
-    }
-
-    .notice {
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 25px;
-      max-width: 700px;
-    }
-
-    .ventures-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
-    .venture-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 18px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .venture-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.08);
-    }
-
-    .venture-card h3 {
-      margin-top: 0;
-      margin-bottom: 8px;
-    }
-
-    .venture-card p {
-      font-size: 14px;
-      color: #444;
-      margin-bottom: 12px;
-    }
-
-    .venture-card input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    .venture-card button {
-      width: 100%;
-      padding: 10px;
-      background: #00BFA6;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .venture-card button:hover {
-      background: #00a892;
-    }
-
-    .meta {
-      font-size: 12px;
-      color: #666;
-      margin-top: 8px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust ZedFund Ventures</title>
+<style>
+body { font-family: sans-serif; background: #f5f7f9; padding: 20px; }
+.venture-card { border: 1px solid #0A2540; border-radius: 8px; padding: 15px; margin-bottom: 15px; background: #fff; transition: transform 0.2s; }
+.venture-card:hover { transform: scale(1.02); }
+button { background: #0A2540; color: #fff; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+</style>
 </head>
-
 <body>
 
-  <h2>Community Ventures</h2>
+<h1>Available Ventures</h1>
+<div id="venturesList"></div>
 
-  <p class="notice">
-    Trust ZedFund lists vetted community projects and small businesses seeking support.
-    Contributions are voluntary, tracked transparently, and confirmed manually by administrators.
-    This platform does not guarantee profits or returns.
-  </p>
+<h2>My Wallet</h2>
+<p>Available Balance: ZMW <span id="walletBalance">0</span></p>
 
-  <div id="ventures" class="ventures-grid">
-    <!-- Ventures load here -->
-  </div>
+<h2>Transaction History</h2>
+<div id="transactionsList"></div>
 
-  <!-- MODULE SCRIPT -->
-  <script type="module" src="./ventures.js"></script>
+<script type="module">
+import { auth, db, onWalletChange, onTransactionsChange, onVenturesChange, allocateToVenture } from './firebase.js';
+
+const userId = "USER_ID_HERE"; // Replace with actual logged-in user
+
+const venturesList = document.getElementById('venturesList');
+const walletBalanceEl = document.getElementById('walletBalance');
+const transactionsList = document.getElementById('transactionsList');
+
+// Live wallet
+onWalletChange(userId, wallet => {
+  walletBalanceEl.textContent = wallet.available;
+});
+
+// Live transactions
+onTransactionsChange(userId, txns => {
+  transactionsList.innerHTML = '';
+  Object.values(txns).forEach(t => {
+    const div = document.createElement('div');
+    div.textContent = `${t.date}: ${t.type} ZMW ${t.amount} → ${t.to} [${t.status}]`;
+    transactionsList.appendChild(div);
+  });
+});
+
+// Live ventures
+onVenturesChange(ventures => {
+  venturesList.innerHTML = '';
+  Object.keys(ventures).forEach(id => {
+    const v = ventures[id];
+    const div = document.createElement('div');
+    div.className = 'venture-card';
+    div.innerHTML = `
+      <h3>${v.name}</h3>
+      <p>${v.description}</p>
+      <p>Total Raised: ZMW ${v.totalAllocated || 0}</p>
+      <input type="number" placeholder="Amount ZMW" id="amt_${id}" />
+      <button id="btn_${id}">Support Venture</button>
+    `;
+    venturesList.appendChild(div);
+
+    const btn = document.getElementById(`btn_${id}`);
+    btn.addEventListener('click', async () => {
+      const amt = Number(document.getElementById(`amt_${id}`).value);
+      if (!amt || amt <= 0) { alert("Enter valid amount"); return; }
+      btn.disabled = true;
+      try {
+        const result = await allocateToVenture(userId, id, amt);
+        alert(`Success! New wallet: ZMW ${result.newWallet}, Venture Total: ZMW ${result.ventureTotal}`);
+      } catch (err) { alert(err.message); }
+      btn.disabled = false;
+    });
+  });
+});
+</script>
 
 </body>
 </html>
