@@ -188,28 +188,25 @@ h1, h2, h3, h4 {
   gap:30px;
 }
 
+/* Ensure readable text inside Who-It's-For cards */
 .who-card {
-  background: var(--card-bg);
-  border-radius:16px;
-  padding:30px;
-  box-shadow:0 8px 18px rgba(0,0,0,0.08);
+  background: var(--tzf-white);
+  color: var(--tzf-text-dark);
 }
 
 .who-card h3 {
-  color: var(--blue-dark);
+  color: var(--tzf-text-dark);
 }
 
 .who-card ul {
-  padding-left:20px;
-  color: var(--text-main);
+  color: var(--tzf-text-dark);
 }
 
-.who-card.for {
-  border-top:6px solid var(--green-light);
+.who-card ul li {
+  color: var(--tzf-text-dark);
 }
-
-.who-card.not-for {
-  border-top:6px solid #c0392b; /* warning color is OK */
+#who-its-for {
+  color: var(--tzf-text-dark);
 }
 
 </style>
