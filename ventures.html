@@ -1,67 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Community Ventures | Trust ZedFund</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Community Ventures | Trust ZedFund</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- Firebase Realtime DB -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #F7FDFC;
+      color: #0A2540;
+      padding: 20px;
+    }
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #F7FDFC;
-  color: #0A2540;
-  padding: 20px;
-}
+    h2 {
+      margin-bottom: 10px;
+    }
 
-.venture-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
+    .notice {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 25px;
+      max-width: 700px;
+    }
 
-.venture-card h3 {
-  margin-top: 0;
-}
+    .ventures-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
 
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-}
+    .venture-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-button {
-  background: #00BFA6;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  width: 100%;
-  cursor: pointer;
-}
+    .venture-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+    }
 
-small {
-  display: block;
-  margin-top: 8px;
-  color: #555;
-}
-</style>
+    .venture-card h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .venture-card p {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 12px;
+    }
+
+    .venture-card input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .venture-card button {
+      width: 100%;
+      padding: 10px;
+      background: #00BFA6;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .venture-card button:hover {
+      background: #00a892;
+    }
+
+    .meta {
+      font-size: 12px;
+      color: #666;
+      margin-top: 8px;
+    }
+  </style>
 </head>
 
 <body>
 
-<h2>Community Ventures</h2>
-<p>
-Support vetted community projects. Contributions are voluntary and tracked for transparency.
-This platform does not guarantee returns.
-</p>
+  <h2>Community Ventures</h2>
 
-<div id="ventures"></div>
+  <p class="notice">
+    Trust ZedFund lists vetted community projects and small businesses seeking support.
+    Contributions are voluntary, tracked transparently, and confirmed manually by administrators.
+    This platform does not guarantee profits or returns.
+  </p>
 
-<script src="ventures.js"></script>
+  <div id="ventures" class="ventures-grid">
+    <!-- Ventures load here -->
+  </div>
+
+  <!-- MODULE SCRIPT -->
+  <script type="module" src="./ventures.js"></script>
+
 </body>
 </html>
