@@ -3,48 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trust ZedFund Ventures</title>
+<title>Trust ZedFund Dashboard</title>
 <style>
-body { font-family:sans-serif; background:#f5f7f9; margin:0; padding:20px; }
-h1,h2 { color:#0A2540; }
-.wallet, .topup { margin-bottom:20px; }
-.venture-card { border:1px solid #0A2540; border-radius:10px; background:#fff; padding:15px; margin-bottom:15px; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition:0.2s; }
-.venture-card:hover { transform:scale(1.02); }
-.venture-header { display:flex; justify-content:space-between; align-items:center; }
-.venture-progress { background:#e0e0e0; height:12px; border-radius:6px; overflow:hidden; margin-top:5px; }
-.venture-progress-inner { background:#1aa08a; height:100%; width:0%; transition: width 0.3s; }
+body { font-family:sans-serif; margin:0; background:#f5f7f9; padding:20px; }
+h1,h2,h3 { color:#0A2540; margin-bottom:10px; }
+.wallet, .topup { margin-bottom:20px; padding:15px; background:#fff; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
 input[type=number] { padding:5px; width:100px; margin-right:10px; }
 button { padding:6px 12px; background:#0A2540; color:#fff; border:none; border-radius:4px; cursor:pointer; }
 button:disabled { opacity:0.6; cursor:not-allowed; }
+.section { margin-bottom:30px; }
+.card { border:1px solid #0A2540; border-radius:10px; background:#fff; padding:15px; margin-bottom:15px; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition:0.2s; }
+.card:hover { transform:scale(1.02); }
+.circle-progress { background:#e0e0e0; height:12px; border-radius:6px; overflow:hidden; margin-top:5px; }
+.circle-progress-inner { background:#1aa08a; height:100%; width:0%; transition: width 0.3s; }
 #transactionsList div { background:#fff; padding:8px; margin-bottom:5px; border-radius:4px; border-left:4px solid #1aa08a; }
 </style>
 </head>
 <body>
 
-<h1>Trust ZedFund Ventures</h1>
+<h1>Trust ZedFund Dashboard</h1>
 
-<div class="wallet">
+<!-- WALLET -->
+<div class="wallet section">
   <h2>My Wallet</h2>
   <p>Available Balance: ZMW <span id="walletBalance">0</span></p>
+  <div class="topup">
+    <input type="number" id="topupAmount" placeholder="Top-up ZMW">
+    <button id="btnTopup">Add to Wallet</button>
+  </div>
 </div>
 
-<div class="topup">
-  <input type="number" id="topupAmount" placeholder="Top-up ZMW">
-  <button id="btnTopup">Add to Wallet</button>
+<!-- CIRCLES -->
+<div class="section">
+  <h2>Community Savings / Trust Circles</h2>
+  <div id="circlesList"></div>
 </div>
 
-<h2>Available Ventures</h2>
-<div id="venturesList"></div>
+<!-- VENTURES -->
+<div class="section">
+  <h2>Available Ventures / Projects</h2>
+  <div id="venturesList"></div>
+</div>
 
-<h2>Transaction History</h2>
-<div id="transactionsList"></div>
+<!-- TRANSACTIONS -->
+<div class="section">
+  <h2>Transaction History</h2>
+  <div id="transactionsList"></div>
+</div>
 
 <script type="module">
-import { initUserBalances, updateUserBalance, onBalanceChange, onUserTransactionsChange, seedVentures, contributeToVenture, onVenturesChange } from './firebase.js';
+import { initUserBalances, updateUserBalance, onBalanceChange, onUserTransactionsChange } from './firebase.js';
+import { seedCircles, onCirclesChange, joinCircle, contributeToCircle } from './firebase.js';
+import { seedVentures, onVenturesChange, contributeToVenture } from './ventures-firebase.js'; // Create similar to circles
 
-const userId = "demo_user"; // Replace with actual user ID
+const userId = "demo_user"; // Replace with authenticated user
+
+// INIT
 await initUserBalances(userId);
-await seedVentures();
+await seedCircles();
+await seedVentures(); // Ventures seeding function
 
 // WALLET
 const walletEl = document.getElementById('walletBalance');
@@ -69,25 +86,24 @@ onUserTransactionsChange(userId, txns=>{
   });
 });
 
-// VENTURES
-const venturesDiv = document.getElementById('venturesList');
-onVenturesChange(ventures=>{
-  venturesDiv.innerHTML='';
-  Object.keys(ventures).forEach(id=>{
-    const v = ventures[id];
+// CIRCLES
+const circlesDiv = document.getElementById('circlesList');
+onCirclesChange(circles=>{
+  circlesDiv.innerHTML='';
+  Object.keys(circles).forEach(id=>{
+    const c = circles[id];
     const div = document.createElement('div');
-    div.className='venture-card';
+    div.className='card';
     div.innerHTML=`
-      <div class="venture-header">
-        <h3>${v.name}</h3>
-        <p>Total Raised: ZMW <span id="total_${id}">${v.totalAllocated||0}</span></p>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3>${c.name}</h3>
+        <p>Total Pooled: ZMW <span id="total_${id}">${c.totalAllocated||0}</span></p>
       </div>
-      <p>${v.description}</p>
-      <div class="venture-progress"><div id="bar_${id}" class="venture-progress-inner" style="width:${Math.min((v.totalAllocated/1000)*100,100)}%"></div></div>
+      <div class="circle-progress"><div id="bar_${id}" class="circle-progress-inner" style="width:${Math.min((c.totalAllocated/2000)*100,100)}%"></div></div>
       <input type="number" placeholder="Amount ZMW" id="amt_${id}" />
-      <button id="btn_${id}">Support Venture</button>
+      <button id="btn_${id}">Join & Contribute</button>
     `;
-    venturesDiv.appendChild(div);
+    circlesDiv.appendChild(div);
 
     document.getElementById(`btn_${id}`).addEventListener('click', async ()=>{
       const amt = Number(document.getElementById(`amt_${id}`).value);
@@ -95,13 +111,49 @@ onVenturesChange(ventures=>{
       const btn = document.getElementById(`btn_${id}`);
       btn.disabled=true;
       try{
-        const res = await contributeToVenture(userId, id, amt);
-        document.getElementById(`total_${id}`).textContent=res.ventureTotal;
-        document.getElementById(`bar_${id}`).style.width=Math.min((res.ventureTotal/1000)*100,100)+'%';
-        alert(`Success! Wallet: ZMW ${((res.balances.deposit||0)+(res.balances.earnings||0)).toFixed(2)}, Venture Total: ZMW ${res.ventureTotal}`);
+        await joinCircle(userId, id);
+        const res = await contributeToCircle(userId, id, amt);
+        document.getElementById(`total_${id}`).textContent=res.circleTotal;
+        document.getElementById(`bar_${id}`).style.width=Math.min((res.circleTotal/2000)*100,100)+'%';
+        alert(`Success! Wallet: ZMW ${((res.balances.deposit||0)+(res.balances.earnings||0)).toFixed(2)}, Circle Total: ZMW ${res.circleTotal}`);
       }catch(err){ alert(err.message); }
       btn.disabled=false;
       document.getElementById(`amt_${id}`).value='';
+    });
+  });
+});
+
+// VENTURES
+const venturesDiv = document.getElementById('venturesList');
+onVenturesChange(ventures=>{
+  venturesDiv.innerHTML='';
+  Object.keys(ventures).forEach(id=>{
+    const v = ventures[id];
+    const div = document.createElement('div');
+    div.className='card';
+    div.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3>${v.name}</h3>
+        <p>Funding Goal: ZMW ${v.goal}</p>
+        <p>Current: ZMW <span id="vent_total_${id}">${v.raised||0}</span></p>
+      </div>
+      <input type="number" placeholder="Amount ZMW" id="vent_amt_${id}" />
+      <button id="vent_btn_${id}">Contribute</button>
+    `;
+    venturesDiv.appendChild(div);
+
+    document.getElementById(`vent_btn_${id}`).addEventListener('click', async ()=>{
+      const amt = Number(document.getElementById(`vent_amt_${id}`).value);
+      if(!amt||amt<=0){ alert("Enter valid amount"); return; }
+      const btn = document.getElementById(`vent_btn_${id}`);
+      btn.disabled=true;
+      try{
+        const res = await contributeToVenture(userId, id, amt);
+        document.getElementById(`vent_total_${id}`).textContent=res.raised;
+        alert(`Success! Wallet: ZMW ${res.balances}, Venture Total: ZMW ${res.raised}`);
+      }catch(err){ alert(err.message); }
+      btn.disabled=false;
+      document.getElementById(`vent_amt_${id}`).value='';
     });
   });
 });
