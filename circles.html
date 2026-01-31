@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust ZedFund Circles</title>
+<style>
+body { font-family:sans-serif; background:#f5f7f9; margin:0; padding:20px; }
+h1,h2 { color:#0A2540; }
+.wallet, .topup { margin-bottom:20px; }
+.circle-card { border:1px solid #0A2540; border-radius:10px; background:#fff; padding:15px; margin-bottom:15px; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition:0.2s; }
+.circle-card:hover { transform:scale(1.02); }
+.circle-header { display:flex; justify-content:space-between; align-items:center; }
+.circle-progress { background:#e0e0e0; height:12px; border-radius:6px; overflow:hidden; margin-top:5px; }
+.circle-progress-inner { background:#1aa08a; height:100%; width:0%; transition: width 0.3s; }
+input[type=number] { padding:5px; width:100px; margin-right:10px; }
+button { padding:6px 12px; background:#0A2540; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+button:disabled { opacity:0.6; cursor:not-allowed; }
+#transactionsList div { background:#fff; padding:8px; margin-bottom:5px; border-radius:4px; border-left:4px solid #1aa08a; }
+</style>
+</head>
+<body>
+
+<h1>Trust ZedFund Circles</h1>
+
+<div class="wallet">
+  <h2>My Wallet</h2>
+  <p>Available Balance: ZMW <span id="walletBalance">0</span></p>
+</div>
+
+<div class="topup">
+  <input type="number" id="topupAmount" placeholder="Top-up ZMW">
+  <button id="btnTopup">Add to Wallet</button>
+</div>
+
+<h2>Available Circles</h2>
+<div id="circlesList"></div>
+
+<h2>Transaction History</h2>
+<div id="transactionsList"></div>
+
+<script type="module">
+import { initUserBalances, updateUserBalance, onBalanceChange, onUserTransactionsChange, seedCircles, onCirclesChange, joinCircle, contributeToCircle } from './firebase.js';
+
+const userId = "demo_user"; // Replace with actual user ID
+await initUserBalances(userId);
+await seedCircles();
+
+// WALLET
+const walletEl = document.getElementById('walletBalance');
+onBalanceChange(userId, balances => walletEl.textContent = ((balances.deposit||0)+(balances.earnings||0)).toFixed(2));
+
+// TOP-UP
+document.getElementById('btnTopup').addEventListener('click', async ()=>{
+  const amt = Number(document.getElementById('topupAmount').value);
+  if(!amt||amt<=0){ alert("Enter valid amount"); return; }
+  await updateUserBalance(userId, 'deposit', amt);
+  document.getElementById('topupAmount').value='';
+});
+
+// TRANSACTIONS
+const txList = document.getElementById('transactionsList');
+onUserTransactionsChange(userId, txns=>{
+  txList.innerHTML='';
+  Object.values(txns).sort((a,b)=> new Date(b.date)-new Date(a.date)).forEach(t=>{
+    const div = document.createElement('div');
+    div.textContent = `${t.date.split("T")[0]}: ${t.type} ZMW ${t.amount} → ${t.to} [${t.status}]`;
+    txList.appendChild(div);
+  });
+});
+
+// CIRCLES
+const circlesDiv = document.getElementById('circlesList');
+onCirclesChange(circles=>{
+  circlesDiv.innerHTML='';
+  Object.keys(circles).forEach(id=>{
+    const c = circles[id];
+    const div = document.createElement('div');
+    div.className='circle-card';
+    div.innerHTML=`
+      <div class="circle-header">
+        <h3>${c.name}</h3>
+        <p>Total Pooled: ZMW <span id="total_${id}">${c.totalAllocated||0}</span></p>
+      </div>
+      <div class="circle-progress"><div id="bar_${id}" class="circle-progress-inner" style="width:${Math.min((c.totalAllocated/2000)*100,100)}%"></div></div>
+      <input type="number" placeholder="Amount ZMW" id="amt_${id}" />
+      <button id="btn_${id}">Join & Contribute</button>
+    `;
+    circlesDiv.appendChild(div);
+
+    document.getElementById(`btn_${id}`).addEventListener('click', async ()=>{
+      const amt = Number(document.getElementById(`amt_${id}`).value);
+      if(!amt||amt<=0){ alert("Enter valid amount"); return; }
+      const btn = document.getElementById(`btn_${id}`);
+      btn.disabled=true;
+      try{
+        await joinCircle(userId, id);
+        const res = await contributeToCircle(userId, id, amt);
+        document.getElementById(`total_${id}`).textContent=res.circleTotal;
+        document.getElementById(`bar_${id}`).style.width=Math.min((res.circleTotal/2000)*100,100)+'%';
+        alert(`Success! Wallet: ZMW ${((res.balances.deposit||0)+(res.balances.earnings||0)).toFixed(2)}, Circle Total: ZMW ${res.circleTotal}`);
+      }catch(err){ alert(err.message); }
+      btn.disabled=false;
+      document.getElementById(`amt_${id}`).value='';
+    });
+  });
+});
+</script>
+</body>
+</html>
