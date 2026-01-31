@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get Started | Trust ZedFund</title>
+
+  <style>
+    :root {
+      --dark-green: #0b3d2e;
+      --dark-green-hover: #0e4a37;
+      --yellow: #ffd700;
+      --white: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background-color: #06271d;
+      color: var(--white);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background-color: var(--dark-green);
+      padding: 32px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .card:hover {
+      background-color: var(--dark-green-hover);
+      transform: translateY(-3px);
+    }
+
+    h2 {
+      color: var(--yellow);
+      margin-top: 0;
+    }
+
+    p {
+      line-height: 1.6;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .option-btn {
+      padding: 18px;
+      border-radius: 14px;
+      border: 2px solid var(--yellow);
+      background: transparent;
+      color: var(--yellow);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+    }
+
+    .option-btn:hover {
+      background-color: var(--yellow);
+      color: #06271d;
+      transform: translateY(-2px);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 14px 34px;
+      background-color: var(--yellow);
+      color: #06271d;
+      font-weight: bold;
+      border-radius: 40px;
+      text-decoration: none;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- STEP 1 -->
+  <section class="card">
+    <h2>Welcome to Trust ZedFund</h2>
+    <p>
+      Let’s set this up properly.  
+      First, tell us who you’re managing money with.
+    </p>
+
+    <div class="options">
+      <button class="option-btn" onclick="showJourney('individual')">👤 Individual</button>
+      <button class="option-btn" onclick="showJourney('community')">👥 Community</button>
+      <button class="option-btn" onclick="showJourney('organization')">🏢 Organization</button>
+    </div>
+  </section>
+
+  <!-- INDIVIDUAL JOURNEY -->
+  <section class="card hidden" id="individual">
+    <h2>👤 Individuals — Your First Steps</h2>
+    <p>
+      Trust ZedFund helps you manage money together — safely and fairly.
+    </p>
+    <ul>
+      <li>Name your shared wallet</li>
+      <li>Invite the other person</li>
+      <li>Set approval rules</li>
+      <li>Track every action clearly</li>
+    </ul>
+    <p>
+      Nothing moves unless everyone agrees.
+    </p>
+    <a href="register.html?type=individual" class="cta-btn">Create a Shared Wallet</a>
+  </section>
+
+  <!-- COMMUNITY JOURNEY -->
+  <section class="card hidden" id="community">
+    <h2>👥 Communities — Your First Steps</h2>
+    <p>
+      Perfect for groups raising or managing money together.
+    </p>
+    <ul>
+      <li>Create your community fund</li>
+      <li>Assign coordinators</li>
+      <li>Set contribution & approval rules</li>
+      <li>Give members transparent visibility</li>
+    </ul>
+    <p>
+      Everyone sees how money is used — no doubts, no confusion.
+    </p>
+    <a href="register.html?type=community" class="cta-btn">Start a Community Fund</a>
+  </section>
+
+  <!-- ORGANIZATION JOURNEY -->
+  <section class="card hidden" id="organization">
+    <h2>🏢 Organizations — Your First Steps</h2>
+    <p>
+      Built for professional fund governance and accountability.
+    </p>
+    <ul>
+      <li>Set up your organization workspace</li>
+      <li>Define approval layers</li>
+      <li>Control spending limits</li>
+      <li>Generate audit-ready records</li>
+    </ul>
+    <p>
+      Your fund becomes transparent, controlled, and trusted.
+    </p>
+    <a href="register.html?type=organization" class="cta-btn">Request Organization Account</a>
+  </section>
+
+</div>
+
+<script>
+  function showJourney(type) {
+    document.getElementById('individual').classList.add('hidden');
+    document.getElementById('community').classList.add('hidden');
+    document.getElementById('organization').classList.add('hidden');
+
+    document.getElementById(type).classList.remove('hidden');
+    document.getElementById(type).scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
