@@ -1,148 +1,140 @@
 // firebase.js
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { getDatabase, ref, set, update, get, push, onValue } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import { getDatabase, ref, set, update, get, onValue } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-// Firebase config for Trust ZedFund
+// =====================
+// FIREBASE CONFIG
+// =====================
 const firebaseConfig = {
-  apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
+  apiKey: "YOUR_API_KEY",
   authDomain: "trust-zedfund.firebaseapp.com",
   databaseURL: "https://trust-zedfund-default-rtdb.firebaseio.com",
   projectId: "trust-zedfund",
   storageBucket: "trust-zedfund.firebasestorage.app",
-  messagingSenderId: "129257684900",
-  appId: "1:129257684900:web:95e94293366a26f9448b31"
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getDatabase(app);
 
-console.log("🔥 Firebase initialized for Trust ZedFund");
-
-/* ==================================
-   Helper functions for balances
-================================== */
-
-// Initialize user balances if not exist
-export async function initUserBalances(userId) {
-  const balRef = ref(db, `users/${userId}/balances`);
-  const snap = await get(balRef);
-
+// =====================
+// USER WALLET & TRANSACTIONS
+// =====================
+export async function initUser(userId, name, email) {
+  const userRef = ref(db, `users/${userId}`);
+  const snap = await get(userRef);
   if (!snap.exists()) {
-    await set(balRef, {
-      deposit: 0,
-      earnings: 0,
-      referralWallet: 0
+    await set(userRef, {
+      profile: { name, email, role: "member", createdAt: new Date().toISOString() },
+      wallet: { available: 0, locked: 0 },
+      transactions: {}
     });
   }
 }
 
-// Update user balance (deposit, earnings, referral)
-export async function updateUserBalance(userId, type, amount) {
-  const balRef = ref(db, `users/${userId}/balances`);
-  const snap = await get(balRef);
-  const balances = snap.exists() ? snap.val() : { deposit: 0, earnings: 0, referralWallet: 0 };
+export async function addToWallet(userId, amount) {
+  const walletRef = ref(db, `users/${userId}/wallet`);
+  const snap = await get(walletRef);
+  const wallet = snap.exists() ? snap.val() : { available: 0, locked: 0 };
+  const newAvailable = (wallet.available || 0) + amount;
+  await update(walletRef, { available: newAvailable });
 
-  balances[type] = (balances[type] || 0) + amount;
-  await update(balRef, balances);
-}
-
-// Get real-time balance
-export function onBalanceChange(userId, callback) {
-  const balRef = ref(db, `users/${userId}/balances`);
-  onValue(balRef, (snap) => {
-    callback(snap.exists() ? snap.val() : { deposit: 0, earnings: 0, referralWallet: 0 });
+  const txnId = "txn_" + Date.now();
+  await set(ref(db, `users/${userId}/transactions/${txnId}`), {
+    type: "deposit",
+    amount,
+    from: "external",
+    to: "wallet",
+    status: "completed",
+    reference: txnId,
+    date: new Date().toISOString()
   });
+
+  return newAvailable;
 }
 
-/* ==================================
-   Withdrawals + Admin Queue
-================================== */
+export async function allocateToVenture(userId, ventureId, amount) {
+  const walletRef = ref(db, `users/${userId}/wallet`);
+  const walletSnap = await get(walletRef);
+  const wallet = walletSnap.exists() ? walletSnap.val() : { available: 0 };
+  if (wallet.available < amount) throw new Error("Insufficient wallet balance");
 
-// Add withdrawal request
-export async function requestWithdrawal(userId, withdrawData) {
-  const withdrawId = "w_" + Date.now();
+  await update(walletRef, { available: wallet.available - amount });
 
-  // Save to user's withdrawals
-  await set(ref(db, `users/${userId}/withdrawals/${withdrawId}`), withdrawData);
+  const ventureRef = ref(db, `ventures/${ventureId}`);
+  const ventureSnap = await get(ventureRef);
+  const venture = ventureSnap.exists() ? ventureSnap.val() : { totalAllocated: 0, contributors: {} };
+  const contributors = venture.contributors || {};
+  contributors[userId] = (contributors[userId] || 0) + amount;
 
-  // Save to global admin approval queue
-  await set(ref(db, `withdrawalRequests/${withdrawId}`), withdrawData);
+  await update(ventureRef, { totalAllocated: (venture.totalAllocated || 0) + amount, contributors });
 
-  // Deduct user's earnings immediately (hold)
-  const snap = await get(ref(db, `users/${userId}/balances/earnings`));
-  const currentEarnings = snap.exists() ? Number(snap.val()) : 0;
-  await update(ref(db, `users/${userId}/balances`), { earnings: currentEarnings - withdrawData.amount });
-}
-
-// Real-time user withdrawal updates
-export function onUserWithdrawalsChange(userId, callback) {
-  const wRef = ref(db, `users/${userId}/withdrawals`);
-  onValue(wRef, (snap) => {
-    callback(snap.exists() ? snap.val() : {});
+  const txnId = "txn_" + Date.now();
+  await set(ref(db, `users/${userId}/transactions/${txnId}`), {
+    type: "venture_allocation",
+    amount,
+    from: "wallet",
+    to: ventureId,
+    status: "completed",
+    reference: txnId,
+    date: new Date().toISOString()
   });
+
+  return { newWallet: wallet.available - amount, ventureTotal: venture.totalAllocated + amount };
 }
 
-// Real-time transaction history (withdrawals)
-export function onUserTransactionsChange(userId, callback) {
-  const tRef = ref(db, `users/${userId}/withdrawals`);
-  onValue(tRef, (snap) => {
-    callback(snap.exists() ? snap.val() : {});
+export async function allocateToCircle(userId, circleId, amount) {
+  const walletRef = ref(db, `users/${userId}/wallet`);
+  const walletSnap = await get(walletRef);
+  const wallet = walletSnap.exists() ? walletSnap.val() : { available: 0 };
+  if (wallet.available < amount) throw new Error("Insufficient wallet balance");
+
+  await update(walletRef, { available: wallet.available - amount });
+
+  const circleRef = ref(db, `savingsCircles/${circleId}`);
+  const circleSnap = await get(circleRef);
+  const circle = circleSnap.exists() ? circleSnap.val() : { totalAllocated: 0, contributors: {} };
+  const contributors = circle.contributors || {};
+  contributors[userId] = (contributors[userId] || 0) + amount;
+
+  await update(circleRef, { totalAllocated: (circle.totalAllocated || 0) + amount, contributors });
+
+  const txnId = "txn_" + Date.now();
+  await set(ref(db, `users/${userId}/transactions/${txnId}`), {
+    type: "circle_allocation",
+    amount,
+    from: "wallet",
+    to: circleId,
+    status: "completed",
+    reference: txnId,
+    date: new Date().toISOString()
   });
+
+  return { newWallet: wallet.available - amount, circleTotal: circle.totalAllocated + amount };
 }
 
-/* ==================================
-   Admin helpers
-================================== */
-
-// Get all pending withdrawals for admin approval
-export function onAdminWithdrawalQueue(callback) {
-  const queueRef = ref(db, "withdrawalRequests");
-  onValue(queueRef, (snap) => {
-    callback(snap.exists() ? snap.val() : {});
-  });
+// =====================
+// REAL-TIME LISTENERS
+// =====================
+export function onWalletChange(userId, callback) {
+  const walletRef = ref(db, `users/${userId}/wallet`);
+  onValue(walletRef, snap => callback(snap.exists() ? snap.val() : { available: 0, locked: 0 }));
 }
 
-// Approve withdrawal
-export async function approveWithdrawal(withdrawId) {
-  const wRef = ref(db, `withdrawalRequests/${withdrawId}`);
-  const snap = await get(wRef);
-  if (!snap.exists()) throw new Error("Withdrawal request not found");
-
-  const data = snap.val();
-  data.status = "approved";
-
-  // Update user withdrawal status
-  await update(ref(db, `users/${data.uid}/withdrawals/${withdrawId}`), { status: "approved" });
-
-  // Remove from admin queue
-  await set(wRef, null);
-
-  return data;
+export function onTransactionsChange(userId, callback) {
+  const txnRef = ref(db, `users/${userId}/transactions`);
+  onValue(txnRef, snap => callback(snap.exists() ? snap.val() : {}));
 }
 
-// Reject withdrawal (return funds)
-export async function rejectWithdrawal(withdrawId) {
-  const wRef = ref(db, `withdrawalRequests/${withdrawId}`);
-  const snap = await get(wRef);
-  if (!snap.exists()) throw new Error("Withdrawal request not found");
+export function onVenturesChange(callback) {
+  const venturesRef = ref(db, `ventures`);
+  onValue(venturesRef, snap => callback(snap.exists() ? snap.val() : {}));
+}
 
-  const data = snap.val();
-  data.status = "rejected";
-
-  // Refund user's earnings
-  const balSnap = await get(ref(db, `users/${data.uid}/balances/earnings`));
-  const currentEarnings = balSnap.exists() ? Number(balSnap.val()) : 0;
-  await update(ref(db, `users/${data.uid}/balances`), { earnings: currentEarnings + data.amount });
-
-  // Update user withdrawal status
-  await update(ref(db, `users/${data.uid}/withdrawals/${withdrawId}`), { status: "rejected" });
-
-  // Remove from admin queue
-  await set(wRef, null);
-
-  return data;
+export function onCirclesChange(callback) {
+  const circlesRef = ref(db, `savingsCircles`);
+  onValue(circlesRef, snap => callback(snap.exists() ? snap.val() : {}));
 }
