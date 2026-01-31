@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Venture Projects- Deal Marketplace</title>
+    <title>AfriLeap Capital - Deal Marketplace</title>
     <style>
         * {
             box-sizing: border-box;
@@ -258,24 +258,15 @@
                 min-width: 100%;
             }
         }
-body > section,
-body > nav,
-body > header,
-body > footer {
-  background-color: transparent !important;
-}
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Venture Projects- Deal Marketplace</h1>
+        <h1>AfriLeap Capital - Deal Marketplace</h1>
         <p>Discover investment opportunities across various sectors in Zambia. Browse equity, debt, revenue-based financing, and other investment options.</p>
     </div>
     
     <div class="deals-container">
-        <!-- All your deal cards will be placed here -->
-        <!-- I'm including the first few as examples, the rest would follow the same pattern -->
-        
         <!-- Finserve Zambia -->
         <div class="deal-card">
             <h3>Finserve Zambia</h3>
@@ -337,6 +328,42 @@ body > footer {
             <p class="amount debt">Raising ZMW 650K · Green Debt</p>
             <p class="stats">Pay-as-you-go solar · 1,200+ units deployed</p>
             <button onclick="openModal('modal-zana')" class="debt">View Deal</button>
+        </div>
+        
+        <!-- BantuFund Capital (Debt) -->
+        <div class="deal-card">
+            <h3>BantuFund Capital</h3>
+            <p class="sector">MSME Lending · Lusaka</p>
+            <p class="amount debt">Raising ZMW 400K · SME Debt</p>
+            <p class="stats">1,000+ vendor loans issued · 92% repayment</p>
+            <button onclick="openModal('modal-bantufund')" class="debt">View Deal</button>
+        </div>
+        
+        <!-- FreshHarvest Ltd (Debt) -->
+        <div class="deal-card">
+            <h3>FreshHarvest Ltd</h3>
+            <p class="sector">Agro-Processing · Mkushi</p>
+            <p class="amount debt">Raising ZMW 600K · 12-Month Loan</p>
+            <p class="stats">15+ supply contracts · Cold-chain in place</p>
+            <button onclick="openModal('modal-freshharvest')" class="debt">View Deal</button>
+        </div>
+        
+        <!-- ZamFresh Distributors (Debt) -->
+        <div class="deal-card">
+            <h3>ZamFresh Distributors</h3>
+            <p class="sector">FMCG & Retail · Lusaka</p>
+            <p class="amount debt">Raising ZMW 800K · Inventory Loan</p>
+            <p class="stats">Supplying 200+ shops & kiosks</p>
+            <button onclick="openModal('modal-zamfresh')" class="debt">View Deal</button>
+        </div>
+        
+        <!-- ZedPack Industries (Debt) -->
+        <div class="deal-card">
+            <h3>ZedPack Industries</h3>
+            <p class="sector">Manufacturing · Lusaka</p>
+            <p class="amount debt">Raising ZMW 900K · 18-Month Loan</p>
+            <p class="stats">Supplying 40+ agribusinesses & retailers</p>
+            <button onclick="openModal('modal-zedpack')" class="debt">View Deal</button>
         </div>
         
         <!-- AgroPulse Analytics (RBF) -->
@@ -411,11 +438,10 @@ body > footer {
             <button onclick="openModal('modal-moneyard-revenue')" class="moneyard">View Deal</button>
         </div>
         
-        <!-- More deal cards would continue here... -->
+        <!-- Additional deal cards would continue here... -->
     </div>
     
-    <!-- All modals would be included here -->
-    <!-- I'm including the first few as examples, the rest would follow the same pattern -->
+    <!-- MODALS -->
     
     <!-- Modal for Finserve Zambia -->
     <div id="modal-finserve" class="modal-background">
@@ -477,34 +503,352 @@ body > footer {
         </div>
     </div>
     
-    <!-- Additional modals would continue here... -->
+    <!-- Modal for MediConnect -->
+    <div id="modal-medicontact" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-medicontact')">&times;</span>
+            <h2>MediConnect</h2>
+            <p class="modal-amount">Raising ZMW 650K for 19% equity</p>
+            <p>MediConnect offers telemedicine services, enabling patients in remote areas to consult doctors and receive diagnostics via mobile.</p>
+            <ul>
+                <li><strong>Consultations:</strong> 5,000+ completed</li>
+                <li><strong>Revenue:</strong> ZMW 60K/month</li>
+                <li><strong>Partners:</strong> Clinics, government health programs</li>
+                <li><strong>Use of Funds:</strong> Platform scaling + marketing</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Pitch Deck</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
     
-      
-            <div class="footer-bottom">
-                <div class="disclaimer">
-                    <p><strong>⚠️ Important:</strong> Trust ZedFund is a technology platform product for Basiwel Holistic Ventures Limited, which 
-operates under PACRA registration (Entity Number 120241007119) for financial service coordination activities. Transparency and responsibility come first. Trust ZedFund is also operating under Bank of Zambia fintech guidelines. All investments carry risk. Only invest what you can afford to lose.</p>
-                </div>
-
-<footer>
-  <p>© 2026 Trust ZedFund. All rights reserved.</p>
-  <p>
-    <a href="about.html">About</a> |
-    <a href="terms.html">Terms</a> |
-    <a href="disclaimer.html">Risk Disclaimer</a>
-  </p>
-  <p class="disclaimer">Educational platform. No guaranteed profits.</p>
-</footer>
+    <!-- Modal for AgriDrone Zambia -->
+    <div id="modal-agridrone" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-agridrone')">&times;</span>
+            <h2>AgriDrone Zambia</h2>
+            <p class="modal-amount">Raising ZMW 750K for 18% equity</p>
+            <p>AgriDrone Zambia provides drone services to monitor crop health, soil conditions, and improve farm yields.</p>
+            <ul>
+                <li><strong>Area covered:</strong> 300+ hectares</li>
+                <li><strong>Revenue:</strong> ZMW 90K/month</li>
+                <li><strong>Partners:</strong> Large farms, agricultural co-ops</li>
+                <li><strong>Use of Funds:</strong> Drone fleet expansion + software upgrades</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Pitch Deck</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for AgriFlex Capital -->
+    <div id="modal-agriflex" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-agriflex')">&times;</span>
+            <h2>AgriFlex Capital</h2>
+            <p class="modal-amount debt">Raising ZMW 500K · 18-month note @ 16% annual return</p>
+            <p>AgriFlex Capital provides flexible input loans and seasonal working capital to smallholder farmers and agri-cooperatives in Zambia.</p>
+            <ul>
+                <li><strong>Current Loan Book:</strong> ZMW 2.4M</li>
+                <li><strong>Repayment Rate:</strong> 94%</li>
+                <li><strong>Clients:</strong> 300+ farmers across 3 districts</li>
+                <li><strong>Use of Funds:</strong> Expand into two more provinces</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Terms Sheet</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Zana Energy Finance -->
+    <div id="modal-zana" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-zana')">&times;</span>
+            <h2>Zana Energy Finance</h2>
+            <p class="modal-amount debt">Raising ZMW 650K · 24-month note @ 15% return</p>
+            <p>Zana Energy finances solar kits through pay-as-you-go models for off-grid homes in peri-urban and rural Zambia.</p>
+            <ul>
+                <li><strong>Units Installed:</strong> 1,200+ solar kits</li>
+                <li><strong>Monthly Repayment Rate:</strong> 91%</li>
+                <li><strong>Target Areas:</strong> Kitwe, Mufulira, Kasama</li>
+                <li><strong>Use of Funds:</strong> Inventory & local agent network expansion</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Terms Sheet</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for BantuFund Capital -->
+    <div id="modal-bantufund" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-bantufund')">&times;</span>
+            <h2>BantuFund Capital</h2>
+            <p class="modal-amount debt">Raising ZMW 400K · 12-month working capital note @ 17% return</p>
+            <p>BantuFund supports underserved MSMEs with micro-loans and short-term inventory credit for market vendors, mobile money agents, and kiosks in high-density areas.</p>
+            <ul>
+                <li><strong>Loan Disbursement:</strong> 1,000+ small loans</li>
+                <li><strong>Avg Loan Size:</strong> ZMW 1,800</li>
+                <li><strong>Repayment Rate:</strong> 92%</li>
+                <li><strong>Use of Funds:</strong> Capital for vendor loans + digital onboarding system</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Terms Sheet</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for FreshHarvest Ltd -->
+    <div id="modal-freshharvest" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-freshharvest')">&times;</span>
+            <h2>FreshHarvest Ltd</h2>
+            <p class="modal-amount debt">Raising ZMW 600K · 12-month loan @ 14% return</p>
+            <p>FreshHarvest is a regional agro-processor sourcing maize, cassava, and soya beans from 1,000+ outgrower farmers and supplying food processors in Lusaka and the Copperbelt.</p>
+            <ul>
+                <li><strong>Revenue (Last Quarter):</strong> ZMW 1.1M</li>
+                <li><strong>Supply Contracts:</strong> 15 institutional buyers</li>
+                <li><strong>Use of Funds:</strong> Crop purchasing, cold storage expansion</li>
+                <li><strong>Repayment Plan:</strong> Bullet repayment with interest in Month 12</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Terms Sheet</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for ZamFresh Distributors -->
+    <div id="modal-zamfresh" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-zamfresh')">&times;</span>
+            <h2>ZamFresh Distributors</h2>
+            <p class="modal-amount debt">Raising ZMW 800K · 10-month loan @ 15% return</p>
+            <p>ZamFresh is a fast-moving consumer goods (FMCG) distributor supplying local mini-marts, kiosks, and mobile vendors with wholesale stock in Lusaka's high-density markets.</p>
+            <ul>
+                <li><strong>Distribution Points:</strong> 200+ retail outlets</li>
+                <li><strong>Monthly Revenue:</strong> ZMW 350K+</li>
+                <li><strong>Use of Funds:</strong> Inventory stock-up for Q4 surge & expansion to Ndola</li>
+                <li><strong>Repayment:</strong> Monthly interest, principal at maturity</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Terms Sheet</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for ZedPack Industries -->
+    <div id="modal-zedpack" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-zedpack')">&times;</span>
+            <h2>ZedPack Industries</h2>
+            <p class="modal-amount debt">Raising ZMW 900K · 18-month loan @ 16% annual return</p>
+            <p>ZedPack manufactures eco-friendly packaging for agro-processors, food distributors, and retailers. Demand has surged following new plastic restrictions.</p>
+            <ul>
+                <li><strong>Clients:</strong> 40+ recurring business customers</li>
+                <li><strong>Monthly Orders:</strong> 12,000+ bags, sacks, and pouches</li>
+                <li><strong>Use of Funds:</strong> Purchase of semi-automated machine & raw materials</li>
+                <li><strong>Repayment:</strong> Monthly interest, quarterly principal repayments</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Terms Sheet</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for AgroPulse Analytics -->
+    <div id="modal-agropulse" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-agropulse')">&times;</span>
+            <h2>AgroPulse Analytics</h2>
+            <p class="modal-amount rbf">Seeking ZMW 900K via Revenue-Based Financing</p>
+            <p>AgroPulse provides predictive analytics to smallholder farmers, improving yields and crop management through data-driven insights.</p>
+            <ul>
+                <li><strong>Users:</strong> 10,000+ active monthly</li>
+                <li><strong>Revenue Growth:</strong> 50% quarter-over-quarter</li>
+                <li><strong>Use of Funds:</strong> Platform development and marketing expansion</li>
+                <li><strong>Repayment:</strong> Flexible repayments tied to monthly revenue</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Pitch Deck</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for AgriPlus AI -->
+    <div id="modal-agriplus" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-agriplus')">&times;</span>
+            <h2>AgriPlus AI</h2>
+            <p class="modal-amount">Raising ZMW 950K via SAFE Note</p>
+            <p>AgriPlus AI empowers Zambian smallholder farmers with real-time farm analytics and AI-powered crop diagnostics through mobile dashboards and drone data.</p>
+            <ul>
+                <li><strong>Traction:</strong> 50+ pilot farms onboarded</li>
+                <li><strong>Use of Funds:</strong> Technology improvements, drone fleet, team expansion</li>
+                <li><strong>SAFE Terms:</strong> 20% discount · ZMW 10M cap · No interest</li>
+                <li><strong>Exit Horizon:</strong> Target priced round in 18–24 months</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Pitch Deck</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Moneyard Convertible Note -->
+    <div id="modal-moneyard-note" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-moneyard-note')">&times;</span>
+            <h2>Moneyard</h2>
+            <p class="modal-amount">Raising ZMW 3M · Convertible Note</p>
+            <p>Investors provide debt financing with 8% interest per annum. The note converts to equity at the next qualified funding round.</p>
+            <ul>
+                <li><strong>Target Raise:</strong> ZMW 3,000,000</li>
+                <li><strong>Interest Rate:</strong> 8% per annum</li>
+                <li><strong>Conversion:</strong> Converts to equity at next round</li>
+                <li><strong>Use of Funds:</strong> Product development, compliance, growth</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Pitch Deck</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="moneyard-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for AgroGrowth Zambia -->
+    <div id="modal-agrogrowth" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-agrogrowth')">&times;</span>
+            <h2>AgroGrowth Zambia</h2>
+            <p class="modal-amount">Raising ZMW 2.5M · Quasi-Equity (Mezzanine)</p>
+            <p>AgroGrowth is a local maize and pulse processing SME based in Central Province. With new bulk orders from local distributors, the company seeks flexible growth capital to expand operations.</p>
+            <ul>
+                <li><strong>Instrument:</strong> Mezzanine Finance</li>
+                <li><strong>Interest:</strong> 12% fixed annually</li>
+                <li><strong>Equity kicker:</strong> 5% share warrants on exit</li>
+                <li><strong>Term:</strong> 3 years</li>
+                <li><strong>Use of Funds:</strong> New processing line, inventory, staff expansion</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Pitch Deck</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for CashFlow Zambia -->
+    <div id="modal-cashflow" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-cashflow')">&times;</span>
+            <h2>CashFlow Zambia</h2>
+            <p class="modal-amount">Raising ZMW 4.5M · Trade Finance (Invoice Factoring)</p>
+            <p>CashFlow Zambia offers invoice factoring services that allow SMEs to sell their accounts receivable to improve liquidity and manage cash flow cycles.</p>
+            <ul>
+                <li><strong>Clients:</strong> 150+ SMEs in FMCG, manufacturing</li>
+                <li><strong>Typical Advances:</strong> ZMW 500K - 2M/month</li>
+                <li><strong>Use of Funds:</strong> Expanding client base, improving credit risk analytics, IT systems</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Pitch Deck</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for ShopEase Zambia -->
+    <div id="modal-shopease" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-shopease')">&times;</span>
+            <h2>ShopEase Zambia</h2>
+            <p class="modal-amount">Raising ZMW 5.2M · Merchant Cash Advance</p>
+            <p>ShopEase Zambia offers merchant cash advances to retail outlets to quickly increase inventory and expand operations leveraging daily sales cash flows.</p>
+            <ul>
+                <li><strong>Outlets:</strong> 25 nationwide</li>
+                <li><strong>Average Daily Sales:</strong> ZMW 120K</li>
+                <li><strong>Use of Funds:</strong> Inventory expansion, new outlet openings, marketing</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Pitch Deck</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for RuralLend Zambia -->
+    <div id="modal-rurallend" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-rurallend')">&times;</span>
+            <h2>RuralLend Zambia</h2>
+            <p class="modal-amount">Raising ZMW 3.5M · Loan Fund</p>
+            <p>RuralLend Zambia supports rural entrepreneurs with microloans and flexible repayment terms to grow sustainable businesses.</p>
+            <ul>
+                <li><strong>Clients Served:</strong> 1,200+</li>
+                <li><strong>Average Loan Size:</strong> ZMW 8,000</li>
+                <li><strong>Interest Rate:</strong> 11% annual</li>
+                <li><strong>Use of Funds:</strong> Loan capital, operational expansion</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Pitch Deck</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="express-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Moneyard Revenue Share -->
+    <div id="modal-moneyard-revenue" class="modal-background">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-moneyard-revenue')">&times;</span>
+            <h2>Moneyard</h2>
+            <p class="modal-amount">Raising ZMW 4M · Revenue Sharing</p>
+            <p>Moneyard offers investors 8% of monthly revenues for 24 months. The funds will accelerate platform growth and increase crypto staking adoption.</p>
+            <ul>
+                <li><strong>Target Raise:</strong> ZMW 4,000,000</li>
+                <li><strong>Revenue Share:</strong> 8% monthly</li>
+                <li><strong>Term:</strong> 24 months</li>
+                <li><strong>Use of Funds:</strong> Marketing, user acquisition, platform scaling</li>
+            </ul>
+            <div class="modal-actions">
+                <a href="mailto:info@afrileapcapital.com">Request Pitch Deck</a>
+                <a href="https://afrileapcapital.com/investor-express-interest/" class="moneyard-interest">Express Interest</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Additional modals for remaining deals would continue here... -->
+    
+    <div class="footer">
+        <p>© 2023 AfriLeap Capital. All rights reserved.</p>
+        <p>Contact: <a href="mailto:info@afrileapcapital.com">info@afrileapcapital.com</a></p>
+    </div>
+    
     <script>
         // Modal functions
         function openModal(id) {
-            document.getElementById(id).style.display = 'block';
-            document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+            console.log("Opening modal:", id);
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+            } else {
+                console.error("Modal not found:", id);
+            }
         }
         
         function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-            document.body.style.overflow = 'auto'; // Restore scrolling
+            console.log("Closing modal:", id);
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Restore scrolling
+            }
         }
         
         // Close modal if clicking outside modal content
@@ -527,6 +871,33 @@ operates under PACRA registration (Entity Number 120241007119) for financial ser
                 });
             }
         });
+        
+        // Add click event listeners to all View Deal buttons for debugging
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.deal-card button');
+            console.log("Total deal buttons found:", buttons.length);
+            buttons.forEach((button, index) => {
+                console.log(`Button ${index}:`, button.onclick ? "Has onclick" : "No onclick");
+            });
+        });
     </script>
 </body>
 </html>
+    
+      
+            <div class="footer-bottom">
+                <div class="disclaimer">
+                    <p><strong>⚠️ Important:</strong> Trust ZedFund is a technology platform product for Basiwel Holistic Ventures Limited, which 
+operates under PACRA registration (Entity Number 120241007119) for financial service coordination activities. Transparency and responsibility come first. Trust ZedFund is also operating under Bank of Zambia fintech guidelines. All investments carry risk. Only invest what you can afford to lose.</p>
+                </div>
+
+<footer>
+  <p>© 2026 Trust ZedFund. All rights reserved.</p>
+  <p>
+    <a href="about.html">About</a> |
+    <a href="terms.html">Terms</a> |
+    <a href="disclaimer.html">Risk Disclaimer</a>
+  </p>
+  <p class="disclaimer">Educational platform. No guaranteed profits.</p>
+</footer>
+    
