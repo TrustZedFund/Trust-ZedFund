@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Trust ZedFund – Frequently Asked Questions</title>
+
+<style>
+:root {
+  --bg-dark: #0f2f26;
+  --card-bg: #143d32;
+  --accent: #f5c842;
+  --text-main: #ffffff;
+  --text-muted: #d7e6df;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-main);
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 4rem 1.5rem;
+}
+
+h1 {
+  color: var(--accent);
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.faq-item {
+  background: var(--card-bg);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+}
+
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 1.6rem;
+  color: var(--text-main);
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-question span {
+  color: var(--accent);
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 1.6rem;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+
+.faq-answer p {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.faq-item.active .faq-answer {
+  max-height: 600px;
+  padding: 0 1.6rem 1.6rem;
+}
+
+.faq-item.active .faq-question span {
+  transform: rotate(45deg);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>Frequently Asked Questions</h1>
+
+<div class="faq-item">
+  <button class="faq-question">
+    If Trust ZedFund doesn’t hold my money, what’s the point?
+    <span>+</span>
+  </button>
+  <div class="faq-answer">
+    <p>
+      The biggest risk in shared money is not where it’s stored — it’s who can use it
+      and under what rules. Trust ZedFund prevents misuse by enforcing approvals,
+      transparency, and shared control before money is moved.
+    </p>
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">
+    Who actually handles the money?
+    <span>+</span>
+  </button>
+  <div class="faq-answer">
+    <p>
+      People do. That’s exactly why Trust ZedFund exists. Instead of relying on blind
+      trust, the platform limits what any one person can do without permission.
+    </p>
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">
+    What if someone ignores Trust ZedFund and misuses the money anyway?
+    <span>+</span>
+  </button>
+  <div class="faq-answer">
+    <p>
+      Trust ZedFund cannot stop actions taken completely outside the system.
+      What it does is make misuse visible, provable, and limited — turning disputes
+      into clarity instead of chaos.
+    </p>
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">
+    Why not just use a normal bank account?
+    <span>+</span>
+  </button>
+  <div class="faq-answer">
+    <p>
+      Normal accounts give control to one person. Trust ZedFund adds shared rules,
+      approvals, and transparency — without replacing your bank.
+    </p>
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">
+    Is Trust ZedFund a bank, escrow, or fund manager?
+    <span>+</span>
+  </button>
+  <div class="faq-answer">
+    <p>
+      No. Trust ZedFund is not a bank, does not hold funds, and does not make decisions.
+      It is a software platform that enforces rules defined by users.
+    </p>
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">
+    Can I use Trust ZedFund if I’m alone right now?
+    <span>+</span>
+  </button>
+  <div class="faq-answer">
+    <p>
+      Yes. Many users start solo, define rules early, and invite others later.
+      This avoids awkward changes and protects trust as collaboration grows.
+    </p>
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">
+    What does Trust ZedFund guarantee?
+    <span>+</span>
+  </button>
+  <div class="faq-answer">
+    <p>
+      Trust ZedFund guarantees rule enforcement, transparency, accountability,
+      and clear records — not perfect human behavior or financial returns.
+    </p>
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">
+    Why should I trust Trust ZedFund?
+    <span>+</span>
+  </button>
+  <div class="faq-answer">
+    <p>
+      Because Trust ZedFund cannot misuse your money — it never touches it.
+      The platform only enforces what you and your group agree to.
+    </p>
+  </div>
+</div>
+
+</div>
+
+<script>
+document.querySelectorAll('.faq-question').forEach(button => {
+  button.addEventListener('click', () => {
+    const item = button.parentElement;
+    item.classList.toggle('active');
+  });
+});
+</script>
+
+</body>
+</html>
