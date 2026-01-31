@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trust ZedFund | Guided Setup</title>
+<title>Trust ZedFund | Get Started</title>
 
 <style>
 :root {
@@ -64,9 +64,7 @@ p {line-height:1.6;}
   margin-top:20px;
 }
 
-button {
-  cursor:pointer;
-}
+button {cursor:pointer;}
 
 .btn {
   padding:14px 30px;
@@ -87,9 +85,7 @@ button {
   color:var(--yellow);
 }
 
-.btn:hover {
-  transform:translateY(-2px);
-}
+.btn:hover {transform:translateY(-2px);}
 
 .hidden {display:none;}
 
@@ -120,6 +116,12 @@ input, select {
   gap:12px;
   flex-wrap:wrap;
 }
+
+.note {
+  font-size:.85rem;
+  opacity:.85;
+  margin-top:10px;
+}
 </style>
 </head>
 
@@ -134,23 +136,44 @@ input, select {
 <!-- STEP 1 -->
 <section class="card" id="step1">
 <h2>Welcome to Trust ZedFund</h2>
-<p>Let’s create a secure and transparent way to manage money together.</p>
+<p>
+Trust ZedFund helps you manage money that belongs to more than one person —
+even if you’re starting alone.
+</p>
 
 <div class="options">
-  <button class="btn btn-outline" onclick="chooseType('Individual')">👤 Individual</button>
-  <button class="btn btn-outline" onclick="chooseType('Community')">👥 Community</button>
-  <button class="btn btn-outline" onclick="chooseType('Organization')">🏢 Organization</button>
+  <button class="btn btn-outline" onclick="chooseType('Solo Individual')">
+    👤 Solo (For Now)
+  </button>
+  <button class="btn btn-outline" onclick="chooseType('Community')">
+    👥 Community
+  </button>
+  <button class="btn btn-outline" onclick="chooseType('Organization')">
+    🏢 Organization
+  </button>
 </div>
 
-<p style="opacity:.8;margin-top:16px">🔒 Rules enforced · 👁 Transparent · 🤝 Trust-first</p>
+<p class="note">
+You can start by yourself and invite others later.
+Rules activate automatically when conditions are met.
+</p>
 </section>
 
 <!-- STEP 2 -->
 <section class="card hidden" id="step2">
 <h2>Name Your Fund</h2>
-<p>This name appears on all records.</p>
+<p>
+Choose a name based on <strong>purpose</strong>, not people.
+</p>
 
-<input id="fundName" placeholder="e.g. Community Water Project">
+<input id="fundName" placeholder="e.g. Future Home Savings">
+
+<div class="note">
+Examples:
+• Family Emergency Fund  
+• Startup Seed Pool  
+• Project X Holding Fund
+</div>
 
 <div class="actions">
   <button class="btn btn-outline" onclick="goBack()">Back</button>
@@ -160,21 +183,24 @@ input, select {
 
 <!-- STEP 3 -->
 <section class="card hidden" id="step3">
-<h2>Set Basic Rules</h2>
+<h2>Set Initial Rules</h2>
 
 <label>Who can approve spending?</label>
 <select id="approvals">
-  <option>All members</option>
-  <option>Majority approval</option>
+  <option>All members (recommended)</option>
   <option>Admins only</option>
 </select>
 
 <label>When can funds be released?</label>
 <select id="release">
+  <option>No withdrawals until at least 2 members join</option>
   <option>After approval</option>
-  <option>On a specific date</option>
-  <option>After milestone completion</option>
 </select>
+
+<div class="note">
+These rules protect you now and later.
+You can update them anytime.
+</div>
 
 <div class="actions">
   <button class="btn btn-outline" onclick="goBack()">Back</button>
@@ -185,15 +211,19 @@ input, select {
 <!-- STEP 4 -->
 <section class="card hidden" id="step4">
 <h2>Smart Recommendations</h2>
-<p>Based on similar setups, we suggest:</p>
+<p>
+Because you’re starting solo, we recommend:
+</p>
 
 <div class="preview">
-✔ Dual approval for withdrawals<br>
-✔ Spending limits per transaction<br>
-✔ Full visibility for contributors
+✔ No withdrawals until another member joins<br>
+✔ Full approval required for all spending<br>
+✔ Clear audit trail from day one
 </div>
 
-<p style="opacity:.8;margin-top:10px">You can adjust these anytime.</p>
+<p class="note">
+Nothing moves unless your rules allow it.
+</p>
 
 <div class="actions">
   <button class="btn btn-outline" onclick="goBack()">Back</button>
@@ -208,10 +238,12 @@ input, select {
 <div class="preview">
 <strong>Name:</strong> <span id="pName"></span><br>
 <strong>Type:</strong> <span id="pType"></span><br>
-<strong>Approval:</strong> <span id="pApproval"></span><br>
-<strong>Release:</strong> <span id="pRelease"></span><br><br>
+<strong>Status:</strong> Solo (Pre-Trust)<br>
+<strong>Rules:</strong><br>
+– <span id="pApproval"></span><br>
+– <span id="pRelease"></span><br><br>
 Balance: $0.00<br>
-Status: Locked until rules are met
+Funds locked until rules are met
 </div>
 
 <div class="actions">
@@ -223,16 +255,25 @@ Status: Locked until rules are met
 
 <!-- FINAL -->
 <section class="card hidden" id="final">
-<h2>🎉 Setup Complete</h2>
-<p>Your trust structure is ready. Invite others and begin funding.</p>
+<h2>🎉 Your Fund Is Ready</h2>
+<p>
+You’ve created a secure fund — even before others join.
+</p>
+
+<div class="preview">
+Next steps:
+• Invite others when ready  
+• Add money now or later  
+• Rules activate automatically
+</div>
 
 <div class="actions">
   <a href="register.html" class="btn btn-primary">Create Account</a>
   <button class="btn btn-outline" onclick="resetFlow()">Create Another Fund</button>
 </div>
 
-<p style="margin-top:12px;font-size:.85rem;opacity:.8">
-Your setup was saved securely.
+<p class="note">
+Starting alone is normal. Planning ahead is smart.
 </p>
 </section>
 
@@ -288,7 +329,6 @@ function save(){
   localStorage.setItem('tzf', JSON.stringify(state));
 }
 
-/* Resume */
 window.onload = function(){
   if(state.step && state.step !== 'done'){
     document.getElementById('step1').classList.add('hidden');
