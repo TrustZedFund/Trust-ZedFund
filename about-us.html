@@ -153,6 +153,33 @@
   max-width: 760px;
   margin: 12px auto 0;
 }
+/* Secondary CTA Button */
+.btn-secondary {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 12px 28px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--yellow);
+  background-color: transparent;
+  border: 2px solid var(--yellow);
+  border-radius: 40px;
+  text-decoration: none;
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--yellow);
+  color: #06271d;
+  transform: translateY(-2px);
+}
+
+/* CTA subtext */
+.cta-subtext {
+  margin-top: 16px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+}
 
   </style>
 </head>
@@ -172,6 +199,7 @@
         Anytime money belongs to more than one person, trust becomes the hardest part.
         Trust ZedFund exists to solve that.
       </p>
+<a href="#what-it-does" class="btn-secondary">See How It Works</a>
     </section>
 
     <section class="card">
@@ -213,6 +241,7 @@
         <li>Approval records</li>
         <li>Simple reports</li>
       </ul>
+<a href="#faq" class="btn-secondary">See How Funds Are Protected</a>
     </section>
 
 <section class="card section-intro">
@@ -233,6 +262,9 @@
       <div class="use-case">
         “Let’s put money aside for a goal, and only use it when we both agree.”
       </div>
+<a href="register.html?type=individual" class="btn-secondary">
+  Create a Shared Wallet
+</a>
     </section>
 
     <section class="card">
@@ -246,6 +278,9 @@
       <div class="use-case">
         “We’re raising money together, and everyone should see how it’s used.”
       </div>
+<a href="register.html?type=community" class="btn-secondary">
+  Start a Community Fund
+</a>
     </section>
 
     <section class="card">
@@ -260,6 +295,9 @@
       <div class="use-case">
         “We need professional control, reporting, and accountability for shared funds.”
       </div>
+<a href="register.html?type=organization" class="btn-secondary">
+  Request an Organization Account
+</a>
     </section>
 
     <section class="card">
@@ -316,7 +354,12 @@
     informal cooperatives, families, investment clubs, and associations
     empowered by our digital platform.
   </h2>
+
   <a href="register.html" class="btn-primary">Create Your Account</a>
+
+  <p class="cta-subtext">
+    Free to start · No obligation · Set your rules in minutes
+  </p>
 </section>
 
 <!-- FOOTER -->
