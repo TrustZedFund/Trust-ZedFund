@@ -7,16 +7,16 @@
 
 <style>
 :root {
-  --dark-green: #0b3d2e;
-  --dark-green-hover: #0e4a37;
-  --yellow: #ffd700;
-  --white: #ffffff;
+  --dark-green:#0b3d2e;
+  --dark-green-hover:#0e4a37;
+  --yellow:#ffd700;
+  --white:#ffffff;
 }
 
 body {
   background:#06271d;
   color:var(--white);
-  font-family: Arial, sans-serif;
+  font-family:Arial, sans-serif;
   padding:40px 20px;
 }
 
@@ -46,7 +46,7 @@ body {
   border-radius:16px;
   margin-bottom:24px;
   box-shadow:0 10px 30px rgba(0,0,0,.4);
-  animation:fade .4s ease;
+  animation:fade .35s ease;
 }
 
 @keyframes fade {
@@ -57,19 +57,28 @@ body {
 h2 {color:var(--yellow); margin-top:0;}
 p {line-height:1.6;}
 
+.options {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+  margin-top:20px;
+}
+
+button {
+  cursor:pointer;
+}
+
 .btn {
   padding:14px 30px;
   border-radius:40px;
-  background:var(--yellow);
-  color:#06271d;
-  border:none;
   font-weight:bold;
-  cursor:pointer;
-  transition:.3s;
+  border:none;
+  transition:.25s;
 }
 
-.btn:hover {
-  transform:translateY(-2px);
+.btn-primary {
+  background:var(--yellow);
+  color:#06271d;
 }
 
 .btn-outline {
@@ -78,26 +87,15 @@ p {line-height:1.6;}
   color:var(--yellow);
 }
 
-.options {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:16px;
-  margin-top:20px;
+.btn:hover {
+  transform:translateY(-2px);
 }
 
 .hidden {display:none;}
 
-.preview {
-  background:#06271d;
-  border-radius:12px;
-  padding:16px;
-  margin-top:16px;
-  font-size:.9rem;
-}
-
 label {
   display:block;
-  margin-top:12px;
+  margin-top:14px;
 }
 
 input, select {
@@ -106,6 +104,21 @@ input, select {
   border-radius:8px;
   border:none;
   margin-top:6px;
+}
+
+.preview {
+  background:#06271d;
+  border-radius:12px;
+  padding:16px;
+  font-size:.9rem;
+  margin-top:16px;
+}
+
+.actions {
+  margin-top:24px;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
 }
 </style>
 </head>
@@ -121,25 +134,28 @@ input, select {
 <!-- STEP 1 -->
 <section class="card" id="step1">
 <h2>Welcome to Trust ZedFund</h2>
-<p>Let’s set up your shared money space safely and correctly.</p>
+<p>Let’s create a secure and transparent way to manage money together.</p>
 
 <div class="options">
-  <button class="btn-outline btn" onclick="chooseType('Individual')">👤 Individual</button>
-  <button class="btn-outline btn" onclick="chooseType('Community')">👥 Community</button>
-  <button class="btn-outline btn" onclick="chooseType('Organization')">🏢 Organization</button>
+  <button class="btn btn-outline" onclick="chooseType('Individual')">👤 Individual</button>
+  <button class="btn btn-outline" onclick="chooseType('Community')">👥 Community</button>
+  <button class="btn btn-outline" onclick="chooseType('Organization')">🏢 Organization</button>
 </div>
 
-<p style="margin-top:16px;opacity:.8">🔒 Rules enforced • 👁 Transparent • 🤝 Trust-first</p>
+<p style="opacity:.8;margin-top:16px">🔒 Rules enforced · 👁 Transparent · 🤝 Trust-first</p>
 </section>
 
 <!-- STEP 2 -->
 <section class="card hidden" id="step2">
 <h2>Name Your Fund</h2>
-<p>This name will appear on all transactions.</p>
+<p>This name appears on all records.</p>
 
-<input id="fundName" placeholder="e.g. School Project Fund">
+<input id="fundName" placeholder="e.g. Community Water Project">
 
-<button class="btn" style="margin-top:20px" onclick="goStep(3)">Continue</button>
+<div class="actions">
+  <button class="btn btn-outline" onclick="goBack()">Back</button>
+  <button class="btn btn-primary" onclick="goStep(3)">Continue</button>
+</div>
 </section>
 
 <!-- STEP 3 -->
@@ -150,35 +166,39 @@ input, select {
 <select id="approvals">
   <option>All members</option>
   <option>Majority approval</option>
-  <option>Admin only</option>
+  <option>Admins only</option>
 </select>
 
-<label>When can money be released?</label>
+<label>When can funds be released?</label>
 <select id="release">
   <option>After approval</option>
-  <option>On specific date</option>
-  <option>On milestone completion</option>
+  <option>On a specific date</option>
+  <option>After milestone completion</option>
 </select>
 
-<button class="btn" style="margin-top:20px" onclick="goStep(4)">Continue</button>
+<div class="actions">
+  <button class="btn btn-outline" onclick="goBack()">Back</button>
+  <button class="btn btn-primary" onclick="goStep(4)">Continue</button>
+</div>
 </section>
 
 <!-- STEP 4 -->
 <section class="card hidden" id="step4">
-<h2>AI-Assisted Recommendation</h2>
-<p>Based on your setup, we recommend:</p>
+<h2>Smart Recommendations</h2>
+<p>Based on similar setups, we suggest:</p>
 
 <div class="preview">
 ✔ Dual approval for withdrawals<br>
-✔ Real-time visibility for all members<br>
-✔ Spending limits per transaction
+✔ Spending limits per transaction<br>
+✔ Full visibility for contributors
 </div>
 
-<p style="opacity:.8;margin-top:12px">
-You can change these anytime.
-</p>
+<p style="opacity:.8;margin-top:10px">You can adjust these anytime.</p>
 
-<button class="btn" onclick="goStep(5)">Looks Good</button>
+<div class="actions">
+  <button class="btn btn-outline" onclick="goBack()">Back</button>
+  <button class="btn btn-primary" onclick="goStep(5)">Continue</button>
+</div>
 </section>
 
 <!-- STEP 5 -->
@@ -186,68 +206,96 @@ You can change these anytime.
 <h2>Preview Your Fund</h2>
 
 <div class="preview">
-<strong>Fund:</strong> <span id="previewName"></span><br>
-<strong>Type:</strong> <span id="previewType"></span><br>
-<strong>Approval:</strong> <span id="previewApproval"></span><br>
-<strong>Release:</strong> <span id="previewRelease"></span><br>
-<br>
+<strong>Name:</strong> <span id="pName"></span><br>
+<strong>Type:</strong> <span id="pType"></span><br>
+<strong>Approval:</strong> <span id="pApproval"></span><br>
+<strong>Release:</strong> <span id="pRelease"></span><br><br>
 Balance: $0.00<br>
 Status: Locked until rules are met
 </div>
 
-<button class="btn" style="margin-top:20px" onclick="finish()">Create My Fund</button>
+<div class="actions">
+  <button class="btn btn-outline" onclick="goStep(3)">Edit Rules</button>
+  <button class="btn btn-outline" onclick="goBack()">Back</button>
+  <button class="btn btn-primary" onclick="finish()">Create Fund</button>
+</div>
 </section>
 
 <!-- FINAL -->
 <section class="card hidden" id="final">
-<h2>🎉 You’re Ready</h2>
-<p>Your trust structure is ready. Next step: invite others and start funding.</p>
+<h2>🎉 Setup Complete</h2>
+<p>Your trust structure is ready. Invite others and begin funding.</p>
 
-<a href="register.html" class="btn">Create Account</a>
+<div class="actions">
+  <a href="register.html" class="btn btn-primary">Create Account</a>
+  <button class="btn btn-outline" onclick="resetFlow()">Create Another Fund</button>
+</div>
 
 <p style="margin-top:12px;font-size:.85rem;opacity:.8">
-Setup saved • You can resume anytime
+Your setup was saved securely.
 </p>
 </section>
 
 </div>
 
 <script>
-let state = JSON.parse(localStorage.getItem('tzf')) || {};
+let state = JSON.parse(localStorage.getItem('tzf')) || { step:1 };
 const progress = document.getElementById('progressBar');
 
 function chooseType(type){
   state.type = type;
-  save();
   goStep(2);
 }
 
 function goStep(step){
+  save();
   document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
-  document.getElementById('step'+step)?.classList.remove('hidden');
+  document.getElementById('step'+step).classList.remove('hidden');
+  state.step = step;
   progress.style.width = (step*20)+'%';
   save();
 }
 
+function goBack(){
+  if(state.step > 1){
+    goStep(state.step - 1);
+  }
+}
+
 function finish(){
-  document.getElementById('previewName').innerText = state.fundName;
-  document.getElementById('previewType').innerText = state.type;
-  document.getElementById('previewApproval').innerText = document.getElementById('approvals').value;
-  document.getElementById('previewRelease').innerText = document.getElementById('release').value;
+  save();
+  document.getElementById('pName').innerText = state.fundName;
+  document.getElementById('pType').innerText = state.type;
+  document.getElementById('pApproval').innerText = state.approvals;
+  document.getElementById('pRelease').innerText = state.release;
+
   document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
   document.getElementById('final').classList.remove('hidden');
-  progress.style.width='100%';
+  progress.style.width = '100%';
+  state.step = 'done';
+  save();
+}
+
+function resetFlow(){
+  localStorage.removeItem('tzf');
+  location.reload();
 }
 
 function save(){
   state.fundName = document.getElementById('fundName')?.value || state.fundName;
+  state.approvals = document.getElementById('approvals')?.value || state.approvals;
+  state.release = document.getElementById('release')?.value || state.release;
   localStorage.setItem('tzf', JSON.stringify(state));
 }
 
-if(state.type){
-  document.getElementById('step1').classList.add('hidden');
-  document.getElementById('step2').classList.remove('hidden');
-}
+/* Resume */
+window.onload = function(){
+  if(state.step && state.step !== 'done'){
+    document.getElementById('step1').classList.add('hidden');
+    goStep(state.step);
+    document.getElementById('fundName').value = state.fundName || '';
+  }
+};
 </script>
 
 </body>
