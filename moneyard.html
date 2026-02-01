@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Moneyard – Control Your Money</title>
+
+<style>
+body {
+  font-family: system-ui, Arial;
+  background:#f4f6f8;
+  margin:0;
+  padding:20px;
+}
+h1,h2,h3 { margin:10px 0 }
+input, select, button {
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+}
+button {
+  background:#1e88e5;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+.card {
+  background:white;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:6px;
+}
+.hidden { display:none }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Moneyard</h1>
+<button id="logoutBtn" class="hidden" onclick="logout()">Logout</button>
+
+<!-- AUTH -->
+<div id="auth">
+  <h2>Welcome</h2>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="signup()">Create Account</button>
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboarding" class="hidden">
+  <h2>Quick Setup (2 minutes)</h2>
+
+  <input id="income" type="number" placeholder="Monthly Income">
+  <input id="rent" type="number" placeholder="Rent">
+  <input id="utilities" type="number" placeholder="Utilities">
+  <input id="transport" type="number" placeholder="Transport">
+  <input id="savingsTarget" type="number" placeholder="Monthly Savings Goal">
+
+  <button onclick="saveProfile()">Continue</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden">
+
+  <div class="grid">
+    <div class="card" id="snapshot"></div>
+    <div class="card" id="burn"></div>
+    <div class="card" id="health"></div>
+  </div>
+
+  <div class="card">
+    <h3>Add Expense</h3>
+    <input id="expenseAmount" type="number" placeholder="Amount">
+    <select id="expenseCategory">
+      <option>Food</option>
+      <option>Transport</option>
+      <option>Rent</option>
+      <option>Utilities</option>
+      <option>Data</option>
+      <option>Misc</option>
+    </select>
+    <button onclick="addExpense()">Add Expense</button>
+  </div>
+
+  <div class="card">
+    <h3>Can I afford this?</h3>
+    <input id="affordAmount" type="number" placeholder="Amount">
+    <button onclick="checkAfford()">Check</button>
+    <p id="affordResult"></p>
+  </div>
+
+  <div class="card">
+    <h3>Savings</h3>
+    <div id="savings"></div>
+  </div>
+
+  <div class="card">
+    <h3>Upgrade to Pro</h3>
+    <p>$5 / month – USDT (TRC20)</p>
+    <p><b>Wallet:</b> YOUR_USDT_WALLET</p>
+    <button onclick="requestUpgrade()">I’ve Paid</button>
+  </div>
+
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+firebase.initializeApp({
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+  projectId: "YOUR_PROJECT",
+  appId: "YOUR_APP_ID"
+});
+
+const auth = firebase.auth();
+const db = firebase.database();
+
+let uid = null;
+let profile = {};
+let spent = 0;
+
+auth.onAuthStateChanged(user => {
+  if (!user) return;
+  uid = user.uid;
+  authDiv().classList.add("hidden");
+  logoutBtn.classList.remove("hidden");
+  loadProfile();
+});
+
+function authDiv(){ return document.getElementById("auth") }
+
+function signup() {
+  auth.createUserWithEmailAndPassword(email.value, password.value);
+}
+function login() {
+  auth.signInWithEmailAndPassword(email.value, password.value);
+}
+function logout() {
+  auth.signOut();
+  location.reload();
+}
+
+function saveProfile() {
+  profile = {
+    income:+income.value,
+    rent:+rent.value,
+    utilities:+utilities.value,
+    transport:+transport.value,
+    savings:+savingsTarget.value
+  };
+  db.ref("profiles/"+uid).set(profile);
+  showDashboard();
+}
+
+function loadProfile() {
+  db.ref("profiles/"+uid).once("value", snap => {
+    if (!snap.exists()) onboarding.classList.remove("hidden");
+    else {
+      profile = snap.val();
+      showDashboard();
+    }
+  });
+}
+
+function showDashboard() {
+  onboarding.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+  listenExpenses();
+}
+
+function listenExpenses() {
+  db.ref("transactions/"+uid).on("value", snap => {
+    spent = 0;
+    snap.forEach(tx => spent += tx.val().amount);
+    render();
+  });
+}
+
+function addExpense() {
+  db.ref("transactions/"+uid).push({
+    amount:+expenseAmount.value,
+    category:expenseCategory.value,
+    date:Date.now()
+  });
+}
+
+function render() {
+  const fixed = profile.rent + profile.utilities + profile.transport;
+  const remaining = profile.income - fixed - spent - profile.savings;
+  const daysLeft = Math.max(1, 30 - new Date().getDate());
+  const daily = remaining / daysLeft;
+
+  snapshot.innerHTML = `
+    <h3>Money Snapshot</h3>
+    Income: ${profile.income}<br>
+    Spent: ${spent}<br>
+    Remaining: ${remaining}
+  `;
+
+  burn.innerHTML = `
+    <h3>Burn Rate</h3>
+    Daily Allowance: ${daily.toFixed(2)}
+  `;
+
+  health.innerHTML = `
+    <h3>Money Health</h3>
+    ${remaining > 0 ? "🟢 Healthy" : "🔴 At Risk"}
+  `;
+
+  savings.innerHTML = `
+    Target: ${profile.savings}<br>
+    Status: ${remaining >= 0 ? "On Track" : "Behind"}
+  `;
+}
+
+function checkAfford() {
+  const amount = +affordAmount.value;
+  const fixed = profile.rent + profile.utilities + profile.transport;
+  const remaining = profile.income - fixed - spent - profile.savings;
+  const daily = remaining / (30 - new Date().getDate());
+
+  affordResult.innerText =
+    amount <= daily ? "✅ Safe" :
+    amount <= daily * 1.5 ? "⚠️ Risky" :
+    "❌ Not Recommended";
+}
+
+function requestUpgrade() {
+  db.ref("payments").push({
+    uid,
+    amount:5,
+    method:"USDT",
+    status:"pending",
+    time:Date.now()
+  });
+  alert("Payment request sent. We’ll activate Pro shortly.");
+}
+</script>
+
+</body>
+</html>
