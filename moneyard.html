@@ -1,113 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Moneyard – Control Your Money</title>
+<title>Moneyard – Know Your Money</title>
 
 <style>
 body {
   font-family: system-ui, Arial;
-  background:#f4f6f8;
-  margin:0;
-  padding:20px;
+  margin: 0;
+  background: #f4f6f8;
+  color: #222;
 }
-h1,h2,h3 { margin:10px 0 }
-input, select, button {
-  width:100%;
-  padding:10px;
-  margin:6px 0;
+header {
+  background: #1e88e5;
+  color: white;
+  padding: 20px;
 }
-button {
-  background:#1e88e5;
-  color:white;
-  border:none;
-  cursor:pointer;
+header h1 {
+  margin: 0;
+}
+header p {
+  margin: 6px 0 0;
+  opacity: 0.9;
+}
+main {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+section {
+  margin-bottom: 20px;
 }
 .card {
-  background:white;
-  padding:15px;
-  margin-bottom:15px;
-  border-radius:6px;
+  background: white;
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 12px;
 }
-.hidden { display:none }
 .grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
 }
+input, select, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+}
+button {
+  background: #1e88e5;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button.secondary {
+  background: #555;
+}
+.hidden {
+  display: none;
+}
+small {
+  color: #666;
+}
+.status-good { color: green; }
+.status-warn { color: orange; }
+.status-bad { color: red; }
 </style>
 </head>
 
 <body>
 
-<h1>Moneyard</h1>
-<button id="logoutBtn" class="hidden" onclick="logout()">Logout</button>
+<header>
+  <h1>Moneyard</h1>
+  <p>Know where your money stands — today, this month, and next.</p>
+</header>
+
+<main>
 
 <!-- AUTH -->
-<div id="auth">
-  <h2>Welcome</h2>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="signup()">Create Account</button>
-  <button onclick="login()">Login</button>
-</div>
+<section id="authSection">
+  <div class="card">
+    <h2>Get Started</h2>
+    <p>Create an account to see your money clearly.</p>
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="signup()">Create account</button>
+    <button class="secondary" onclick="login()">Login</button>
+  </div>
+</section>
 
 <!-- ONBOARDING -->
-<div id="onboarding" class="hidden">
-  <h2>Quick Setup (2 minutes)</h2>
+<section id="onboarding" class="hidden">
+  <div class="card">
+    <h2>Quick setup (2 minutes)</h2>
+    <small>This helps Moneyard give you accurate insights.</small>
 
-  <input id="income" type="number" placeholder="Monthly Income">
-  <input id="rent" type="number" placeholder="Rent">
-  <input id="utilities" type="number" placeholder="Utilities">
-  <input id="transport" type="number" placeholder="Transport">
-  <input id="savingsTarget" type="number" placeholder="Monthly Savings Goal">
+    <input id="income" type="number" placeholder="Monthly income">
+    <input id="rent" type="number" placeholder="Rent">
+    <input id="utilities" type="number" placeholder="Utilities">
+    <input id="transport" type="number" placeholder="Transport">
+    <input id="savings" type="number" placeholder="Monthly savings goal">
 
-  <button onclick="saveProfile()">Continue</button>
-</div>
+    <button onclick="saveProfile()">Continue to dashboard</button>
+  </div>
+</section>
 
 <!-- DASHBOARD -->
-<div id="dashboard" class="hidden">
+<section id="dashboard" class="hidden">
 
   <div class="grid">
-    <div class="card" id="snapshot"></div>
-    <div class="card" id="burn"></div>
-    <div class="card" id="health"></div>
+    <div class="card" id="snapshotCard"></div>
+    <div class="card" id="burnCard"></div>
+    <div class="card" id="healthCard"></div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Add an expense</h3>
+      <input id="expenseAmount" type="number" placeholder="Amount">
+      <select id="expenseCategory">
+        <option>Food</option>
+        <option>Transport</option>
+        <option>Rent</option>
+        <option>Utilities</option>
+        <option>Data</option>
+        <option>Misc</option>
+      </select>
+      <button onclick="addExpense()">Add expense</button>
+    </div>
+
+    <div class="card">
+      <h3>Can I afford this?</h3>
+      <small>Quick decision before you spend.</small>
+      <input id="affordAmount" type="number" placeholder="Amount">
+      <button onclick="checkAfford()">Check</button>
+      <p id="affordResult"></p>
+    </div>
   </div>
 
   <div class="card">
-    <h3>Add Expense</h3>
-    <input id="expenseAmount" type="number" placeholder="Amount">
-    <select id="expenseCategory">
-      <option>Food</option>
-      <option>Transport</option>
-      <option>Rent</option>
-      <option>Utilities</option>
-      <option>Data</option>
-      <option>Misc</option>
-    </select>
-    <button onclick="addExpense()">Add Expense</button>
-  </div>
-
-  <div class="card">
-    <h3>Can I afford this?</h3>
-    <input id="affordAmount" type="number" placeholder="Amount">
-    <button onclick="checkAfford()">Check</button>
-    <p id="affordResult"></p>
-  </div>
-
-  <div class="card">
-    <h3>Savings</h3>
-    <div id="savings"></div>
+    <h3>Savings progress</h3>
+    <div id="savingsView"></div>
   </div>
 
   <div class="card">
     <h3>Upgrade to Pro</h3>
-    <p>$5 / month – USDT (TRC20)</p>
+    <p>$5/month — USDT (TRC20)</p>
     <p><b>Wallet:</b> YOUR_USDT_WALLET</p>
-    <button onclick="requestUpgrade()">I’ve Paid</button>
+    <button onclick="requestUpgrade()">I’ve paid</button>
   </div>
 
-</div>
+</section>
+
+</main>
 
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -126,29 +171,20 @@ firebase.initializeApp({
 const auth = firebase.auth();
 const db = firebase.database();
 
-let uid = null;
-let profile = {};
-let spent = 0;
+let uid, profile = {}, spent = 0;
 
 auth.onAuthStateChanged(user => {
   if (!user) return;
   uid = user.uid;
-  authDiv().classList.add("hidden");
-  logoutBtn.classList.remove("hidden");
+  authSection.classList.add("hidden");
   loadProfile();
 });
-
-function authDiv(){ return document.getElementById("auth") }
 
 function signup() {
   auth.createUserWithEmailAndPassword(email.value, password.value);
 }
 function login() {
   auth.signInWithEmailAndPassword(email.value, password.value);
-}
-function logout() {
-  auth.signOut();
-  location.reload();
 }
 
 function saveProfile() {
@@ -157,7 +193,7 @@ function saveProfile() {
     rent:+rent.value,
     utilities:+utilities.value,
     transport:+transport.value,
-    savings:+savingsTarget.value
+    savings:+savings.value
   };
   db.ref("profiles/"+uid).set(profile);
   showDashboard();
@@ -201,26 +237,29 @@ function render() {
   const daysLeft = Math.max(1, 30 - new Date().getDate());
   const daily = remaining / daysLeft;
 
-  snapshot.innerHTML = `
-    <h3>Money Snapshot</h3>
-    Income: ${profile.income}<br>
-    Spent: ${spent}<br>
-    Remaining: ${remaining}
+  snapshotCard.innerHTML = `
+    <h3>Money snapshot</h3>
+    <p>Income: <b>${profile.income}</b></p>
+    <p>Spent: <b>${spent}</b></p>
+    <p>Remaining: <b>${remaining}</b></p>
   `;
 
-  burn.innerHTML = `
-    <h3>Burn Rate</h3>
-    Daily Allowance: ${daily.toFixed(2)}
+  burnCard.innerHTML = `
+    <h3>Burn rate</h3>
+    <p>Safe daily spend:</p>
+    <h2>${daily.toFixed(2)}</h2>
   `;
 
-  health.innerHTML = `
-    <h3>Money Health</h3>
-    ${remaining > 0 ? "🟢 Healthy" : "🔴 At Risk"}
+  healthCard.innerHTML = `
+    <h3>Money health</h3>
+    <p class="${remaining > 0 ? 'status-good' : 'status-bad'}">
+      ${remaining > 0 ? "Healthy" : "At risk"}
+    </p>
   `;
 
-  savings.innerHTML = `
-    Target: ${profile.savings}<br>
-    Status: ${remaining >= 0 ? "On Track" : "Behind"}
+  savingsView.innerHTML = `
+    Goal: ${profile.savings}<br>
+    Status: ${remaining >= 0 ? "On track" : "Behind"}
   `;
 }
 
@@ -233,7 +272,7 @@ function checkAfford() {
   affordResult.innerText =
     amount <= daily ? "✅ Safe" :
     amount <= daily * 1.5 ? "⚠️ Risky" :
-    "❌ Not Recommended";
+    "❌ Not recommended";
 }
 
 function requestUpgrade() {
@@ -244,7 +283,7 @@ function requestUpgrade() {
     status:"pending",
     time:Date.now()
   });
-  alert("Payment request sent. We’ll activate Pro shortly.");
+  alert("Upgrade request submitted.");
 }
 </script>
 
