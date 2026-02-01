@@ -6,204 +6,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-* {
-  box-sizing: border-box;
-  font-family: Inter, system-ui, sans-serif;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  height: 100vh;
-  background: #052e2b;
-  color: #ffffff;
-  overflow: hidden;
-}
-
-/* ===== SIDEBAR ===== */
-.sidebar {
-  width: 230px;
-  background: #022c22;
-  padding: 24px 16px;
-}
-
-.logo {
-  font-size: 22px;
-  font-weight: 700;
-  color: #facc15;
-  margin-bottom: 40px;
-}
-
-.nav a {
-  display: block;
-  padding: 12px 14px;
-  border-radius: 10px;
-  text-decoration: none;
-  color: #ffffff;
-  margin-bottom: 8px;
-}
-
-.nav a:hover,
-.nav a.active {
-  background: #064e3b;
-}
-
-/* ===== MAIN ===== */
-.main {
-  flex: 1;
-  padding: 24px;
-  overflow-y: auto;
-}
-
-/* ===== TOP BAR ===== */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 24px;
-}
-
-.search {
-  background: #022c22;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 10px;
-  color: white;
-}
-
-.profile {
-  opacity: 0.8;
-}
-
-/* ===== CARDS ===== */
-.card {
-  background: #022c22;
-  border-radius: 18px;
-  padding: 22px;
-  margin-bottom: 20px;
-}
-
-/* ===== BALANCE ===== */
-.balance-hero h1 {
-  font-size: 38px;
-  margin: 0;
-}
-
-.balance-hero span {
-  color: #facc15;
-  font-size: 14px;
-}
-
-/* ===== ACCOUNTS ===== */
-.accounts {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-  gap: 16px;
-}
-
-.account-card h3 {
-  margin: 0;
-  font-size: 15px;
-  opacity: 0.8;
-}
-
-.account-card p {
-  font-size: 24px;
-  margin-top: 10px;
-}
-
-/* ===== ACTIONS ===== */
-.actions {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.action-btn {
-  flex: 1;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  background: #064e3b;
-  color: white;
-}
-
-.action-btn.primary {
-  background: #facc15;
-  color: #052e2b;
-  font-weight: 600;
-}
-
-/* ===== TRANSACTIONS ===== */
-.transactions {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 16px;
-}
-
-.tx-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 14px 0;
-  border-bottom: 1px solid #064e3b;
-}
-
-.tx-item:last-child {
-  border-bottom: none;
-}
-
-.tx-meta {
-  font-size: 13px;
-  opacity: 0.7;
-}
-
-.positive {
-  color: #facc15;
-}
-
-.negative {
-  color: #ef4444;
-}
-
-/* ===== MODAL ===== */
-#txModal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-box {
-  background: #022c22;
-  width: 90%;
-  max-width: 420px;
-  padding: 22px;
-  border-radius: 18px;
-}
-
-.modal-box input,
-.modal-box select {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 12px;
-  border-radius: 12px;
-  border: none;
-  background: #052e2b;
-  color: white;
-}
-
-.modal-actions {
-  display: flex;
-  gap: 10px;
-}
-
-/* ===== MOBILE ===== */
-@media (max-width: 900px) {
-  .sidebar { display: none; }
-  .transactions { grid-template-columns: 1fr; }
-}
+*{box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
+body{margin:0;display:flex;height:100vh;background:#052e2b;color:#fff}
+.sidebar{width:230px;background:#022c22;padding:24px 16px}
+.logo{font-size:22px;font-weight:700;color:#facc15;margin-bottom:40px}
+.nav a{display:block;padding:12px;border-radius:10px;color:#fff;text-decoration:none;margin-bottom:8px}
+.nav a.active,.nav a:hover{background:#064e3b}
+.main{flex:1;padding:24px;overflow-y:auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.search{background:#022c22;border:none;color:#fff;padding:10px;border-radius:10px}
+.card{background:#022c22;border-radius:18px;padding:22px;margin-bottom:20px}
+.balance-hero h1{margin:0;font-size:38px}
+.balance-hero span{color:#facc15}
+.accounts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.account-card h3{margin:0;font-size:14px;opacity:.8}
+.account-card p{font-size:24px;margin-top:10px}
+.actions{display:flex;gap:12px;margin-bottom:24px}
+.action-btn{flex:1;padding:14px;border:none;border-radius:14px;cursor:pointer;background:#064e3b;color:#fff}
+.action-btn.primary{background:#facc15;color:#052e2b;font-weight:600}
+.transactions{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.tx-item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #064e3b}
+.tx-meta{font-size:12px;opacity:.7}
+.positive{color:#facc15}
+.negative{color:#ef4444}
+#txModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);align-items:center;justify-content:center}
+.modal{background:#022c22;width:90%;max-width:420px;padding:22px;border-radius:18px}
+.modal input,.modal select{width:100%;padding:12px;margin-bottom:10px;border:none;border-radius:12px;background:#052e2b;color:#fff}
+@media(max-width:900px){.sidebar{display:none}.transactions{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -223,152 +52,179 @@ body {
 <!-- MAIN -->
 <main class="main">
 
-  <div class="topbar">
-    <input class="search" placeholder="Search..." />
-    <div class="profile">👤 User</div>
-  </div>
+<!-- AUTH -->
+<div id="authBox" class="card" style="text-align:center">
+  <h3>Sign in to Moneyard</h3>
+  <button class="action-btn primary" onclick="loginGoogle()">🔐 Sign in with Google</button>
+</div>
 
-  <!-- TOTAL -->
-  <div class="card balance-hero">
-    <h1 id="totalBalance">$0.00</h1>
-    <span>Live balance</span>
-  </div>
+<!-- TOP -->
+<div class="topbar">
+  <select id="currencySelect" class="search">
+    <option value="USD">USD</option>
+    <option value="EUR">EUR</option>
+    <option value="KES">KES</option>
+  </select>
+  <div id="userName">👤</div>
+</div>
 
-  <!-- ACCOUNTS -->
-  <div class="accounts">
-    <div class="card account-card">
-      <h3>💵 Cash</h3>
-      <p id="cashBal">$0</p>
-    </div>
-    <div class="card account-card">
-      <h3>📱 Mobile Money</h3>
-      <p id="mobileBal">$0</p>
-    </div>
-    <div class="card account-card">
-      <h3>₿ Crypto</h3>
-      <p id="cryptoBal">$0</p>
-    </div>
-  </div>
+<!-- BALANCE -->
+<div class="card balance-hero">
+  <h1 id="totalBalance">$0.00</h1>
+  <span>Live balance</span>
+</div>
 
-  <!-- ACTIONS -->
-  <div class="actions">
-    <button class="action-btn primary" onclick="openModal()">➕ Add Income</button>
-    <button class="action-btn" onclick="openModal()">➖ Add Expense</button>
-    <button class="action-btn">🔁 Transfer</button>
-  </div>
+<!-- ACCOUNTS -->
+<div class="accounts">
+  <div class="card account-card"><h3>💵 Cash</h3><p id="cashBal">$0</p></div>
+  <div class="card account-card"><h3>📱 Mobile Money</h3><p id="mobileBal">$0</p></div>
+  <div class="card account-card"><h3>₿ Crypto</h3><p id="cryptoBal">$0</p></div>
+</div>
 
-  <!-- TRANSACTIONS -->
-  <div class="transactions">
-    <div class="card">
-      <h3>Recent Transactions</h3>
-      <div id="txList"></div>
-    </div>
+<!-- ACTIONS -->
+<div class="actions">
+  <button class="action-btn primary" onclick="openModal()">➕ Add Transaction</button>
+</div>
 
-    <div class="card">
-      <h3>Money Flow</h3>
-      <p style="opacity:.7">Charts coming soon</p>
-    </div>
+<!-- TRANSACTIONS -->
+<div class="transactions">
+  <div class="card">
+    <h3>Recent Transactions</h3>
+    <div id="txList"></div>
   </div>
+  <div class="card">
+    <h3>Money Flow</h3>
+    <p style="opacity:.7">Charts coming soon</p>
+  </div>
+</div>
 
 </main>
 
 <!-- MODAL -->
 <div id="txModal">
-  <div class="modal-box">
-    <h2>Add Transaction</h2>
-
-    <input id="amount" type="number" placeholder="Amount" />
+  <div class="modal">
+    <h3>Add Transaction</h3>
+    <input id="amount" type="number" placeholder="Amount">
     <select id="type">
       <option value="income">Income</option>
       <option value="expense">Expense</option>
+      <option value="transfer">Transfer</option>
     </select>
-    <select id="source">
+    <select id="from">
       <option value="cash">Cash</option>
       <option value="mobile_money">Mobile Money</option>
       <option value="crypto">Crypto</option>
     </select>
-    <input id="note" placeholder="Note" />
-
-    <div class="modal-actions">
-      <button class="action-btn primary" onclick="saveTx()">Save</button>
-      <button class="action-btn" onclick="closeModal()">Cancel</button>
-    </div>
+    <select id="to">
+      <option value="">To (transfer only)</option>
+      <option value="cash">Cash</option>
+      <option value="mobile_money">Mobile Money</option>
+      <option value="crypto">Crypto</option>
+    </select>
+    <input id="note" placeholder="Note">
+    <button class="action-btn primary" onclick="saveTx()">Save</button>
+    <button class="action-btn" onclick="closeModal()">Cancel</button>
   </div>
 </div>
 
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getDatabase, ref, onValue, push, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getDatabase, ref, onValue, push, update, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 const firebaseConfig = {
-  // 🔥 YOUR CONFIG HERE
+  /* 🔥 PUT YOUR FIREBASE CONFIG HERE 🔥 */
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-let uid = "demo"; // replace with auth uid later
+let uid=null;
+let balances={cash:0,mobile_money:0,crypto:0};
+let currency="USD";
+const rates={USD:1,EUR:.92,KES:150};
 
-const cashEl = document.getElementById("cashBal");
-const mobileEl = document.getElementById("mobileBal");
-const cryptoEl = document.getElementById("cryptoBal");
-const totalEl = document.getElementById("totalBalance");
-const txList = document.getElementById("txList");
+window.loginGoogle=async()=>{
+  const r=await signInWithPopup(auth,provider);
+  uid=r.user.uid;
+  userName.textContent=r.user.displayName;
+  authBox.style.display="none";
+  initUser();
+};
 
-onValue(ref(db, `users/${uid}/balances`), snap => {
-  const b = snap.val() || { cash:0, mobile_money:0, crypto:0 };
-  cashEl.textContent = `$${b.cash}`;
-  mobileEl.textContent = `$${b.mobile_money}`;
-  cryptoEl.textContent = `$${b.crypto}`;
-  totalEl.textContent = `$${(b.cash + b.mobile_money + b.crypto).toFixed(2)}`;
-});
+function initUser(){
+  set(ref(db,`users/${uid}/balances`),balances);
+  listenBalances();
+  listenTx();
+}
 
-onValue(ref(db, `users/${uid}/transactions`), snap => {
-  txList.innerHTML = "";
-  snap.forEach(s => {
-    const t = s.val();
-    const div = document.createElement("div");
-    div.className = "tx-item";
-    div.innerHTML = `
-      <div>
-        <div>${t.note || "Transaction"}</div>
-        <div class="tx-meta">${t.source}</div>
-      </div>
-      <div class="${t.type === "income" ? "positive" : "negative"}">
-        ${t.type === "income" ? "+" : "-"}$${t.amount}
-      </div>`;
-    txList.prepend(div);
+function listenBalances(){
+  onValue(ref(db,`users/${uid}/balances`),s=>{
+    balances=s.val()||balances;
+    renderBalances();
   });
-});
+}
 
-window.openModal = () => txModal.style.display = "flex";
-window.closeModal = () => txModal.style.display = "none";
+function renderBalances(){
+  const r=rates[currency];
+  cashBal.textContent=format(balances.cash*r);
+  mobileBal.textContent=format(balances.mobile_money*r);
+  cryptoBal.textContent=format(balances.crypto*r);
+  totalBalance.textContent=format(
+    (balances.cash+balances.mobile_money+balances.crypto)*r
+  );
+}
 
-window.saveTx = () => {
-  const amt = Number(amount.value);
-  const type = typeEl = document.getElementById("type").value;
-  const src = source.value;
+currencySelect.onchange=e=>{
+  currency=e.target.value;
+  renderBalances();
+};
 
-  const balRef = ref(db, `users/${uid}/balances`);
-  const txRef = ref(db, `users/${uid}/transactions`);
+function format(v){return `${currency} ${v.toFixed(2)}`;}
 
-  push(txRef, {
-    amount: amt,
-    type,
-    source: src,
-    note: note.value,
-    timestamp: Date.now()
+function listenTx(){
+  onValue(ref(db,`users/${uid}/transactions`),s=>{
+    txList.innerHTML="";
+    s.forEach(c=>{
+      const t=c.val();
+      const d=document.createElement("div");
+      d.className="tx-item";
+      d.innerHTML=`
+        <div>
+          <div>${t.note||t.type}</div>
+          <div class="tx-meta">${t.from}${t.to?" → "+t.to:""}</div>
+        </div>
+        <div class="${t.type==="income"?"positive":"negative"}">
+          ${t.type==="income"?"+":"-"}${format(t.amount*rates[currency])}
+        </div>`;
+      txList.prepend(d);
+    });
   });
+}
 
-  onValue(balRef, snap => {
-    const b = snap.val() || { cash:0, mobile_money:0, crypto:0 };
-    if (type === "income") b[src] += amt;
-    else b[src] -= amt;
-    update(balRef, b);
-  }, { onlyOnce:true });
+window.openModal=()=>txModal.style.display="flex";
+window.closeModal=()=>txModal.style.display="none";
+
+window.saveTx=()=>{
+  const amt=Number(amount.value);
+  const typeVal=type.value;
+  const f=from.value;
+  const t=to.value;
+
+  if(typeVal==="income") balances[f]+=amt;
+  if(typeVal==="expense") balances[f]-=amt;
+  if(typeVal==="transfer" && t && f!==t){
+    balances[f]-=amt;
+    balances[t]+=amt;
+  }
+
+  update(ref(db,`users/${uid}/balances`),balances);
+  push(ref(db,`users/${uid}/transactions`),{
+    amount:amt,type:typeVal,from:f,to:t||null,note:note.value,time:Date.now()
+  });
 
   closeModal();
 };
