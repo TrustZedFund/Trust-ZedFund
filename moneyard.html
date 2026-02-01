@@ -1,297 +1,378 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Moneyard Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<title>Moneyard Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, sans-serif;
+}
 
-    body {
-      margin: 0;
-      background: #0f172a;
-      color: #e5e7eb;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
+body {
+  margin: 0;
+  display: flex;
+  height: 100vh;
+  background: #052e2b;
+  color: #ffffff;
+  overflow: hidden;
+}
 
-    /* Sidebar */
-    .sidebar {
-      width: 240px;
-      background: #020617;
-      padding: 24px 16px;
-      display: flex;
-      flex-direction: column;
-    }
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 230px;
+  background: #022c22;
+  padding: 24px 16px;
+}
 
-    .logo {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 40px;
-      color: #38bdf8;
-    }
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: #facc15;
+  margin-bottom: 40px;
+}
 
-    .nav a {
-      text-decoration: none;
-      color: #cbd5f5;
-      padding: 12px 14px;
-      border-radius: 10px;
-      margin-bottom: 8px;
-      display: block;
-      font-size: 15px;
-    }
+.nav a {
+  display: block;
+  padding: 12px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
 
-    .nav a.active, .nav a:hover {
-      background: #1e293b;
-      color: #ffffff;
-    }
+.nav a:hover,
+.nav a.active {
+  background: #064e3b;
+}
 
-    /* Main */
-    .main {
-      flex: 1;
-      padding: 24px;
-      overflow-y: auto;
-    }
+/* ===== MAIN ===== */
+.main {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
 
-    /* Top bar */
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
+/* ===== TOP BAR ===== */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
 
-    .search {
-      background: #020617;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 14px;
-      color: #e5e7eb;
-      width: 260px;
-    }
+.search {
+  background: #022c22;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: white;
+}
 
-    .profile {
-      font-size: 14px;
-      color: #cbd5f5;
-    }
+.profile {
+  opacity: 0.8;
+}
 
-    /* Cards */
-    .card {
-      background: linear-gradient(145deg, #020617, #020617);
-      border-radius: 18px;
-      padding: 22px;
-      margin-bottom: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    }
+/* ===== CARDS ===== */
+.card {
+  background: #022c22;
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
 
-    .balance-hero h1 {
-      font-size: 38px;
-      margin: 0;
-    }
+/* ===== BALANCE ===== */
+.balance-hero h1 {
+  font-size: 38px;
+  margin: 0;
+}
 
-    .balance-hero span {
-      font-size: 14px;
-      color: #22c55e;
-    }
+.balance-hero span {
+  color: #facc15;
+  font-size: 14px;
+}
 
-    /* Accounts */
-    .accounts {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-    }
+/* ===== ACCOUNTS ===== */
+.accounts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap: 16px;
+}
 
-    .account-card h3 {
-      margin: 0;
-      font-size: 16px;
-      color: #cbd5f5;
-    }
+.account-card h3 {
+  margin: 0;
+  font-size: 15px;
+  opacity: 0.8;
+}
 
-    .account-card p {
-      font-size: 24px;
-      margin-top: 10px;
-    }
+.account-card p {
+  font-size: 24px;
+  margin-top: 10px;
+}
 
-    /* Actions */
-    .actions {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
+/* ===== ACTIONS ===== */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
 
-    .action-btn {
-      flex: 1;
-      padding: 14px;
-      border-radius: 14px;
-      border: none;
-      font-size: 15px;
-      cursor: pointer;
-      background: #1e293b;
-      color: #ffffff;
-    }
+.action-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: #064e3b;
+  color: white;
+}
 
-    .action-btn.primary {
-      background: #38bdf8;
-      color: #020617;
-      font-weight: 600;
-    }
+.action-btn.primary {
+  background: #facc15;
+  color: #052e2b;
+  font-weight: 600;
+}
 
-    /* Transactions */
-    .transactions {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 16px;
-    }
+/* ===== TRANSACTIONS ===== */
+.transactions {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
 
-    .tx-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 14px 0;
-      border-bottom: 1px solid #1e293b;
-    }
+.tx-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid #064e3b;
+}
 
-    .tx-item:last-child {
-      border-bottom: none;
-    }
+.tx-item:last-child {
+  border-bottom: none;
+}
 
-    .tx-name {
-      font-size: 15px;
-    }
+.tx-meta {
+  font-size: 13px;
+  opacity: 0.7;
+}
 
-    .tx-meta {
-      font-size: 13px;
-      color: #94a3b8;
-    }
+.positive {
+  color: #facc15;
+}
 
-    .tx-amount.positive {
-      color: #22c55e;
-    }
+.negative {
+  color: #ef4444;
+}
 
-    .tx-amount.negative {
-      color: #ef4444;
-    }
+/* ===== MODAL ===== */
+#txModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  align-items: center;
+  justify-content: center;
+}
 
-    /* Responsive */
-    @media (max-width: 900px) {
-      .transactions {
-        grid-template-columns: 1fr;
-      }
+.modal-box {
+  background: #022c22;
+  width: 90%;
+  max-width: 420px;
+  padding: 22px;
+  border-radius: 18px;
+}
 
-      .sidebar {
-        display: none;
-      }
-    }
-  </style>
+.modal-box input,
+.modal-box select {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  border: none;
+  background: #052e2b;
+  color: white;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .transactions { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 
 <body>
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="logo">Moneyard</div>
-    <nav class="nav">
-      <a class="active" href="#">Dashboard</a>
-      <a href="#">Accounts</a>
-      <a href="#">Activity</a>
-      <a href="#">Settings</a>
-    </nav>
-  </aside>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">Moneyard</div>
+  <nav class="nav">
+    <a class="active">Dashboard</a>
+    <a>Accounts</a>
+    <a>Activity</a>
+    <a>Settings</a>
+  </nav>
+</aside>
 
-  <!-- Main -->
-  <main class="main">
+<!-- MAIN -->
+<main class="main">
 
-    <!-- Top Bar -->
-    <div class="topbar">
-      <input class="search" placeholder="Search transactions..." />
-      <div class="profile">👤 Alex</div>
+  <div class="topbar">
+    <input class="search" placeholder="Search..." />
+    <div class="profile">👤 User</div>
+  </div>
+
+  <!-- TOTAL -->
+  <div class="card balance-hero">
+    <h1 id="totalBalance">$0.00</h1>
+    <span>Live balance</span>
+  </div>
+
+  <!-- ACCOUNTS -->
+  <div class="accounts">
+    <div class="card account-card">
+      <h3>💵 Cash</h3>
+      <p id="cashBal">$0</p>
+    </div>
+    <div class="card account-card">
+      <h3>📱 Mobile Money</h3>
+      <p id="mobileBal">$0</p>
+    </div>
+    <div class="card account-card">
+      <h3>₿ Crypto</h3>
+      <p id="cryptoBal">$0</p>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="action-btn primary" onclick="openModal()">➕ Add Income</button>
+    <button class="action-btn" onclick="openModal()">➖ Add Expense</button>
+    <button class="action-btn">🔁 Transfer</button>
+  </div>
+
+  <!-- TRANSACTIONS -->
+  <div class="transactions">
+    <div class="card">
+      <h3>Recent Transactions</h3>
+      <div id="txList"></div>
     </div>
 
-    <!-- Total Balance -->
-    <div class="card balance-hero">
-      <h1>$12,845.32</h1>
-      <span>▲ +4.2% this week</span>
+    <div class="card">
+      <h3>Money Flow</h3>
+      <p style="opacity:.7">Charts coming soon</p>
     </div>
+  </div>
 
-    <!-- Accounts -->
-    <div class="accounts">
-      <div class="card account-card">
-        <h3>💵 Cash</h3>
-        <p>$2,300</p>
-      </div>
-      <div class="card account-card">
-        <h3>📱 Mobile Money</h3>
-        <p>$5,120</p>
-      </div>
-      <div class="card account-card">
-        <h3>₿ Crypto</h3>
-        <p>$5,425</p>
-      </div>
+</main>
+
+<!-- MODAL -->
+<div id="txModal">
+  <div class="modal-box">
+    <h2>Add Transaction</h2>
+
+    <input id="amount" type="number" placeholder="Amount" />
+    <select id="type">
+      <option value="income">Income</option>
+      <option value="expense">Expense</option>
+    </select>
+    <select id="source">
+      <option value="cash">Cash</option>
+      <option value="mobile_money">Mobile Money</option>
+      <option value="crypto">Crypto</option>
+    </select>
+    <input id="note" placeholder="Note" />
+
+    <div class="modal-actions">
+      <button class="action-btn primary" onclick="saveTx()">Save</button>
+      <button class="action-btn" onclick="closeModal()">Cancel</button>
     </div>
+  </div>
+</div>
 
-    <!-- Actions -->
-    <div class="actions">
-      <button class="action-btn primary">➕ Add Income</button>
-      <button class="action-btn">➖ Add Expense</button>
-      <button class="action-btn">🔁 Transfer</button>
-    </div>
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getDatabase, ref, onValue, push, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-    <!-- Transactions -->
-    <div class="transactions">
+const firebaseConfig = {
+  // 🔥 YOUR CONFIG HERE
+};
 
-      <!-- Recent -->
-      <div class="card">
-        <h3>Recent Transactions</h3>
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
 
-        <div class="tx-item">
-          <div>
-            <div class="tx-name">Freelance Payment</div>
-            <div class="tx-meta">Crypto</div>
-          </div>
-          <div class="tx-amount positive">+$1,200</div>
-        </div>
+let uid = "demo"; // replace with auth uid later
 
-        <div class="tx-item">
-          <div>
-            <div class="tx-name">Groceries</div>
-            <div class="tx-meta">Cash</div>
-          </div>
-          <div class="tx-amount negative">-$45</div>
-        </div>
+const cashEl = document.getElementById("cashBal");
+const mobileEl = document.getElementById("mobileBal");
+const cryptoEl = document.getElementById("cryptoBal");
+const totalEl = document.getElementById("totalBalance");
+const txList = document.getElementById("txList");
 
-        <div class="tx-item">
-          <div>
-            <div class="tx-name">Airtime</div>
-            <div class="tx-meta">Mobile Money</div>
-          </div>
-          <div class="tx-amount negative">-$10</div>
-        </div>
+onValue(ref(db, `users/${uid}/balances`), snap => {
+  const b = snap.val() || { cash:0, mobile_money:0, crypto:0 };
+  cashEl.textContent = `$${b.cash}`;
+  mobileEl.textContent = `$${b.mobile_money}`;
+  cryptoEl.textContent = `$${b.crypto}`;
+  totalEl.textContent = `$${(b.cash + b.mobile_money + b.crypto).toFixed(2)}`;
+});
+
+onValue(ref(db, `users/${uid}/transactions`), snap => {
+  txList.innerHTML = "";
+  snap.forEach(s => {
+    const t = s.val();
+    const div = document.createElement("div");
+    div.className = "tx-item";
+    div.innerHTML = `
+      <div>
+        <div>${t.note || "Transaction"}</div>
+        <div class="tx-meta">${t.source}</div>
       </div>
+      <div class="${t.type === "income" ? "positive" : "negative"}">
+        ${t.type === "income" ? "+" : "-"}$${t.amount}
+      </div>`;
+    txList.prepend(div);
+  });
+});
 
-      <!-- Flow -->
-      <div class="card">
-        <h3>Money Flow</h3>
-        <p style="color:#94a3b8;font-size:14px;margin-top:12px;">
-          Weekly overview (coming soon)
-        </p>
-      </div>
+window.openModal = () => txModal.style.display = "flex";
+window.closeModal = () => txModal.style.display = "none";
 
-    </div>
+window.saveTx = () => {
+  const amt = Number(amount.value);
+  const type = typeEl = document.getElementById("type").value;
+  const src = source.value;
 
-  </main>
+  const balRef = ref(db, `users/${uid}/balances`);
+  const txRef = ref(db, `users/${uid}/transactions`);
 
-  <!-- Firebase hook placeholder -->
-  <script>
-    // firebase.js will plug in here later
-    // 1. Auth
-    // 2. Fetch balances
-    // 3. Fetch transactions
-    // 4. Update UI
-  </script>
+  push(txRef, {
+    amount: amt,
+    type,
+    source: src,
+    note: note.value,
+    timestamp: Date.now()
+  });
+
+  onValue(balRef, snap => {
+    const b = snap.val() || { cash:0, mobile_money:0, crypto:0 };
+    if (type === "income") b[src] += amt;
+    else b[src] -= amt;
+    update(balRef, b);
+  }, { onlyOnce:true });
+
+  closeModal();
+};
+</script>
 
 </body>
 </html>
