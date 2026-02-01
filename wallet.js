@@ -94,7 +94,7 @@ function showPaymentDetails(provider) {
   selectedProviderTitle.textContent = provider;
   payAmount.textContent = `ZMK ${currentDepositAmount.toFixed(2)}`;
   payToNumber.textContent = provider === "Airtel Money"
-    ? "Send to: 0771196634 (Trust ZedFund— Lewis Mwaba)"
+    ? "Send to: 0771196634 (Trust ZedFund Manager— Lewis Mwaba)"
     : "Send to: 0768 526 191 (Trust ZedFund Manager — Lewis Mwaba)";
   paymentDetails.classList.remove("hidden");
 }
