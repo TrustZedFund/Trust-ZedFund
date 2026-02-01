@@ -65,22 +65,22 @@ body{margin:0;display:flex;height:100vh;background:#052e2b;color:#fff}
 
 <div class="topbar">
   <select id="currencySelect" class="search">
-    <option>USD</option>
-    <option>EUR</option>
-    <option>KES</option>
+    <option value="USD">USD</option>
+    <option value="EUR">EUR</option>
+    <option value="KES">KES</option>
   </select>
   <div id="userName">👤</div>
 </div>
 
 <div class="card balance-hero">
-  <h1 id="totalBalance">$0.00</h1>
+  <h1 id="totalBalance">USD 0.00</h1>
   <span>Live balance</span>
 </div>
 
 <div class="accounts">
-  <div class="card account-card"><h3>💵 Cash</h3><p id="cashBal">$0</p></div>
-  <div class="card account-card"><h3>📱 Mobile Money</h3><p id="mobileBal">$0</p></div>
-  <div class="card account-card"><h3>₿ Crypto</h3><p id="cryptoBal">$0</p></div>
+  <div class="card account-card"><h3>💵 Cash</h3><p id="cashBal">USD 0.00</p></div>
+  <div class="card account-card"><h3>📱 Mobile Money</h3><p id="mobileBal">USD 0.00</p></div>
+  <div class="card account-card"><h3>₿ Crypto</h3><p id="cryptoBal">USD 0.00</p></div>
 </div>
 
 <div class="actions">
@@ -146,75 +146,89 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
 import { getDatabase, ref, onValue, push, update, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-const firebaseConfig = {
-  /* 🔥 YOUR FIREBASE CONFIG HERE 🔥 */
-};
+/* 🔥 INSERT YOUR FIREBASE CONFIG HERE 🔥 */
+const firebaseConfig = {};
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-let uid=null;
-let balances={cash:0,mobile_money:0,crypto:0};
-let rates={USD:1};
-let currency="USD";
-let allTx=[];
-let chart;
+/* DOM BINDINGS */
+const txModal = document.getElementById("txModal");
+const amount = document.getElementById("amount");
+const type = document.getElementById("type");
+const from = document.getElementById("from");
+const to = document.getElementById("to");
+const note = document.getElementById("note");
+const currencySelect = document.getElementById("currencySelect");
+const chartRange = document.getElementById("chartRange");
+const txList = document.getElementById("txList");
 
-window.loginGoogle=async()=>{
-  const r=await signInWithPopup(auth,provider);
-  uid=r.user.uid;
-  userName.textContent=r.user.displayName;
-  authBox.style.display="none";
-  set(ref(db,`users/${uid}/balances`),balances);
+let uid = null;
+let balances = { cash:0, mobile_money:0, crypto:0 };
+let rates = { USD:1 };
+let currency = "USD";
+let allTx = [];
+let chart = null;
+
+/* AUTH */
+window.loginGoogle = async () => {
+  const r = await signInWithPopup(auth, provider);
+  uid = r.user.uid;
+  userName.textContent = r.user.displayName;
+  authBox.style.display = "none";
+  set(ref(db, `users/${uid}/balances`), balances);
   loadRates();
   listenBalances();
   listenTx();
 };
 
+/* FX */
 async function loadRates(){
-  const res=await fetch("https://api.exchangerate.host/latest?base=USD");
-  const data=await res.json();
-  rates=data.rates;
+  const res = await fetch("https://api.exchangerate.host/latest?base=USD");
+  const data = await res.json();
+  rates = data.rates;
 }
 
+/* BALANCES */
 function listenBalances(){
-  onValue(ref(db,`users/${uid}/balances`),s=>{
-    balances=s.val()||balances;
+  onValue(ref(db, `users/${uid}/balances`), s=>{
+    balances = s.val() || balances;
     renderBalances();
   });
 }
 
 function renderBalances(){
-  const r=rates[currency]||1;
-  cashBal.textContent=format(balances.cash*r);
-  mobileBal.textContent=format(balances.mobile_money*r);
-  cryptoBal.textContent=format(balances.crypto*r);
-  totalBalance.textContent=format(
-    (balances.cash+balances.mobile_money+balances.crypto)*r
+  const r = rates[currency] || 1;
+  cashBal.textContent = format(balances.cash * r);
+  mobileBal.textContent = format(balances.mobile_money * r);
+  cryptoBal.textContent = format(balances.crypto * r);
+  totalBalance.textContent = format(
+    (balances.cash + balances.mobile_money + balances.crypto) * r
   );
 }
 
-currencySelect.onchange=e=>{
-  currency=e.target.value;
+currencySelect.addEventListener("change", e=>{
+  currency = e.target.value;
   renderBalances();
-};
+});
 
-function format(v){return `${currency} ${v.toFixed(2)}`;}
+function format(v){ return `${currency} ${v.toFixed(2)}` }
 
+/* TRANSACTIONS */
 function listenTx(){
-  onValue(ref(db,`users/${uid}/transactions`),s=>{
-    txList.innerHTML="";
-    allTx=[];
+  onValue(ref(db, `users/${uid}/transactions`), s=>{
+    txList.innerHTML = "";
+    allTx = [];
     s.forEach(c=>{
-      const t=c.val();
+      const t = c.val();
       allTx.push(t);
-      const d=document.createElement("div");
-      d.className="tx-item";
-      d.innerHTML=`
+      const d = document.createElement("div");
+      d.className = "tx-item";
+      d.innerHTML = `
         <div>
-          <div>${t.note||t.type}</div>
+          <div>${t.note || t.type}</div>
           <div class="tx-meta">${t.from}${t.to?" → "+t.to:""}</div>
         </div>
         <div class="${t.type==="income"?"positive":"negative"}">
@@ -226,47 +240,62 @@ function listenTx(){
   });
 }
 
+/* CHART */
 function renderChart(){
-  const days=Number(chartRange.value);
+  const days = Number(chartRange.value);
   const labels=[], data=[];
   for(let i=days-1;i>=0;i--){
     const d=new Date(Date.now()-i*86400000);
     labels.push(d.toLocaleDateString());
     let sum=0;
     allTx.forEach(t=>{
-      if(new Date(t.time||t.timestamp).toDateString()===d.toDateString()){
+      if(new Date(t.timestamp).toDateString()===d.toDateString()){
         sum+=t.type==="income"?t.amount:-t.amount;
       }
     });
     data.push(sum);
   }
   if(chart) chart.destroy();
-  chart=new Chart(flowChart,{
+  chart = new Chart(flowChart,{
     type:"bar",
     data:{labels,datasets:[{data,backgroundColor:"#facc15"}]},
-    options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:"#fff"}},y:{ticks:{color:"#fff"}}}}
+    options:{plugins:{legend:{display:false}}}
   });
 }
 
-chartRange.onchange=renderChart;
+chartRange.onchange = renderChart;
 
-window.openModal=()=>txModal.style.display="flex";
-window.closeModal=()=>txModal.style.display="none";
+/* MODAL */
+window.openModal = ()=>{
+  if(!uid) return alert("Please sign in first");
+  txModal.style.display="flex";
+};
 
-window.saveTx=()=>{
-  const amt=Number(amount.value);
-  const t=type.value;
-  const f=from.value;
-  const toVal=to.value;
+window.closeModal = ()=>{
+  txModal.style.display="none";
+};
+
+/* SAVE TX */
+window.saveTx = ()=>{
+  if(!uid) return alert("Not authenticated");
+  const amt = Number(amount.value);
+  if(!amt || amt<=0) return alert("Enter valid amount");
+
+  const t = type.value;
+  const f = from.value;
+  const toVal = to.value;
+
+  if(t==="transfer" && (!toVal || f===toVal))
+    return alert("Invalid transfer");
 
   if(t==="income") balances[f]+=amt;
   if(t==="expense") balances[f]-=amt;
-  if(t==="transfer"&&toVal&&f!==toVal){
+  if(t==="transfer"){
     balances[f]-=amt;
     balances[toVal]+=amt;
   }
 
-  update(ref(db,`users/${uid}/balances`),balances);
+  update(ref(db,`users/${uid}/balances`), balances);
   push(ref(db,`users/${uid}/transactions`),{
     amount:amt,type:t,from:f,to:toVal||null,note:note.value,timestamp:Date.now()
   });
