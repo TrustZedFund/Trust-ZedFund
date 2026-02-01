@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Moneyard Dashboard</title>
+<title>Moneyard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -29,10 +29,16 @@ body{margin:0;display:flex;height:100vh;background:#052e2b;color:#fff}
 .tx-meta{font-size:12px;opacity:.7}
 .positive{color:#facc15}
 .negative{color:#ef4444}
-#txModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);align-items:center;justify-content:center}
+#txModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);align-items:center;justify-content:center;z-index:10}
 .modal{background:#022c22;width:90%;max-width:420px;padding:22px;border-radius:18px}
 .modal input,.modal select{width:100%;padding:12px;margin-bottom:10px;border:none;border-radius:12px;background:#052e2b;color:#fff}
-@media(max-width:900px){.sidebar{display:none}.transactions{grid-template-columns:1fr}}
+#mobileNav{display:none;position:fixed;bottom:0;left:0;right:0;background:#022c22;justify-content:space-around;padding:12px}
+@media(max-width:900px){
+  .sidebar{display:none}
+  .transactions{grid-template-columns:1fr}
+  #mobileNav{display:flex}
+  body{padding-bottom:60px}
+}
 </style>
 </head>
 
@@ -52,41 +58,35 @@ body{margin:0;display:flex;height:100vh;background:#052e2b;color:#fff}
 <!-- MAIN -->
 <main class="main">
 
-<!-- AUTH -->
 <div id="authBox" class="card" style="text-align:center">
   <h3>Sign in to Moneyard</h3>
   <button class="action-btn primary" onclick="loginGoogle()">🔐 Sign in with Google</button>
 </div>
 
-<!-- TOP -->
 <div class="topbar">
   <select id="currencySelect" class="search">
-    <option value="USD">USD</option>
-    <option value="EUR">EUR</option>
-    <option value="KES">KES</option>
+    <option>USD</option>
+    <option>EUR</option>
+    <option>KES</option>
   </select>
   <div id="userName">👤</div>
 </div>
 
-<!-- BALANCE -->
 <div class="card balance-hero">
   <h1 id="totalBalance">$0.00</h1>
   <span>Live balance</span>
 </div>
 
-<!-- ACCOUNTS -->
 <div class="accounts">
   <div class="card account-card"><h3>💵 Cash</h3><p id="cashBal">$0</p></div>
   <div class="card account-card"><h3>📱 Mobile Money</h3><p id="mobileBal">$0</p></div>
   <div class="card account-card"><h3>₿ Crypto</h3><p id="cryptoBal">$0</p></div>
 </div>
 
-<!-- ACTIONS -->
 <div class="actions">
   <button class="action-btn primary" onclick="openModal()">➕ Add Transaction</button>
 </div>
 
-<!-- TRANSACTIONS -->
 <div class="transactions">
   <div class="card">
     <h3>Recent Transactions</h3>
@@ -94,11 +94,23 @@ body{margin:0;display:flex;height:100vh;background:#052e2b;color:#fff}
   </div>
   <div class="card">
     <h3>Money Flow</h3>
-    <p style="opacity:.7">Charts coming soon</p>
+    <select id="chartRange" class="search" style="margin-bottom:10px">
+      <option value="7">Last 7 days</option>
+      <option value="30">Last 30 days</option>
+    </select>
+    <canvas id="flowChart" height="160"></canvas>
   </div>
 </div>
 
 </main>
+
+<!-- MOBILE NAV -->
+<div id="mobileNav">
+  <span>🏠</span>
+  <span onclick="openModal()">➕</span>
+  <span>📊</span>
+  <span>⚙️</span>
+</div>
 
 <!-- MODAL -->
 <div id="txModal">
@@ -127,14 +139,15 @@ body{margin:0;display:flex;height:100vh;background:#052e2b;color:#fff}
   </div>
 </div>
 
-<!-- FIREBASE -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getDatabase, ref, onValue, push, update, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 const firebaseConfig = {
-  /* 🔥 PUT YOUR FIREBASE CONFIG HERE 🔥 */
+  /* 🔥 YOUR FIREBASE CONFIG HERE 🔥 */
 };
 
 const app = initializeApp(firebaseConfig);
@@ -144,21 +157,26 @@ const provider = new GoogleAuthProvider();
 
 let uid=null;
 let balances={cash:0,mobile_money:0,crypto:0};
+let rates={USD:1};
 let currency="USD";
-const rates={USD:1,EUR:.92,KES:150};
+let allTx=[];
+let chart;
 
 window.loginGoogle=async()=>{
   const r=await signInWithPopup(auth,provider);
   uid=r.user.uid;
   userName.textContent=r.user.displayName;
   authBox.style.display="none";
-  initUser();
-};
-
-function initUser(){
   set(ref(db,`users/${uid}/balances`),balances);
+  loadRates();
   listenBalances();
   listenTx();
+};
+
+async function loadRates(){
+  const res=await fetch("https://api.exchangerate.host/latest?base=USD");
+  const data=await res.json();
+  rates=data.rates;
 }
 
 function listenBalances(){
@@ -169,7 +187,7 @@ function listenBalances(){
 }
 
 function renderBalances(){
-  const r=rates[currency];
+  const r=rates[currency]||1;
   cashBal.textContent=format(balances.cash*r);
   mobileBal.textContent=format(balances.mobile_money*r);
   cryptoBal.textContent=format(balances.crypto*r);
@@ -188,8 +206,10 @@ function format(v){return `${currency} ${v.toFixed(2)}`;}
 function listenTx(){
   onValue(ref(db,`users/${uid}/transactions`),s=>{
     txList.innerHTML="";
+    allTx=[];
     s.forEach(c=>{
       const t=c.val();
+      allTx.push(t);
       const d=document.createElement("div");
       d.className="tx-item";
       d.innerHTML=`
@@ -198,32 +218,57 @@ function listenTx(){
           <div class="tx-meta">${t.from}${t.to?" → "+t.to:""}</div>
         </div>
         <div class="${t.type==="income"?"positive":"negative"}">
-          ${t.type==="income"?"+":"-"}${format(t.amount*rates[currency])}
+          ${t.type==="income"?"+":"-"}${format(t.amount*(rates[currency]||1))}
         </div>`;
       txList.prepend(d);
     });
+    renderChart();
   });
 }
+
+function renderChart(){
+  const days=Number(chartRange.value);
+  const labels=[], data=[];
+  for(let i=days-1;i>=0;i--){
+    const d=new Date(Date.now()-i*86400000);
+    labels.push(d.toLocaleDateString());
+    let sum=0;
+    allTx.forEach(t=>{
+      if(new Date(t.time||t.timestamp).toDateString()===d.toDateString()){
+        sum+=t.type==="income"?t.amount:-t.amount;
+      }
+    });
+    data.push(sum);
+  }
+  if(chart) chart.destroy();
+  chart=new Chart(flowChart,{
+    type:"bar",
+    data:{labels,datasets:[{data,backgroundColor:"#facc15"}]},
+    options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:"#fff"}},y:{ticks:{color:"#fff"}}}}
+  });
+}
+
+chartRange.onchange=renderChart;
 
 window.openModal=()=>txModal.style.display="flex";
 window.closeModal=()=>txModal.style.display="none";
 
 window.saveTx=()=>{
   const amt=Number(amount.value);
-  const typeVal=type.value;
+  const t=type.value;
   const f=from.value;
-  const t=to.value;
+  const toVal=to.value;
 
-  if(typeVal==="income") balances[f]+=amt;
-  if(typeVal==="expense") balances[f]-=amt;
-  if(typeVal==="transfer" && t && f!==t){
+  if(t==="income") balances[f]+=amt;
+  if(t==="expense") balances[f]-=amt;
+  if(t==="transfer"&&toVal&&f!==toVal){
     balances[f]-=amt;
-    balances[t]+=amt;
+    balances[toVal]+=amt;
   }
 
   update(ref(db,`users/${uid}/balances`),balances);
   push(ref(db,`users/${uid}/transactions`),{
-    amount:amt,type:typeVal,from:f,to:t||null,note:note.value,time:Date.now()
+    amount:amt,type:t,from:f,to:toVal||null,note:note.value,timestamp:Date.now()
   });
 
   closeModal();
