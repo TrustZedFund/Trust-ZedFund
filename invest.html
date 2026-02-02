@@ -6,167 +6,109 @@
 <title>Invest</title>
 
 <style>
-:root {
-  --green: #0ea5a4;
-  --dark: #083a34;
-  --accent: #22ff9a;
-  --bg: #f4f7f7;
+:root{
+  --dark:#083a34;
+  --green:#10c7a7;
+  --accent:#22ff9a;
+  --bg:#f4f7f7;
 }
-
-* {
-  box-sizing: border-box;
-  font-family: system-ui, sans-serif;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  padding-bottom: 80px;
-}
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+body{margin:0;background:var(--bg);padding-bottom:80px}
 
 /* HEADER */
-header {
-  padding: 22px;
-  background: var(--dark);
-  color: white;
+header{background:var(--dark);color:#fff;padding:22px}
+
+/* PLANS */
+.container{padding:16px}
+.plan{
+  background:linear-gradient(135deg,#10c7a7,#0b5f56);
+  color:#fff;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:18px;
+}
+.plan small{opacity:.85}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:14px;
+  font-size:14px;
+}
+.calc{
+  background:rgba(255,255,255,.15);
+  border-radius:14px;
+  padding:14px;
+  margin-top:14px;
+}
+.calc input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+}
+.note{font-size:13px;margin-top:6px}
+.plan button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--accent),#00d4ff);
+  font-weight:700;
+  margin-top:16px;
+  cursor:pointer;
 }
 
-/* INVEST PLANS */
-.container {
-  padding: 16px;
+/* DEPOSIT */
+.deposit-section{
+  background:#fff;
+  padding:24px 16px;
 }
-
-.plan {
-  background: linear-gradient(135deg, #10c7a7, #0b5f56);
-  border-radius: 18px;
-  padding: 20px;
-  margin-bottom: 18px;
-  color: white;
+.deposit-section h2{text-align:center}
+.method{
+  background:linear-gradient(135deg,#0ea5a4,#0f766e);
+  color:#fff;
+  padding:18px;
+  border-radius:14px;
+  margin-bottom:14px;
 }
-
-.plan h3 {
-  margin: 0 0 6px;
+.deposit-form{
+  margin-top:20px;
+  background:#f9fafb;
+  padding:20px;
+  border-radius:16px;
 }
-
-.plan small {
-  opacity: .85;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 14px;
-  font-size: 14px;
-}
-
-.calc {
-  margin-top: 14px;
-  background: rgba(255,255,255,.15);
-  border-radius: 14px;
-  padding: 14px;
-}
-
-.calc input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  margin-top: 6px;
-}
-
-.note {
-  font-size: 13px;
-  margin-top: 8px;
-}
-
-.plan button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 999px;
-  border: none;
-  font-weight: 700;
-  background: linear-gradient(90deg, var(--accent), #00d4ff);
-  color: #00352f;
-  cursor: pointer;
-  margin-top: 16px;
-}
-
-/* DEPOSIT SECTION (FULL PAGE LOOK) */
-.deposit-section {
-  padding: 24px 16px;
-  background: white;
-}
-
-.deposit-section h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.method {
-  background: linear-gradient(135deg, #0ea5a4, #0f766e);
-  color: white;
-  padding: 18px;
-  border-radius: 14px;
-  margin-bottom: 14px;
-}
-
-.method h3 {
-  margin: 0 0 6px;
-}
-
-.deposit-form {
-  margin-top: 24px;
-  background: #f9fafb;
-  padding: 20px;
-  border-radius: 16px;
-}
-
-.deposit-form label {
-  display: block;
-  margin: 14px 0 6px;
-  font-weight: 600;
-}
-
+.deposit-form label{font-weight:600;margin-top:12px;display:block}
 .deposit-form input,
-.deposit-form select {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
+.deposit-form select{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
 }
-
-.deposit-form button {
-  width: 100%;
-  margin-top: 20px;
-  padding: 14px;
-  border-radius: 999px;
-  border: none;
-  background: var(--green);
-  color: white;
-  font-weight: 700;
+.deposit-form button{
+  width:100%;
+  margin-top:18px;
+  padding:14px;
+  border:none;
+  border-radius:999px;
+  background:var(--green);
+  color:#fff;
+  font-weight:700;
 }
 
 /* FOOTER */
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
-  background: white;
-  border-top: 1px solid #ddd;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+.footer{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  height:64px;
+  background:#fff;
+  border-top:1px solid #ddd;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
 }
-
-.footer a {
-  text-decoration: none;
-  color: #083a34;
-  font-weight: 600;
-  font-size: 14px;
-}
+.footer a{text-decoration:none;color:#083a34;font-weight:600}
 </style>
 </head>
 
@@ -174,7 +116,7 @@ header {
 
 <header>
   <h2>Investment Plans</h2>
-  <p>Earn daily. Paid at maturity.</p>
+  <p>Earn daily • Paid at maturity</p>
 </header>
 
 <div class="container">
@@ -182,41 +124,21 @@ header {
 <!-- STARTER -->
 <div class="plan">
   <h3>Starter Plan</h3>
-  <small>30 days • Daily earnings</small>
+  <small>30 days</small>
 
   <div class="grid">
     <div>Minimum<br><strong>ZMW 500</strong></div>
     <div>Daily Profit<br><strong>ZMW 10 / 500</strong></div>
     <div>Duration<br>30 days</div>
-    <div>Payout<br>At maturity</div>
+    <div>Payout<br>Maturity</div>
   </div>
 
   <div class="calc">
-    <input type="number" placeholder="Try amount" oninput="calc(this.value,30,'r1')">
-    <div class="note" id="r1"></div>
+    <input id="starterAmt" type="number" placeholder="Enter amount">
+    <div class="note" id="starterNote"></div>
   </div>
 
-  <button onclick="goDeposit(500)">Invest</button>
-</div>
-
-<!-- GROWTH -->
-<div class="plan">
-  <h3>Growth Plan</h3>
-  <small>60 days • Daily earnings</small>
-
-  <div class="grid">
-    <div>Minimum<br><strong>ZMW 500</strong></div>
-    <div>Daily Profit<br><strong>ZMW 10 / 500</strong></div>
-    <div>Duration<br>60 days</div>
-    <div>Payout<br>At maturity</div>
-  </div>
-
-  <div class="calc">
-    <input type="number" placeholder="Try amount" oninput="calc(this.value,60,'r2')">
-    <div class="note" id="r2"></div>
-  </div>
-
-  <button onclick="goDeposit(500)">Invest</button>
+  <button onclick="invest('Starter',30,10,'starterAmt')">Invest</button>
 </div>
 
 </div>
@@ -244,9 +166,9 @@ header {
     <label>Amount (ZMW)</label>
     <input type="number" required>
 
-    <label>Select Network</label>
+    <label>Network</label>
     <select required>
-      <option value="">Choose</option>
+      <option value="">Select</option>
       <option>MTN</option>
       <option>Airtel</option>
       <option>Zamtel</option>
@@ -259,7 +181,6 @@ header {
   </form>
 </section>
 
-<!-- FOOTER -->
 <nav class="footer">
   <a href="#">🏠 Home</a>
   <a href="#deposit">💼 Invest</a>
@@ -267,21 +188,62 @@ header {
   <a href="#">👤 Profile</a>
 </nav>
 
-<script>
-function calc(amount, days, out) {
-  if (!amount || amount < 500) {
-    document.getElementById(out).innerText = "Minimum ZMW 500";
+<!-- FIREBASE + LOGIC -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { getDatabase, ref, get, update, push, set } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
+  authDomain: "trust-zedfund.firebaseapp.com",
+  databaseURL: "https://trust-zedfund-default-rtdb.firebaseio.com",
+  projectId: "trust-zedfund",
+  storageBucket: "trust-zedfund.firebasestorage.app",
+  messagingSenderId: "129257684900",
+  appId: "1:129257684900:web:95e94293366a26f9448b31"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let user=null;
+onAuthStateChanged(auth,u=>{
+  if(!u){alert("Login first");return}
+  user=u;
+});
+
+window.invest = async function(plan,days,rate,inputId){
+  const amount = Number(document.getElementById(inputId).value);
+  if(amount < 500){
+    alert("Minimum investment is ZMW 500");
     return;
   }
-  let daily = (amount / 500) * 10;
-  let total = daily * days;
-  document.getElementById(out).innerText =
-    `Daily: ZMW ${daily} | Total profit: ZMW ${total}`;
-}
 
-function goDeposit(min) {
-  document.getElementById("deposit").scrollIntoView({ behavior: "smooth" });
-}
+  const balRef = ref(db,`users/${user.uid}/balances`);
+  const balSnap = await get(balRef);
+  const wallet = balSnap.exists() ? Number(balSnap.val().deposit||0) : 0;
+
+  if(wallet < amount){
+    alert("Insufficient balance. Please deposit first.");
+    document.getElementById("deposit")
+      .scrollIntoView({behavior:"smooth"});
+    return;
+  }
+
+  const daily = (amount/500)*rate;
+  const total = daily*days;
+
+  await update(balRef,{deposit:wallet-amount});
+
+  await set(push(ref(db,`users/${user.uid}/investments`)),{
+    plan,amount,dailyProfit:daily,totalProfit:total,
+    days,start:Date.now(),status:"active"
+  });
+
+  alert("Investment successful!");
+};
 </script>
 
 </body>
