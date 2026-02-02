@@ -1,3 +1,9 @@
+import {
+  getStorage,
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import {
   getAuth
@@ -25,6 +31,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+export const storage = getStorage(app);
 
 export const auth = getAuth(app);
 export const db = getDatabase(app);
@@ -173,4 +180,42 @@ export function onUserInvestments(uid, callback) {
   onValue(ref(db, `users/${uid}/investments`), snap => {
     callback(snap.exists() ? snap.val() : {});
   });
+}
+/* ===================================================
+   DEPOSIT PROOF UPLOAD
+=================================================== */
+
+export async function submitDepositProof(uid, data, file) {
+  if (!uid) throw new Error("User not authenticated");
+  if (!file) throw new Error("No proof file selected");
+
+  // 1️⃣ Upload file
+  const filePath = `depositProofs/${uid}/${Date.now()}_${file.name}`;
+  const proofRef = storageRef(storage, filePath);
+
+  await uploadBytes(proofRef, file);
+  const proofURL = await getDownloadURL(proofRef);
+
+  // 2️⃣ Save deposit request
+  const depositRef = push(ref(db, `depositRequests`));
+
+  await set(depositRef, {
+    uid,
+    amount: data.amount,
+    method: data.method,
+    proofURL,
+    status: "pending",
+    createdAt: Date.now()
+  });
+
+  // 3️⃣ Transaction log (pending)
+  await set(push(ref(db, `users/${uid}/transactions`)), {
+    type: "Deposit",
+    amount: data.amount,
+    method: data.method,
+    status: "Pending",
+    date: new Date().toISOString()
+  });
+
+  return true;
 }
