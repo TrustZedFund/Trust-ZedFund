@@ -2,234 +2,100 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fund Account | Trust ZedFund</title>
+<title>Fund Account</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
-  background: #0b2e1f;
-  font-family: Arial, sans-serif;
-  color: #ffffff;
-  margin: 0;
-  padding: 20px;
+  background:#0b2e1f;
+  color:white;
+  font-family:Arial, sans-serif;
+  padding:20px;
 }
-
-.container {
-  max-width: 460px;
-  margin: auto;
+.card {
+  background:#114d36;
+  padding:20px;
+  border-radius:14px;
+  max-width:450px;
+  margin:auto;
 }
-
-/* Headings */
-h2 {
-  text-align: center;
-  margin-bottom: 25px;
+input, select, button {
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border:none;
+  background:#0b2e1f;
+  color:white;
 }
-
-/* Payment cards */
-.method-card {
-  background: #114d36;
-  padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+button {
+  background:#1dd88a;
+  font-weight:bold;
+  cursor:pointer;
 }
-
-.method-card h3 {
-  margin: 0 0 6px;
-}
-
-.network {
-  font-size: 13px;
-  color: #c7f5dd;
-  margin-bottom: 12px;
-}
-
-/* Address box */
-.address-box {
-  display: flex;
-  gap: 8px;
-}
-
-.address-box input {
-  flex: 1;
-  padding: 10px;
-  background: #0b2e1f;
-  border: none;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 13px;
-}
-
-.address-box button {
-  background: #f4c430;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-/* Messages */
-.warning {
-  font-size: 13px;
-  color: #ffb3b3;
-  margin-top: 10px;
-}
-
-.note {
-  font-size: 13px;
-  color: #a7ffcf;
-  margin-top: 10px;
-}
-
-.highlight {
-  border: 1px solid #1dd88a;
-}
-
-/* Upload section */
-.upload-card {
-  background: #0f3f2d;
-  padding: 20px;
-  border-radius: 14px;
-  margin-top: 30px;
-}
-
-.upload-card label {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 6px;
-}
-
-.upload-card input,
-.upload-card select {
-  width: 100%;
-  padding: 10px;
-  background: #0b2e1f;
-  border: none;
-  border-radius: 6px;
-  color: #fff;
-  margin-bottom: 14px;
-}
-
-.upload-card input[type="file"] {
-  background: none;
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 12px;
-  background: #1dd88a;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.footer {
-  text-align: center;
-  font-size: 12px;
-  color: #9bd9c0;
-  margin-top: 30px;
+.status {
+  font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="card">
+  <h2>Deposit USDT</h2>
 
-<h2>Fund Your Account</h2>
-
-<!-- USDT BEP20 -->
-<div class="method-card">
-  <h3>USDT – BSC Network</h3>
-  <p class="network">BNB Smart Chain (BEP20)</p>
-
-  <div class="address-box">
-    <input id="bep20" type="text"
-      value="0x2837db956aba84eb2670d00aeea5c0d8a9e20a01" readonly>
-    <button onclick="copyText('bep20')">Copy</button>
-  </div>
-
-  <p class="warning">
-    🔴 Send <strong>USDT only</strong> using <strong>BEP20 (BSC)</strong>.<br>
-    Wrong network = permanent loss.
-  </p>
-</div>
-
-<!-- USDT TRC20 -->
-<div class="method-card">
-  <h3>USDT – TRON Network</h3>
-  <p class="network">TRC20 (TRON)</p>
-
-  <div class="address-box">
-    <input id="trc20" type="text"
-      value="TJREgZTuTnvRrw5Fme4DDd6hSwCEwxQV3f" readonly>
-    <button onclick="copyText('trc20')">Copy</button>
-  </div>
-
-  <p class="warning">
-    🔴 Send <strong>USDT only</strong> using <strong>TRC20</strong>.<br>
-    Do NOT use BEP20 or ERC20.
-  </p>
-</div>
-
-<!-- Binance ID -->
-<div class="method-card highlight">
-  <h3>Direct Binance Transfer</h3>
-  <p class="network">Internal Binance ID</p>
-
-  <div class="address-box">
-    <input id="binance" type="text"
-      value="809423171" readonly>
-    <button onclick="copyText('binance')">Copy</button>
-  </div>
-
-  <p class="note">
-    ✅ No blockchain fees<br>
-    ⚡ Instant internal transfer
-  </p>
-</div>
-
-<!-- Upload Proof -->
-<div class="upload-card">
-  <h3>Upload Transaction Proof</h3>
-
-  <label>Payment Method Used</label>
-  <select>
-    <option>USDT - BEP20 (BSC)</option>
-    <option>USDT - TRC20 (TRON)</option>
-    <option>Binance ID Transfer</option>
+  <select id="method">
+    <option value="">Select Payment Method</option>
+    <option value="USDT-BEP20">USDT (BEP20 - BSC)</option>
+    <option value="USDT-TRC20">USDT (TRC20 - TRON)</option>
+    <option value="BINANCE-ID">Binance ID Transfer</option>
   </select>
 
-  <label>Amount Sent (USDT)</label>
-  <input type="number" placeholder="Enter amount sent">
+  <input type="number" id="amount" placeholder="Amount sent (USDT)">
 
-  <label>Transaction Proof</label>
-  <input type="file" accept="image/*,.pdf">
+  <input type="file" id="proof">
 
-  <p class="warning">
-    Accepted: Screenshot or PDF confirmation.
-  </p>
+  <button id="submit">Submit Proof</button>
 
-  <button class="submit-btn">Submit Proof</button>
+  <p class="status" id="status"></p>
 </div>
 
-<div class="footer">
-  © 2026 Trust ZedFund
-</div>
+<script type="module">
+import { auth } from "./firebase.js";
+import { submitDepositProof } from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-</div>
+const submitBtn = document.getElementById("submit");
+const status = document.getElementById("status");
 
-<script>
-function copyText(id) {
-  const input = document.getElementById(id);
-  input.select();
-  input.setSelectionRange(0, 99999);
-  document.execCommand("copy");
-  alert("Copied successfully!");
-}
+let currentUser = null;
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    status.textContent = "❌ Please login first";
+    submitBtn.disabled = true;
+    return;
+  }
+  currentUser = user;
+});
+
+submitBtn.onclick = async () => {
+  const method = document.getElementById("method").value;
+  const amount = Number(document.getElementById("amount").value);
+  const file = document.getElementById("proof").files[0];
+
+  if (!method || !amount || !file) {
+    status.textContent = "⚠ Fill all fields";
+    return;
+  }
+
+  try {
+    status.textContent = "Uploading proof...";
+    await submitDepositProof(currentUser.uid, { method, amount }, file);
+    status.textContent = "✅ Deposit submitted. Await approval.";
+  } catch (err) {
+    status.textContent = "❌ " + err.message;
+  }
+};
 </script>
 
 </body>
