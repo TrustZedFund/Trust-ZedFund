@@ -3,165 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trust ZedFund – Community-Powered Investments</title>
+<title>Trust ZedFund – Invest with Confidence</title>
 
 <style>
-:root {
-  --green-dark: #083a34;
-  --green-main: #0fae96;
-  --green-light: #22ff9a;
-  --text-dark: #0b2e2a;
-  --bg: #f4f7f7;
-}
-
-* {
-  box-sizing: border-box;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--text-dark);
+  font-family: system-ui, sans-serif;
+  background: #f4f7f7;
+  color: #0b2e2a;
 }
 
-/* NAVBAR */
 .navbar {
   background: white;
   padding: 14px 18px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  position: sticky;
-  top: 0;
-  z-index: 10;
 }
 
 .logo {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.logo span {
   font-weight: 700;
-  font-size: 18px;
-  color: var(--green-dark);
 }
 
-.nav-actions a {
-  margin-left: 10px;
-  padding: 10px 18px;
-  border-radius: 24px;
+.navbar a {
   text-decoration: none;
+  margin-left: 10px;
   font-weight: 600;
 }
 
-.login {
-  color: var(--green-dark);
-}
-
 .signup {
-  background: linear-gradient(90deg, var(--green-light), var(--green-main));
+  padding: 10px 20px;
+  border-radius: 22px;
+  background: linear-gradient(90deg, #22ff9a, #0fae96);
   color: #00352f;
 }
 
-/* HERO */
 .hero {
   padding: 60px 20px;
   text-align: center;
-  background: linear-gradient(180deg, #ffffff, #e9f7f4);
 }
 
 .hero h1 {
-  font-size: 32px;
-  max-width: 700px;
-  margin: 0 auto 14px;
+  font-size: 30px;
+  max-width: 720px;
+  margin: auto;
 }
 
 .hero p {
-  max-width: 720px;
-  margin: 0 auto 24px;
+  max-width: 700px;
+  margin: 14px auto 26px;
   font-size: 16px;
   line-height: 1.6;
 }
 
-.hero .cta {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.hero .cta a {
-  padding: 14px 26px;
-  border-radius: 30px;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.primary {
-  background: linear-gradient(90deg, var(--green-light), var(--green-main));
+.hero a {
+  display: inline-block;
+  padding: 16px 34px;
+  border-radius: 34px;
+  background: linear-gradient(90deg, #22ff9a, #0fae96);
   color: #00352f;
+  font-weight: 700;
+  text-decoration: none;
 }
 
-.secondary {
-  border: 2px solid var(--green-main);
-  color: var(--green-main);
-}
-
-/* SECTIONS */
 .section {
-  padding: 50px 20px;
-  max-width: 1000px;
+  max-width: 900px;
   margin: auto;
+  padding: 40px 20px;
 }
 
-.section h2 {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.section p {
-  text-align: center;
-  max-width: 720px;
-  margin: 0 auto 30px;
-}
-
-/* FEATURES */
 .features {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
+  gap: 16px;
 }
 
 .feature {
   background: white;
-  border-radius: 18px;
   padding: 22px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
 }
 
 .feature h4 {
   margin-top: 0;
-  color: var(--green-dark);
 }
 
-/* TRUST */
 .trust {
-  background: var(--green-dark);
+  background: #083a34;
   color: white;
-}
-
-.trust p {
-  color: #d6f1ec;
-}
-
-/* FOOTER */
-footer {
-  padding: 30px 20px;
   text-align: center;
+  padding: 40px 20px;
+}
+
+footer {
+  text-align: center;
+  padding: 24px;
   font-size: 14px;
   color: #567a75;
 }
@@ -170,100 +111,57 @@ footer {
 
 <body>
 
-<!-- NAVBAR -->
 <header class="navbar">
   <div class="logo">
-    <img src="https://raw.githubusercontent.com/TrustZedFund/Trust-ZedFund/main/images/Trust%20ZedFund.png"
-         alt="Trust ZedFund Logo" width="60">
-    <span>Trust ZedFund</span>
+    <img src="https://raw.githubusercontent.com/TrustZedFund/Trust-ZedFund/main/images/Trust%20ZedFund.png" width="50">
+    Trust ZedFund
   </div>
-
-  <div class="nav-actions">
-    <a href="login.html" class="login">Log In</a>
+  <div>
+    <a href="login.html">Log In</a>
     <a href="signup.html" class="signup">Create Account</a>
   </div>
 </header>
 
-<!-- HERO -->
 <section class="hero">
-  <h1>A Community-Powered Investment Platform Built for Zambians</h1>
+  <h1>Invest in Zambian Kwacha. Grow with a Real Community.</h1>
   <p>
-    Trust ZedFund is a real, transparent, and trusted investment web app designed
-    for people who understand the Zambian Kwacha and want to grow money together —
-    safely, clearly, and fairly.
+    Trust ZedFund is a community-powered investment platform built for people
+    who understand ZMW, use Mobile Money or Crypto, and want transparent,
+    predictable returns — not hype.
   </p>
-
-  <div class="cta">
-    <a href="signup.html" class="primary">Start Investing</a>
-    <a href="login.html" class="secondary">I Have an Account</a>
-  </div>
+  <a href="signup.html">Create Free Account</a>
 </section>
 
-<!-- WHY -->
 <section class="section">
-  <h2>Why Trust ZedFund?</h2>
-  <p>
-    We combine community trust, simple investment rules, and modern technology
-    to create opportunities accessible to everyday people.
-  </p>
-
   <div class="features">
     <div class="feature">
-      <h4>🇿🇲 Zambian-First</h4>
-      <p>
-        Built around the Zambian Kwacha (ZMW) for people who live, earn, and invest locally.
-      </p>
+      <h4>Zambian-First</h4>
+      <p>Built around real ZMW value and local financial reality.</p>
     </div>
-
     <div class="feature">
-      <h4>🤝 Community-Powered</h4>
-      <p>
-        Investments are fueled by community participation, transparency, and shared growth.
-      </p>
+      <h4>Clear Daily Profits</h4>
+      <p>Know exactly how much your investment earns each day.</p>
     </div>
-
     <div class="feature">
-      <h4>📱 Mobile Money Ready</h4>
-      <p>
-        Designed for users with access to Mobile Money platforms and digital payments.
-      </p>
+      <h4>Community Powered</h4>
+      <p>Growth driven by participation, trust, and transparency.</p>
     </div>
-
     <div class="feature">
-      <h4>🔐 Secure & Transparent</h4>
-      <p>
-        Every investment, balance, and payout is tracked clearly inside your account.
-      </p>
+      <h4>Secure Access</h4>
+      <p>Full access only after signup and authentication.</p>
     </div>
   </div>
 </section>
 
-<!-- TRUST -->
-<section class="section trust">
-  <h2>Built on Trust, Not Hype</h2>
+<section class="trust">
   <p>
-    Trust ZedFund is not a get-rich-quick scheme.  
-    It is a long-term, community-driven financial platform for people who value clarity,
-    patience, and real growth.
+    This is not a shortcut.  
+    This is a disciplined investment platform for people who value trust and clarity.
   </p>
-</section>
-
-<!-- CTA -->
-<section class="section">
-  <h2>Ready to Join the Community?</h2>
-  <p>
-    You must create an account to access investments, dashboards, and earnings.
-  </p>
-
-  <div style="text-align:center;">
-    <a href="signup.html" class="primary" style="padding:16px 34px; border-radius:34px; display:inline-block;">
-      Create Free Account
-    </a>
-  </div>
 </section>
 
 <footer>
-  © 2026 Trust ZedFund • Community-Powered Investments
+  © 2026 Trust ZedFund
 </footer>
 
 </body>
