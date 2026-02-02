@@ -3,66 +3,140 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Invest</title>
+<title>Investment Plans</title>
 
 <style>
-body{
-  margin:0;
-  font-family:system-ui,sans-serif;
-  background:#083a34;
-  color:#fff;
+:root {
+  --card: linear-gradient(135deg, #10c7a7, #0b5f56);
+  --accent: #22ff9a;
+  --text: #ffffff;
+  --muted: #d6f1ec;
 }
-.card{
-  margin:20px;
+* { box-sizing:border-box; font-family:system-ui,sans-serif; }
+body { margin:0; background:#f4f7f7; }
+header { padding:22px; background:#083a34; color:white; }
+.container { padding:16px; }
+.plan {
+  background:var(--card);
+  border-radius:18px;
   padding:20px;
-  border-radius:16px;
-  background:#0b5f56;
+  margin-bottom:18px;
+  color:var(--text);
 }
-input,button,select{
+.plan h3 { margin:0 0 6px; }
+.plan small { color:var(--muted); }
+.grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:14px;
+  font-size:14px;
+}
+.calc {
+  margin-top:14px;
+  background:rgba(255,255,255,0.15);
+  border-radius:14px;
+  padding:14px;
+}
+.calc input {
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin-top:6px;
+}
+.note { font-size:13px; margin-top:8px; color:#e8fffb; }
+button {
   width:100%;
   padding:14px;
-  margin-top:12px;
-  border-radius:10px;
+  border-radius:30px;
   border:none;
-  font-size:16px;
-}
-button{
-  background:#22ff9a;
-  color:#00352f;
   font-weight:600;
+  background:linear-gradient(90deg,var(--accent),#00d4ff);
+  color:#00352f;
+  cursor:pointer;
+  margin-top:16px;
 }
-small{opacity:.85}
 </style>
 </head>
 
 <body>
 
-<div class="card">
-  <h2>Invest</h2>
+<header>
+  <h2>Investment Plans</h2>
+  <p>Earn daily. Get paid at maturity.</p>
+</header>
 
-  <label>Choose Plan</label>
-  <select id="plan">
-    <option value="" disabled selected>Select plan</option>
-    <option value="starter">Starter – 10% / 7 days</option>
-    <option value="pro">Pro – 25% / 14 days</option>
-  </select>
+<div class="container">
 
-  <input id="amount" type="number" placeholder="Enter amount (ZMW)" />
+<!-- STARTER -->
+<div class="plan">
+  <h3>Starter Plan</h3>
+  <small>Earn daily • Payout after 30 days</small>
+  <div class="grid">
+    <div>Minimum<br><strong>ZMK 500</strong></div>
+    <div>Daily Profit<br><strong>ZMK 10 per 500</strong></div>
+    <div>Total Days<br>30 days</div>
+    <div>Payout<br>Once at maturity</div>
+  </div>
+  <div class="calc">
+    <label>Try your amount</label>
+    <input id="starterAmount" type="number" min="500"
+      placeholder="Minimum ZMK 500"
+      oninput="calculate(this.value,10,30,'starterResult')" />
+    <div id="starterResult" class="note"></div>
+  </div>
+  <button onclick="invest('Starter Plan',30,10,'starterAmount')">Invest</button>
+</div>
 
-  <div id="summary" style="margin-top:10px;font-size:14px;">—</div>
+<!-- GROWTH -->
+<div class="plan">
+  <h3>Growth Plan</h3>
+  <small>Earn daily • Payout after 60 days</small>
+  <div class="grid">
+    <div>Minimum<br><strong>ZMK 500</strong></div>
+    <div>Daily Profit<br><strong>ZMK 10 per 500</strong></div>
+    <div>Total Days<br>60 days</div>
+    <div>Payout<br>Once at maturity</div>
+  </div>
+  <div class="calc">
+    <label>Try your amount</label>
+    <input id="growthAmount" type="number" min="500"
+      placeholder="Minimum ZMK 500"
+      oninput="calculate(this.value,10,60,'growthResult')" />
+    <div id="growthResult" class="note"></div>
+  </div>
+  <button onclick="invest('Growth Plan',60,10,'growthAmount')">Invest</button>
+</div>
 
-  <button id="investBtn">Invest Now</button>
+<!-- PREMIUM -->
+<div class="plan">
+  <h3>Premium Plan</h3>
+  <small>Earn daily • Payout after 90 days</small>
+  <div class="grid">
+    <div>Minimum<br><strong>ZMK 500</strong></div>
+    <div>Daily Profit<br><strong>ZMK 10 per 500</strong></div>
+    <div>Total Days<br>90 days</div>
+    <div>Payout<br>Once at maturity</div>
+  </div>
+  <div class="calc">
+    <label>Try your amount</label>
+    <input id="premiumAmount" type="number" min="500"
+      placeholder="Minimum ZMK 500"
+      oninput="calculate(this.value,10,90,'premiumResult')" />
+    <div id="premiumResult" class="note"></div>
+  </div>
+  <button onclick="invest('Premium Plan',90,10,'premiumAmount')">Invest</button>
+</div>
 
-  <small id="walletInfo"></small>
 </div>
 
 <script type="module">
-/* ================= FIREBASE IMPORTS ================= */
+/* ===== FIREBASE ===== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import { getDatabase, ref, get, update, push, set } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-/* ================= FIREBASE CONFIG ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
   authDomain: "trust-zedfund.firebaseapp.com",
@@ -77,66 +151,24 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-/* ================= PLANS ================= */
-const PLANS = {
-  starter: { name:"Starter", percent:10, days:7 },
-  pro: { name:"Pro", percent:25, days:14 }
-};
-
-/* ================= ELEMENTS ================= */
-const planEl = document.getElementById("plan");
-const amountEl = document.getElementById("amount");
-const summaryEl = document.getElementById("summary");
-const walletInfo = document.getElementById("walletInfo");
-const btn = document.getElementById("investBtn");
-
 let currentUser = null;
-let currentDeposit = 0;
 
-/* ================= AUTH ================= */
-onAuthStateChanged(auth, async user => {
+onAuthStateChanged(auth, user => {
   if (!user) {
     alert("Please login first");
     window.location.href = "login.html";
-    return;
   }
   currentUser = user;
-
-  // Load wallet
-  const balSnap = await get(ref(db, `users/${user.uid}/balances/deposit`));
-  currentDeposit = balSnap.exists() ? Number(balSnap.val()) : 0;
-  walletInfo.textContent = `Deposit balance: ZMW ${currentDeposit}`;
 });
 
-/* ================= CALCULATOR ================= */
-function updateSummary(){
-  const plan = PLANS[planEl.value];
-  const amount = Number(amountEl.value);
-  if (!plan || !amount) {
-    summaryEl.textContent = "—";
-    return;
-  }
-  const profit = amount * plan.percent / 100;
-  summaryEl.innerHTML =
-    `Profit: ZMW ${profit}<br>Total return: ZMW ${amount + profit}`;
-}
-
-planEl.addEventListener("change", updateSummary);
-amountEl.addEventListener("input", updateSummary);
-
-/* ================= INVEST BUTTON ================= */
-btn.addEventListener("click", async () => {
-  if (!currentUser) return;
-
-  const plan = PLANS[planEl.value];
-  const amount = Number(amountEl.value);
-
-  if (!plan || !amount || amount <= 0) {
-    alert("Select plan and enter amount");
+/* ===== INVEST ===== */
+window.invest = async function(name, days, dailyRate, inputId) {
+  const amount = Number(document.getElementById(inputId).value);
+  if (!amount || amount < 500) {
+    alert("Minimum investment is ZMK 500");
     return;
   }
 
-  // 🔥 LIVE WALLET CHECK
   const balRef = ref(db, `users/${currentUser.uid}/balances`);
   const balSnap = await get(balRef);
   const deposit = balSnap.exists() ? Number(balSnap.val().deposit || 0) : 0;
@@ -147,44 +179,48 @@ btn.addEventListener("click", async () => {
     return;
   }
 
-  btn.disabled = true;
-  btn.textContent = "Processing...";
+  const dailyProfit = (amount / 500) * dailyRate;
+  const totalProfit = dailyProfit * days;
 
-  try {
-    // Deduct wallet
-    await update(balRef, { deposit: deposit - amount });
+  await update(balRef, { deposit: deposit - amount });
 
-    const profit = amount * plan.percent / 100;
-    const now = Date.now();
+  await set(push(ref(db, `users/${currentUser.uid}/investments`)), {
+    plan: name,
+    amount,
+    dailyProfit,
+    totalProfit,
+    days,
+    startTime: Date.now(),
+    maturityTime: Date.now() + days * 86400000,
+    status: "active"
+  });
 
-    // Save investment
-    await set(push(ref(db, `users/${currentUser.uid}/investments`)), {
-      plan: plan.name,
-      amount,
-      profit,
-      percent: plan.percent,
-      startTime: now,
-      maturityTime: now + plan.days * 86400000,
-      status: "active"
-    });
+  await set(push(ref(db, `users/${currentUser.uid}/transactions`)), {
+    type: "Investment",
+    plan: name,
+    amount,
+    date: new Date().toISOString()
+  });
 
-    // Log transaction
-    await set(push(ref(db, `users/${currentUser.uid}/transactions`)), {
-      type: "Investment",
-      amount,
-      plan: plan.name,
-      date: new Date().toISOString()
-    });
+  alert("Investment successful!");
+  window.location.href = "dashboard.html";
+};
+</script>
 
-    alert("Investment successful!");
-    window.location.href = "dashboard.html";
-
-  } catch (e) {
-    alert("Error: " + e.message);
-    btn.disabled = false;
-    btn.textContent = "Invest Now";
+<script>
+function calculate(amount, dailyRate, days, out) {
+  amount = Number(amount);
+  if (!amount || amount < 500) {
+    document.getElementById(out).innerHTML = "Minimum investment is ZMK 500";
+    return;
   }
-});
+  const daily = (amount / 500) * dailyRate;
+  const profit = daily * days;
+  document.getElementById(out).innerHTML =
+    `Daily profit: <strong>ZMK ${daily.toFixed(2)}</strong><br>
+     Total profit: ZMK ${profit.toFixed(2)}<br>
+     You receive: <strong>ZMK ${(amount+profit).toFixed(2)}</strong>`;
+}
 </script>
 
 </body>
