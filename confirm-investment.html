@@ -6,78 +6,207 @@
 <title>Confirm Investment</title>
 
 <style>
-body {
-  margin: 0;
-  background: #083a34;
-  color: white;
-  font-family: system-ui, sans-serif;
+:root{
+  --bg:#083a34;
+  --card:#10c7a7;
+  --card2:#0b5f56;
+  --accent:#22ff9a;
+  --text:#ffffff;
+  --muted:#d6f1ec;
 }
-.card {
-  margin: 24px;
-  background: linear-gradient(135deg,#10c7a7,#0b5f56);
-  padding: 22px;
-  border-radius: 18px;
+
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
 }
-input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  margin-top: 8px;
+
+header{
+  padding:20px;
 }
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 18px;
-  border-radius: 30px;
-  border: none;
-  font-weight: 600;
-  background: linear-gradient(90deg,#22ff9a,#00d4ff);
-  color: #00352f;
+
+header h2{
+  margin:0;
 }
-.small { font-size: 13px; opacity: .9; margin-top: 10px; }
+
+.card{
+  margin:16px;
+  background:linear-gradient(135deg,var(--card),var(--card2));
+  border-radius:18px;
+  padding:20px;
+  animation:fadeUp .4s ease;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  margin:10px 0;
+  font-size:15px;
+}
+
+.row span{
+  color:var(--muted);
+}
+
+input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  margin-top:10px;
+  font-size:16px;
+}
+
+.summary{
+  margin-top:14px;
+  font-size:14px;
+  line-height:1.5;
+}
+
+button{
+  width:100%;
+  padding:16px;
+  border-radius:30px;
+  border:none;
+  margin-top:18px;
+  font-weight:600;
+  font-size:16px;
+  background:linear-gradient(90deg,var(--accent),#00d4ff);
+  color:#00352f;
+  cursor:pointer;
+  transition:transform .15s ease;
+}
+
+button:active{
+  transform:scale(.96);
+}
+
+.note{
+  margin-top:14px;
+  font-size:12px;
+  color:#eafffb;
+  opacity:.9;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
 </style>
 </head>
 
 <body>
 
+<header>
+  <h2>Confirm Investment</h2>
+</header>
+
 <div class="card">
-  <h3 id="planName"></h3>
-  <p id="planInfo"></p>
+  <h3 id="planName">—</h3>
+
+  <div class="row">
+    <span>Duration</span>
+    <strong id="planDuration">—</strong>
+  </div>
 
   <label>Amount to invest (ZMK)</label>
-  <input type="number" id="amount" oninput="updateReturn()">
+  <input
+    id="amount"
+    type="number"
+    placeholder="Enter amount"
+    min="0"
+  />
 
-  <p id="summary" class="small"></p>
+  <div class="summary" id="summary">
+    Enter an amount to see your payout
+  </div>
 
-  <button onclick="confirm()">Confirm Investment</button>
+  <button id="confirmBtn">Confirm Investment</button>
 
-  <p class="small">
-    Your money will be locked until maturity.<br>
-    Earnings will be sent to your Earnings Wallet.
-  </p>
+  <div class="note">
+    • Funds will be locked until maturity<br>
+    • Earnings go to your Earnings Wallet<br>
+    • Returns are estimates based on plan terms
+  </div>
 </div>
 
-<script>
-const plan = JSON.parse(localStorage.getItem("plan"));
-document.getElementById("planName").innerText = plan.name;
-document.getElementById("planInfo").innerText =
-  `Payout after ${plan.days} days`;
+<script type="module">
+import { auth } from "./js/firebase.js";
+import { createInvestment } from "./js/firebase.js";
+import { onAuthStateChanged } from
+"https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-function updateReturn() {
-  let amt = document.getElementById("amount").value;
-  if (!amt) return;
-  let profit = amt * plan.percent / 100;
-  let total = Number(amt) + profit;
-  document.getElementById("summary").innerHTML =
-    `You invest ZMK ${amt}<br>
-     You receive ZMK ${total.toFixed(2)}<br>
-     Profit: ZMK ${profit.toFixed(2)}`;
+// Load selected plan
+const plan = JSON.parse(localStorage.getItem("selectedPlan"));
+
+if (!plan) {
+  alert("No plan selected");
+  window.location.href = "investments.html";
 }
 
-function confirm() {
-  alert("Investment created (backend coming next)");
-}
+const planNameEl = document.getElementById("planName");
+const planDurationEl = document.getElementById("planDuration");
+const amountEl = document.getElementById("amount");
+const summaryEl = document.getElementById("summary");
+const btn = document.getElementById("confirmBtn");
+
+planNameEl.textContent = plan.name;
+planDurationEl.textContent = `${plan.days} days`;
+
+let currentUser = null;
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    alert("Please log in to continue");
+    window.location.href = "login.html";
+  }
+  currentUser = user;
+});
+
+// Live payout calculator
+amountEl.addEventListener("input", () => {
+  const amount = Number(amountEl.value);
+  if (!amount || amount <= 0) {
+    summaryEl.innerHTML = "Enter an amount to see your payout";
+    return;
+  }
+
+  const profit = amount * plan.percent / 100;
+  const total = amount + profit;
+
+  summaryEl.innerHTML = `
+    You invest <strong>ZMK ${amount.toFixed(2)}</strong><br>
+    You receive <strong>ZMK ${total.toFixed(2)}</strong><br>
+    Profit: ZMK ${profit.toFixed(2)}
+  `;
+});
+
+// Confirm investment
+btn.addEventListener("click", async () => {
+  const amount = Number(amountEl.value);
+
+  if (!amount || amount <= 0) {
+    alert("Enter a valid amount");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Processing...";
+
+  try {
+    await createInvestment(currentUser.uid, plan, amount);
+    alert("Investment successful. Funds locked.");
+    localStorage.removeItem("selectedPlan");
+    window.location.href = "dashboard.html";
+  } catch (e) {
+    alert(e.message || "Investment failed");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Confirm Investment";
+  }
+});
 </script>
 
 </body>
