@@ -13,19 +13,26 @@ body {
   color: #0b2e2a;
 }
 
-/* ===== HEADER (FIXED, SAFE) ===== */
 .navbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
   background: white;
   padding: 14px 18px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  flex-wrap: wrap;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  flex-wrap: wrap; /* ✅ allows stacking on small screens */
+}
+
+.navbar .actions {
+  display: flex;
+  gap: 12px;       /* ✅ space between Login & Create */
+  align-items: center;
+}
+
+.navbar a {
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap; /* ✅ prevents text breaking */
 }
 
 .logo {
@@ -35,17 +42,10 @@ body {
   font-weight: 700;
 }
 
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
 .navbar a {
   text-decoration: none;
+  margin-left: 10px;
   font-weight: 600;
-  white-space: nowrap;
 }
 
 .signup {
@@ -55,7 +55,6 @@ body {
   color: #00352f;
 }
 
-/* ===== HERO ===== */
 .hero {
   padding: 60px 20px;
   text-align: center;
@@ -84,7 +83,6 @@ body {
   text-decoration: none;
 }
 
-/* ===== CONTENT ===== */
 .section {
   max-width: 900px;
   margin: auto;
@@ -132,7 +130,7 @@ footer {
     Trust ZedFund
   </div>
 
-  <div class="nav-actions">
+  <div class="actions">
     <a href="login.html">Log In</a>
     <a href="signup.html" class="signup">Create Account</a>
   </div>
