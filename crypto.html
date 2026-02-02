@@ -1,0 +1,31 @@
+<div class="deposit-container">
+  <h2>Deposit USDT</h2>
+
+  <label>Asset</label>
+  <input type="text" value="USDT (Tether)" disabled />
+
+  <label>Network</label>
+  <input type="text" value="TRC20 (T20)" disabled />
+
+  <label>USDT Deposit Address</label>
+  <div class="address-box">
+    <input 
+      type="text" 
+      id="walletAddress" 
+      value="TXYZExampleTronAddress..." 
+      readonly 
+    />
+    <button onclick="copyAddress()">Copy</button>
+  </div>
+
+  <div class="qr-box">
+    <img src="usdt-trc20-qr.png" alt="USDT TRC20 QR" />
+  </div>
+
+  <p class="warning">
+    🔴 Send <b>USDT only</b> using the <b>TRC20 (T20)</b> network.  
+    Do NOT use ERC20, BEP20, or any other network.
+  </p>
+
+  <button class="confirm-btn">I Have Sent USDT</button>
+</div>
