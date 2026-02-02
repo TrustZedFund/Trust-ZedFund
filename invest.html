@@ -96,7 +96,7 @@ button {
       oninput="calc(this.value,30,'starterNote')" />
     <div id="starterNote" class="note"></div>
   </div>
-  <button onclick="investStarter()">Invest</button>
+  <button onclick="investPlan('Starter Plan',30,'starterAmount')">Invest</button>
 </div>
 
 <!-- GROWTH -->
@@ -116,7 +116,7 @@ button {
       oninput="calc(this.value,60,'growthNote')" />
     <div id="growthNote" class="note"></div>
   </div>
-  <button onclick="investGrowth()">Invest</button>
+  <button onclick="investPlan('Growth Plan',60,'growthAmount')">Invest</button>
 </div>
 
 <!-- PREMIUM -->
@@ -136,40 +136,27 @@ button {
       oninput="calc(this.value,90,'premiumNote')" />
     <div id="premiumNote" class="note"></div>
   </div>
-  <button onclick="investPremium()">Invest</button>
+  <button onclick="investPlan('Premium Plan',90,'premiumAmount')">Invest</button>
 </div>
 
 </div>
 
-<!-- ================= SCRIPT ================= -->
+<!-- ================= ONLY IMPORTS ================= -->
 <script type="module">
-import { auth } from "./firebase.js";
+import { auth, createInvestment } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { createInvestment } from "./firebase.js";
 
-let currentUser = null;
+let uid = null;
 
 onAuthStateChanged(auth, user => {
   if (!user) {
-    alert("Please login first");
     window.location.href = "login.html";
     return;
   }
-  currentUser = user;
+  uid = user.uid;
 });
 
-/* ===== INVEST FUNCTIONS ===== */
-
-window.investStarter = () =>
-  invest("Starter Plan", 30, "starterAmount");
-
-window.investGrowth = () =>
-  invest("Growth Plan", 60, "growthAmount");
-
-window.investPremium = () =>
-  invest("Premium Plan", 90, "premiumAmount");
-
-async function invest(name, days, inputId) {
+window.investPlan = async function(planName, days, inputId) {
   const amount = Number(document.getElementById(inputId).value);
 
   if (!amount || amount < 500) {
@@ -178,8 +165,8 @@ async function invest(name, days, inputId) {
   }
 
   try {
-    await createInvestment(currentUser.uid, { name, days }, amount);
-    alert("Investment successful!");
+    await createInvestment(uid, { name: planName, days }, amount);
+    alert("Investment successful");
     window.location.href = "dashboard.html";
   } catch (err) {
     if (err.message.includes("Insufficient")) {
@@ -189,10 +176,11 @@ async function invest(name, days, inputId) {
       alert(err.message);
     }
   }
-}
+};
+</script>
 
-/* ===== CALCULATOR ===== */
-window.calc = function(amount, days, out) {
+<script>
+function calc(amount, days, out) {
   amount = Number(amount);
   if (!amount || amount < 500) {
     document.getElementById(out).innerText = "Minimum ZMK 500";
@@ -204,7 +192,7 @@ window.calc = function(amount, days, out) {
     `Daily: ZMK ${daily.toFixed(2)}<br>
      Profit: ZMK ${profit.toFixed(2)}<br>
      Total: <strong>ZMK ${(amount+profit).toFixed(2)}</strong>`;
-};
+}
 </script>
 
 </body>
