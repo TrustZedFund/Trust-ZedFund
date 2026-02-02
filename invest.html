@@ -1,155 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Invest</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>Invest</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f2d1e;
-      color: #fff;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #0c3b2e;
+  color: #fff;
+}
 
-    header {
-      padding: 16px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-      background: #123d28;
-    }
+header {
+  padding: 18px;
+  text-align: center;
+  background: #06281f;
+  font-size: 20px;
+  font-weight: bold;
+}
 
-    .balance {
-      text-align: center;
-      margin: 12px;
-      font-size: 16px;
-      color: #ffd54f;
-    }
+.plan {
+  margin: 16px;
+  padding: 16px;
+  background: #135c47;
+  border-radius: 14px;
+}
 
-    .plans {
-      padding: 16px;
-    }
+.plan h3 {
+  margin: 0 0 6px;
+}
 
-    .plan {
-      background: #164b33;
-      border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
+.plan small {
+  opacity: 0.85;
+}
 
-    .plan h3 {
-      margin: 0 0 8px;
-    }
+.plan input {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+}
 
-    .plan p {
-      margin: 4px 0;
-      font-size: 14px;
-      opacity: 0.9;
-    }
-
-    .plan input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 6px;
-      border: none;
-      font-size: 16px;
-    }
-
-    .plan button {
-      width: 100%;
-      margin-top: 12px;
-      padding: 12px;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      background: #ffd54f;
-      color: #000;
-      cursor: pointer;
-    }
-
-    .plan button:active {
-      transform: scale(0.98);
-    }
-  </style>
+.plan button {
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 30px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(90deg, #22ff9a, #00d4ff);
+  color: #00352f;
+  cursor: pointer;
+}
+</style>
 </head>
+
 <body>
 
-<header>Invest Plans</header>
+<header>Investment Plans</header>
 
-<div class="balance" id="balanceText">
-  Wallet Balance: ZMW 0
+<div class="plan">
+  <h3>Starter Plan</h3>
+  <small>30 days • Daily profit ZMW 10 / 500</small>
+  <input id="starterAmt" type="number" placeholder="Minimum 500">
+  <button onclick="invest('Starter Plan', 30, starterAmt.value)">Invest</button>
 </div>
 
-<div class="plans">
+<div class="plan">
+  <h3>Growth Plan</h3>
+  <small>60 days • Daily profit ZMW 10 / 500</small>
+  <input id="growthAmt" type="number" placeholder="Minimum 500">
+  <button onclick="invest('Growth Plan', 60, growthAmt.value)">Invest</button>
+</div>
 
-  <div class="plan">
-    <h3>Starter Plan</h3>
-    <p>Duration: 7 Days</p>
-    <p>Daily Profit: ZMW 10 per 500</p>
-
-    <input id="amt1" type="number" placeholder="Enter amount (min 500)" />
-    <button onclick="invest('Starter', 7, 'amt1')">Invest</button>
-  </div>
-
-  <div class="plan">
-    <h3>Growth Plan</h3>
-    <p>Duration: 14 Days</p>
-    <p>Daily Profit: ZMW 10 per 500</p>
-
-    <input id="amt2" type="number" placeholder="Enter amount (min 500)" />
-    <button onclick="invest('Growth', 14, 'amt2')">Invest</button>
-  </div>
-
-  <div class="plan">
-    <h3>Premium Plan</h3>
-    <p>Duration: 30 Days</p>
-    <p>Daily Profit: ZMW 10 per 500</p>
-
-    <input id="amt3" type="number" placeholder="Enter amount (min 500)" />
-    <button onclick="invest('Premium', 30, 'amt3')">Invest</button>
-  </div>
-
+<div class="plan">
+  <h3>Premium Plan</h3>
+  <small>90 days • Daily profit ZMW 10 / 500</small>
+  <input id="premiumAmt" type="number" placeholder="Minimum 500">
+  <button onclick="invest('Premium Plan', 90, premiumAmt.value)">Invest</button>
 </div>
 
 <script type="module">
-  import { auth, onBalanceChange, createInvestment } from "./firebase.js";
+import { auth, createInvestment } from "./firebase.js";
 
-  const user = auth.currentUser || JSON.parse(localStorage.getItem("user"));
-  if (!user) location.href = "login.html";
+const user = auth.currentUser || JSON.parse(localStorage.getItem("user"));
+if (!user) location.href = "login.html";
 
-  const uid = user.uid;
-
-  // Real-time balance display
-  onBalanceChange(uid, bal => {
-    document.getElementById("balanceText").textContent =
-      `Wallet Balance: ZMW ${bal.deposit || 0}`;
-  });
-
-  window.invest = async (planName, days, inputId) => {
-    const amount = Number(document.getElementById(inputId).value);
-
-    if (!amount || amount < 500) {
-      alert("Minimum investment is ZMW 500");
-      return;
+window.invest = async (name, days, amount) => {
+  try {
+    await createInvestment(user.uid, { name, days }, Number(amount));
+    alert("Investment successful");
+    location.href = "dashboard.html";
+  } catch (e) {
+    if (e.message.includes("Insufficient")) {
+      location.href = "wallet.html";
+    } else {
+      alert(e.message);
     }
-
-    try {
-      await createInvestment(uid, { name: planName, days }, amount);
-      alert("Investment successful");
-      location.href = "dashboard.html";
-    } catch (err) {
-      if (err.message.includes("Insufficient")) {
-        alert("Insufficient balance. Please deposit first.");
-        location.href = "wallet.html";
-      } else {
-        alert(err.message);
-      }
-    }
-  };
+  }
+};
 </script>
 
 </body>
