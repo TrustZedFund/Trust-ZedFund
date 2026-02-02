@@ -170,7 +170,6 @@
   function goWithdraw() {
   window.location.href = "withdraw.html";
 }
-</script>
 
 <script type="module" src="dashboard.js"></script>
   <script>
@@ -189,6 +188,14 @@
       profileDropdown.classList.remove("show");
     }
   });
+<script type="module">
+import { auth, processInvestmentMaturity } from "./js/firebase.js";
+
+auth.onAuthStateChanged(user => {
+  if (user) {
+    processInvestmentMaturity(user.uid);
+  }
+});
 </script>
 </body>
 </html>
