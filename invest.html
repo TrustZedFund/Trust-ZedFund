@@ -16,7 +16,16 @@
 body{margin:0;background:var(--bg);padding-bottom:80px}
 
 /* HEADER */
-header{background:var(--dark);color:#fff;padding:22px}
+header{
+  background:var(--dark);
+  color:#fff;
+  padding:22px;
+}
+.balance{
+  margin-top:8px;
+  font-weight:700;
+  color:#22ff9a;
+}
 
 /* PLANS */
 .container{padding:16px}
@@ -117,11 +126,12 @@ header{background:var(--dark);color:#fff;padding:22px}
 <header>
   <h2>Investment Plans</h2>
   <p>Earn daily • Paid at maturity</p>
+  <div class="balance">Wallet Balance: ZMW <span id="walletBalance">0.00</span></div>
 </header>
 
 <div class="container">
 
-<!-- STARTER -->
+<!-- STARTER PLAN -->
 <div class="plan">
   <h3>Starter Plan</h3>
   <small>30 days</small>
@@ -164,7 +174,7 @@ header{background:var(--dark);color:#fff;padding:22px}
 
   <form class="deposit-form">
     <label>Amount (ZMW)</label>
-    <input type="number" required>
+    <input id="depositAmount" type="number" required>
 
     <label>Network</label>
     <select required>
@@ -188,11 +198,11 @@ header{background:var(--dark);color:#fff;padding:22px}
   <a href="#">👤 Profile</a>
 </nav>
 
-<!-- FIREBASE + LOGIC -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { getDatabase, ref, get, update, push, set } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import { getDatabase, ref, get, update, push, set, onValue } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
@@ -209,9 +219,18 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 let user=null;
+let currentBalance=0;
+
 onAuthStateChanged(auth,u=>{
   if(!u){alert("Login first");return}
   user=u;
+
+  const balRef = ref(db,`users/${user.uid}/balances/deposit`);
+  onValue(balRef,snap=>{
+    currentBalance = snap.exists() ? Number(snap.val()) : 0;
+    document.getElementById("walletBalance").textContent =
+      currentBalance.toFixed(2);
+  });
 });
 
 window.invest = async function(plan,days,rate,inputId){
@@ -221,12 +240,9 @@ window.invest = async function(plan,days,rate,inputId){
     return;
   }
 
-  const balRef = ref(db,`users/${user.uid}/balances`);
-  const balSnap = await get(balRef);
-  const wallet = balSnap.exists() ? Number(balSnap.val().deposit||0) : 0;
-
-  if(wallet < amount){
+  if(currentBalance < amount){
     alert("Insufficient balance. Please deposit first.");
+    document.getElementById("depositAmount").value = amount;
     document.getElementById("deposit")
       .scrollIntoView({behavior:"smooth"});
     return;
@@ -235,7 +251,8 @@ window.invest = async function(plan,days,rate,inputId){
   const daily = (amount/500)*rate;
   const total = daily*days;
 
-  await update(balRef,{deposit:wallet-amount});
+  const balRef = ref(db,`users/${user.uid}/balances`);
+  await update(balRef,{deposit:currentBalance-amount});
 
   await set(push(ref(db,`users/${user.uid}/investments`)),{
     plan,amount,dailyProfit:daily,totalProfit:total,
