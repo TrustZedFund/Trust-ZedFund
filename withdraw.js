@@ -201,3 +201,48 @@ function resetWithdrawFlow() {
   currentWithdrawAmount = 0;
   selectedProvider = "";
 }
+import {
+  ref,
+  get,
+  update
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+window.withdraw = async function(id) {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const invRef = ref(db, `users/${user.uid}/investments/${id}`);
+  const walletRef = ref(db, `users/${user.uid}/wallet`);
+
+  const snap = await get(invRef);
+  if (!snap.exists()) return;
+
+  const inv = snap.val();
+
+  const now = Date.now();
+  const progress =
+    (now - inv.start) / (inv.maturity - inv.start);
+
+  let payout = 0;
+
+  if (progress < 0.3) {
+    payout = inv.amount * 0.8;
+  } else if (progress < 0.7) {
+    payout = inv.amount;
+  } else {
+    payout = inv.amount + inv.profit * 0.5;
+  }
+
+  const walletSnap = await get(walletRef);
+  const wallet = walletSnap.val();
+
+  await update(walletRef, {
+    deposit: wallet.deposit + payout
+  });
+
+  await update(invRef, {
+    status: "withdrawn"
+  });
+
+  alert(`Withdrawn ZMK ${payout.toFixed(2)}`);
+};
