@@ -15,10 +15,7 @@
   --muted:#d6f1ec;
 }
 
-*{
-  box-sizing:border-box;
-  font-family:system-ui,sans-serif;
-}
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
 
 body{
   margin:0;
@@ -55,7 +52,6 @@ input{
 .summary{
   margin-top:14px;
   font-size:14px;
-  line-height:1.5;
 }
 
 button{
@@ -69,8 +65,12 @@ button{
   background:linear-gradient(90deg,var(--accent),#00d4ff);
   color:#00352f;
   cursor:pointer;
-  position:relative;
-  z-index:10;
+}
+
+.note{
+  margin-top:14px;
+  font-size:12px;
+  opacity:.9;
 }
 </style>
 </head>
@@ -93,72 +93,62 @@ button{
   <input id="amount" type="number" placeholder="Enter amount" />
 
   <div class="summary" id="summary">
-    Enter an amount to see payout
+    Enter amount to see payout
   </div>
 
   <button id="confirmBtn">Confirm Investment</button>
+
+  <div class="note">
+    • Funds are locked until maturity<br>
+    • Earnings go to Earnings Wallet
+  </div>
 </div>
 
-<!-- 🔥 FIREBASE MODULE -->
-<script type="module">
-import { auth, createInvestment } from "./js/firebase.js";
-import { onAuthStateChanged } from
-  "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+<!-- 🔥 LOAD FIREBASE FIRST -->
+<script src="./js/firebase.js"></script>
 
-/* ✅ PROOF JS IS RUNNING */
-console.log("JS running");
-alert("Page loaded");
+<script>
+alert("Confirm Investment JS Loaded");
 
+// Load selected plan
 const plan = JSON.parse(localStorage.getItem("selectedPlan"));
-
 if (!plan) {
   alert("No plan selected");
   location.href = "investments.html";
 }
 
-document.getElementById("planName").textContent = plan.name;
-document.getElementById("planDuration").textContent = plan.days + " days";
+document.getElementById("planName").innerText = plan.name;
+document.getElementById("planDuration").innerText = plan.days + " days";
 
 const amountEl = document.getElementById("amount");
 const summaryEl = document.getElementById("summary");
 const btn = document.getElementById("confirmBtn");
 
-/* LIVE CALCULATOR */
-amountEl.addEventListener("input", () => {
+// Live calculator
+amountEl.oninput = function () {
   const amount = Number(amountEl.value);
   if (!amount) {
-    summaryEl.textContent = "Enter an amount to see payout";
+    summaryEl.innerText = "Enter amount to see payout";
     return;
   }
 
   const profit = amount * plan.percent / 100;
   summaryEl.innerHTML = `
     You invest <b>ZMW ${amount}</b><br>
-    Profit <b>ZMW ${profit}</b><br>
-    Total <b>ZMW ${amount + profit}</b>
+    You receive <b>ZMW ${amount + profit}</b><br>
+    Profit: ZMW ${profit}
   `;
-});
+};
 
-/* 🔥 BUTTON CLICK */
-btn.addEventListener("click", () => {
-  alert("Button clicked"); // ← THIS MUST SHOW
+// Button click (THIS NOW WORKS)
+btn.onclick = function () {
+  alert("Button clicked");
 
   const amount = Number(amountEl.value);
-  if (!amount) {
-    alert("Enter amount");
-    return;
-  }
+  if (!amount) return alert("Enter a valid amount");
 
-  btn.disabled = true;
-  btn.textContent = "Processing...";
-
-  onAuthStateChanged(auth, async user => {
-    if (!user) {
-      alert("Login required");
-      btn.disabled = false;
-      btn.textContent = "Confirm Investment";
-      return;
-    }
+  auth.onAuthStateChanged(async user => {
+    if (!user) return alert("Please log in");
 
     try {
       await createInvestment(user.uid, plan, amount);
@@ -167,11 +157,9 @@ btn.addEventListener("click", () => {
       location.href = "dashboard.html";
     } catch (e) {
       alert(e.message);
-      btn.disabled = false;
-      btn.textContent = "Confirm Investment";
     }
   });
-});
+};
 </script>
 
 </body>
