@@ -1,188 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Confirm Investment</title>
 
 <style>
-:root {
-  --bg: #083a34;
-  --card: linear-gradient(135deg, #10c7a7, #0b5f56);
-  --accent: #22ff9a;
-  --text: #ffffff;
-  --muted: #d6f1ec;
+:root{
+  --bg:#083a34;
+  --card:#10c7a7;
+  --card2:#0b5f56;
+  --accent:#22ff9a;
+  --text:#ffffff;
+  --muted:#d6f1ec;
 }
-
-* { box-sizing: border-box; font-family: system-ui, sans-serif; }
-
-body {
-  margin: 0;
-  background: #f4f7f7;
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+body{margin:0;background:var(--bg);color:white}
+.card{
+  margin:18px;
+  background:linear-gradient(135deg,var(--card),var(--card2));
+  border-radius:18px;
+  padding:20px;
 }
-
-header {
-  padding: 22px;
-  background: var(--bg);
-  color: white;
+.row{display:flex;justify-content:space-between;margin:10px 0}
+input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  margin-top:8px;
 }
-
-.container {
-  padding: 16px;
+button{
+  width:100%;
+  padding:16px;
+  border-radius:30px;
+  border:none;
+  margin-top:18px;
+  font-weight:600;
+  background:linear-gradient(90deg,var(--accent),#00d4ff);
+  color:#00352f;
+  cursor:pointer;
 }
-
-.card {
-  background: var(--card);
-  border-radius: 18px;
-  padding: 20px;
-  color: var(--text);
-}
-
-h3 { margin-top: 0; }
-
-.row {
-  display: flex;
-  justify-content: space-between;
-  margin: 10px 0;
-}
-
-.notice {
-  margin-top: 16px;
-  background: rgba(255,255,255,0.15);
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.notice strong {
-  color: var(--accent);
-}
-
-input {
-  width: 100%;
-  padding: 14px;
-  border-radius: 10px;
-  border: none;
-  margin-top: 14px;
-  font-size: 16px;
-}
-
-button {
-  width: 100%;
-  padding: 15px;
-  border-radius: 30px;
-  border: none;
-  font-weight: 700;
-  margin-top: 18px;
-  background: linear-gradient(90deg, var(--accent), #00d4ff);
-  color: #00352f;
-  cursor: pointer;
-}
-
-small {
-  color: var(--muted);
-}
+.note{font-size:12px;opacity:.95;margin-top:14px}
 </style>
 </head>
 
 <body>
 
-<header>
-  <h2>Confirm Investment</h2>
-  <p>Please review before proceeding</p>
-</header>
+<div class="card">
+  <h3 id="planName">—</h3>
 
-<div class="container">
-
-  <div class="card">
-    <h3 id="planName">Loading...</h3>
-
-    <div class="row">
-      <span>Investment Period</span>
-      <strong id="planDays">—</strong>
-    </div>
-
-    <div class="row">
-      <span>Daily Profit</span>
-      <strong id="dailyProfit">—</strong>
-    </div>
-
-    <div class="row">
-      <span>Minimum Investment</span>
-      <strong>ZMK 500</strong>
-    </div>
-
-    <input
-      type="number"
-      id="amount"
-      min="500"
-      placeholder="Enter amount (Minimum ZMK 500)"
-    />
-
-    <div class="notice">
-      <strong>How your earnings work:</strong><br><br>
-
-      • You earn profit <strong>every single day</strong> your money stays invested.<br><br>
-
-      • After <strong id="maturityDaysText">—</strong>, your investment becomes
-      <strong>withdrawable</strong>.<br><br>
-
-      • If you <strong>do not withdraw</strong> after this period,  
-      <strong>your profit continues growing daily</strong> until you cash out.<br><br>
-
-      • There is <strong>no penalty</strong> for withdrawing later.
-    </div>
-
-    <button onclick="confirmInvestment()">
-      Confirm & Invest
-    </button>
-
-    <small>
-      By continuing, you agree to the investment terms.
-    </small>
+  <div class="row">
+    <span>Withdrawable After</span>
+    <strong id="planDays">—</strong>
   </div>
 
+  <label>Amount to invest (Minimum ZMK 500)</label>
+  <input id="amount" type="number" min="500" placeholder="Enter amount"/>
+
+  <div id="summary" class="note">
+    Enter amount to see daily earnings
+  </div>
+
+  <button id="confirmBtn">Confirm Investment</button>
+
+  <div class="note">
+    • You earn profit every day<br>
+    • Profit continues even after maturity<br>
+    • You can withdraw anytime after maturity<br>
+    • Earnings go to Earnings Wallet
+  </div>
 </div>
 
-<script>
-const plan = JSON.parse(localStorage.getItem("plan"));
+<script type="module">
+import { auth, createInvestment } from "./js/firebase.js";
+import { onAuthStateChanged } from
+"https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-if (!plan) {
+const plan = JSON.parse(localStorage.getItem("selectedPlan"));
+if(!plan){
   alert("No plan selected");
-  location.href = "plans.html";
+  location.href="investments.html";
 }
 
-document.getElementById("planName").innerText = plan.name;
-document.getElementById("planDays").innerText = plan.days + " days";
-document.getElementById("maturityDaysText").innerText = plan.days + " days";
+document.getElementById("planName").textContent = plan.name;
+document.getElementById("planDays").textContent = plan.days + " days";
 
-/*
-  LOGIC:
-  ZMK 500 → ZMK 10 daily
-  Daily profit scales linearly
-*/
-const DAILY_PER_500 = 10;
+const amountEl = document.getElementById("amount");
+const summary = document.getElementById("summary");
+const btn = document.getElementById("confirmBtn");
 
-document.getElementById("dailyProfit").innerText =
-  `ZMK ${DAILY_PER_500} per ZMK 500 / day`;
+let user=null;
+onAuthStateChanged(auth,u=>{
+  if(!u) location.href="login.html";
+  user=u;
+});
 
-function confirmInvestment() {
-  const amount = Number(document.getElementById("amount").value);
+amountEl.addEventListener("input",()=>{
+  const amt = Number(amountEl.value);
+  if(!amt || amt<500){
+    summary.innerHTML="Enter at least ZMK 500";
+    return;
+  }
+  const daily=(amt/500)*10;
+  summary.innerHTML=
+    `Daily profit: <strong>ZMK ${daily.toFixed(2)}</strong>`;
+});
 
-  if (!amount || amount < 500) {
+btn.addEventListener("click", async ()=>{
+  const amt = Number(amountEl.value);
+  if(!amt || amt<500){
     alert("Minimum investment is ZMK 500");
     return;
   }
-
-  localStorage.setItem("pendingInvestment", JSON.stringify({
-    ...plan,
-    amount
-  }));
-
-  // Redirect to actual processing page
-  window.location.href = "processing.html";
-}
+  btn.disabled=true;
+  try{
+    await createInvestment(user.uid, plan, amt);
+    alert("Investment started successfully");
+    localStorage.removeItem("selectedPlan");
+    location.href="dashboard.html";
+  }catch(e){
+    alert(e.message);
+  }
+  btn.disabled=false;
+});
 </script>
 
 </body>
