@@ -6,31 +6,7 @@
 <title>Confirm Investment</title>
 
 <style>
-body{
-  margin:0;
-  font-family:system-ui,sans-serif;
-  background:#083a34;
-  color:#fff;
-}
-.card{
-  margin:20px;
-  padding:20px;
-  border-radius:16px;
-  background:#0b5f56;
-}
-input,button{
-  width:100%;
-  padding:14px;
-  margin-top:12px;
-  border-radius:10px;
-  border:none;
-  font-size:16px;
-}
-button{
-  background:#22ff9a;
-  color:#00352f;
-  font-weight:600;
-}
+/* ... your existing styles ... */
 </style>
 </head>
 
@@ -50,20 +26,17 @@ button{
 </div>
 
 <script type="module">
-/* ===============================
-   HARD PROOFS – NO SILENCE
-================================ */
-alert("✅ confirm-investment.html JS loaded");
-console.log("✅ Module running");
+// Debug immediately
+console.log("✅ confirm-investment.html JS loaded");
 
 /* ===============================
-   IMPORT FIREBASE
+   IMPORT FIREBASE - CONSISTENT VERSION
 ================================ */
 import { auth, createInvestment } from "./js/firebase.js";
-import { onAuthStateChanged } from
+import { onAuthStateChanged } from 
   "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-alert("✅ firebase.js imported");
+console.log("✅ firebase.js imported");
 
 /* ===============================
    ELEMENTS
@@ -82,23 +55,28 @@ const plan = JSON.parse(localStorage.getItem("selectedPlan"));
 if (!plan) {
   alert("❌ No plan found");
   window.location.href = "investments.html";
+} else {
+  console.log("✅ Plan loaded:", plan);
 }
 
 planNameEl.textContent = plan.name;
 planDurationEl.textContent = `${plan.days} days`;
 
 /* ===============================
-   AUTH
+   AUTH STATE
 ================================ */
 let currentUser = null;
+let isAuthReady = false;
 
 onAuthStateChanged(auth, user => {
-  if (!user) {
+  if (user) {
+    currentUser = user;
+    isAuthReady = true;
+    console.log("✅ User authenticated:", user.uid);
+  } else {
     alert("❌ Not logged in");
     window.location.href = "login.html";
   }
-  currentUser = user;
-  console.log("✅ Logged in:", user.uid);
 });
 
 /* ===============================
@@ -106,48 +84,107 @@ onAuthStateChanged(auth, user => {
 ================================ */
 amountEl.addEventListener("input", () => {
   const amount = Number(amountEl.value);
-  if (!amount) {
+  if (!amount || amount <= 0) {
     summaryEl.textContent = "—";
     return;
   }
   const profit = amount * plan.percent / 100;
   summaryEl.innerHTML =
-    `You invest ZMW ${amount}<br>
-     Profit ZMW ${profit}<br>
-     Total ZMW ${amount + profit}`;
+    `You invest ZMW ${amount.toFixed(2)}<br>
+     Profit ZMW ${profit.toFixed(2)}<br>
+     Total ZMW ${(amount + profit).toFixed(2)}`;
 });
 
 /* ===============================
-   BUTTON CLICK (GUARANTEED)
+   BUTTON CLICK HANDLER (IMPROVED)
 ================================ */
 btn.addEventListener("click", async () => {
-  alert("🟢 BUTTON CLICKED");
-
-  if (!currentUser) {
-    alert("User not ready");
+  console.log("🟢 BUTTON CLICKED - Starting investment process");
+  
+  // Validate auth
+  if (!isAuthReady) {
+    alert("⚠️ Authentication still loading. Please wait...");
     return;
   }
-
+  
+  if (!currentUser) {
+    alert("❌ Please log in first");
+    window.location.href = "login.html";
+    return;
+  }
+  
+  // Validate amount
   const amount = Number(amountEl.value);
   if (!amount || amount <= 0) {
-    alert("Enter valid amount");
+    alert("❌ Please enter a valid amount greater than 0");
+    amountEl.focus();
     return;
   }
-
+  
+  // Validate plan
+  if (!plan || !plan.name || !plan.percent || !plan.days) {
+    alert("❌ Invalid plan selected");
+    window.location.href = "investments.html";
+    return;
+  }
+  
+  // Show confirmation
+  const confirmInvest = confirm(
+    `Confirm investment?\n\n` +
+    `Plan: ${plan.name}\n` +
+    `Amount: ZMW ${amount.toFixed(2)}\n` +
+    `Duration: ${plan.days} days\n` +
+    `Expected Profit: ZMW ${(amount * plan.percent / 100).toFixed(2)}`
+  );
+  
+  if (!confirmInvest) return;
+  
+  // Disable button and show loading
+  const originalText = btn.textContent;
   btn.disabled = true;
   btn.textContent = "Processing…";
-
+  btn.style.opacity = "0.7";
+  
   try {
-    alert("➡️ Calling createInvestment()");
-    await createInvestment(currentUser.uid, plan, amount);
-    alert("✅ Investment successful");
+    console.log("➡️ Calling createInvestment() with:", {
+      uid: currentUser.uid,
+      plan,
+      amount
+    });
+    
+    const result = await createInvestment(currentUser.uid, plan, amount);
+    console.log("✅ Investment successful:", result);
+    
+    alert("🎉 Investment Successful!\nYour funds have been locked for the selected period.");
+    
+    // Cleanup and redirect
     localStorage.removeItem("selectedPlan");
-    window.location.href = "dashboard.html";
-  } catch (e) {
-    alert("❌ ERROR: " + e.message);
-  } finally {
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 500);
+    
+  } catch (error) {
+    console.error("❌ Investment error:", error);
+    alert(`Investment Failed:\n${error.message}`);
+    
+    // Re-enable button
     btn.disabled = false;
-    btn.textContent = "Confirm Investment";
+    btn.textContent = originalText;
+    btn.style.opacity = "1";
+  }
+});
+
+/* ===============================
+   ADDITIONAL DEBUGGING
+================================ */
+// Check if button exists and can be clicked
+console.log("Button element found:", !!btn);
+console.log("Plan loaded:", plan);
+
+// Add Enter key support for amount field
+amountEl.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    btn.click();
   }
 });
 </script>
