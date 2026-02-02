@@ -6,133 +6,183 @@
 <title>Confirm Investment</title>
 
 <style>
-body{
-  margin:0;
-  font-family:system-ui,sans-serif;
-  background:#083a34;
-  color:#fff;
+:root {
+  --bg: #083a34;
+  --card: linear-gradient(135deg, #10c7a7, #0b5f56);
+  --accent: #22ff9a;
+  --text: #ffffff;
+  --muted: #d6f1ec;
 }
-.card{
-  margin:20px;
-  padding:20px;
-  border-radius:16px;
-  background:#0b5f56;
+
+* { box-sizing: border-box; font-family: system-ui, sans-serif; }
+
+body {
+  margin: 0;
+  background: #f4f7f7;
 }
-input,button{
-  width:100%;
-  padding:14px;
-  margin-top:12px;
-  border-radius:10px;
-  border:none;
-  font-size:16px;
+
+header {
+  padding: 22px;
+  background: var(--bg);
+  color: white;
 }
-button{
-  background:#22ff9a;
-  color:#00352f;
-  font-weight:600;
+
+.container {
+  padding: 16px;
 }
-button:disabled{
-  opacity:.6;
+
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 20px;
+  color: var(--text);
+}
+
+h3 { margin-top: 0; }
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.notice {
+  margin-top: 16px;
+  background: rgba(255,255,255,0.15);
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.notice strong {
+  color: var(--accent);
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  margin-top: 14px;
+  font-size: 16px;
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  border-radius: 30px;
+  border: none;
+  font-weight: 700;
+  margin-top: 18px;
+  background: linear-gradient(90deg, var(--accent), #00d4ff);
+  color: #00352f;
+  cursor: pointer;
+}
+
+small {
+  color: var(--muted);
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-  <h2 id="planName">Confirm Investment</h2>
-  <p id="planDuration"></p>
+<header>
+  <h2>Confirm Investment</h2>
+  <p>Please review before proceeding</p>
+</header>
 
-  <input id="amount" type="number" placeholder="Enter amount" />
+<div class="container">
 
-  <div id="summary" style="margin-top:10px;font-size:14px;">—</div>
+  <div class="card">
+    <h3 id="planName">Loading...</h3>
 
-  <button id="confirmBtn" disabled>Confirm Investment</button>
+    <div class="row">
+      <span>Investment Period</span>
+      <strong id="planDays">—</strong>
+    </div>
+
+    <div class="row">
+      <span>Daily Profit</span>
+      <strong id="dailyProfit">—</strong>
+    </div>
+
+    <div class="row">
+      <span>Minimum Investment</span>
+      <strong>ZMK 500</strong>
+    </div>
+
+    <input
+      type="number"
+      id="amount"
+      min="500"
+      placeholder="Enter amount (Minimum ZMK 500)"
+    />
+
+    <div class="notice">
+      <strong>How your earnings work:</strong><br><br>
+
+      • You earn profit <strong>every single day</strong> your money stays invested.<br><br>
+
+      • After <strong id="maturityDaysText">—</strong>, your investment becomes
+      <strong>withdrawable</strong>.<br><br>
+
+      • If you <strong>do not withdraw</strong> after this period,  
+      <strong>your profit continues growing daily</strong> until you cash out.<br><br>
+
+      • There is <strong>no penalty</strong> for withdrawing later.
+    </div>
+
+    <button onclick="confirmInvestment()">
+      Confirm & Invest
+    </button>
+
+    <small>
+      By continuing, you agree to the investment terms.
+    </small>
+  </div>
+
 </div>
 
-<script type="module">
-/* ================= HARD PROOF ================= */
-console.log("✅ confirm-investment module loaded");
-
-/* ================= IMPORTS ================= */
-import { auth, createInvestment } from "./js/firebase.js";
-import { onAuthStateChanged }
-from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-
-/* ================= ELEMENTS ================= */
-const planNameEl = document.getElementById("planName");
-const planDurationEl = document.getElementById("planDuration");
-const amountEl = document.getElementById("amount");
-const summaryEl = document.getElementById("summary");
-const btn = document.getElementById("confirmBtn");
-
-/* ================= LOAD PLAN ================= */
-const plan = JSON.parse(localStorage.getItem("selectedPlan"));
+<script>
+const plan = JSON.parse(localStorage.getItem("plan"));
 
 if (!plan) {
   alert("No plan selected");
-  location.href = "investments.html";
+  location.href = "plans.html";
 }
 
-planNameEl.textContent = plan.name;
-planDurationEl.textContent = `${plan.days} days • ${plan.percent}%`;
+document.getElementById("planName").innerText = plan.name;
+document.getElementById("planDays").innerText = plan.days + " days";
+document.getElementById("maturityDaysText").innerText = plan.days + " days";
 
-/* ================= AUTH ================= */
-let currentUser = null;
+/*
+  LOGIC:
+  ZMK 500 → ZMK 10 daily
+  Daily profit scales linearly
+*/
+const DAILY_PER_500 = 10;
 
-onAuthStateChanged(auth, user => {
-  if (!user) {
-    location.href = "login.html";
-    return;
-  }
-  currentUser = user;
-  btn.disabled = false;
-});
+document.getElementById("dailyProfit").innerText =
+  `ZMK ${DAILY_PER_500} per ZMK 500 / day`;
 
-/* ================= CALCULATOR ================= */
-amountEl.addEventListener("input", () => {
-  const amount = Number(amountEl.value);
-  if (!amount || amount <= 0) {
-    summaryEl.textContent = "—";
-    return;
-  }
-  const profit = amount * plan.percent / 100;
-  summaryEl.innerHTML = `
-    Invest: ZMW ${amount}<br>
-    Profit: ZMW ${profit}<br>
-    Total: ZMW ${amount + profit}
-  `;
-});
+function confirmInvestment() {
+  const amount = Number(document.getElementById("amount").value);
 
-/* ================= CONFIRM BUTTON ================= */
-btn.addEventListener("click", async () => {
-  console.log("🟢 Confirm button clicked");
-
-  if (!currentUser) {
-    alert("User not ready");
+  if (!amount || amount < 500) {
+    alert("Minimum investment is ZMK 500");
     return;
   }
 
-  const amount = Number(amountEl.value);
-  if (!amount || amount <= 0) {
-    alert("Enter valid amount");
-    return;
-  }
+  localStorage.setItem("pendingInvestment", JSON.stringify({
+    ...plan,
+    amount
+  }));
 
-  btn.disabled = true;
-  btn.textContent = "Processing…";
-
-  try {
-    await createInvestment(currentUser.uid, plan, amount);
-    alert("Investment successful");
-    localStorage.removeItem("selectedPlan");
-    location.href = "dashboard.html";
-  } catch (e) {
-    alert("Error: " + e.message);
-    btn.disabled = false;
-    btn.textContent = "Confirm Investment";
-  }
-});
+  // Redirect to actual processing page
+  window.location.href = "processing.html";
+}
 </script>
 
 </body>
