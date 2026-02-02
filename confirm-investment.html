@@ -6,173 +6,149 @@
 <title>Confirm Investment</title>
 
 <style>
-:root{
-  --bg:#083a34;
-  --card:#10c7a7;
-  --card2:#0b5f56;
-  --accent:#22ff9a;
-  --text:#ffffff;
-  --muted:#d6f1ec;
-}
-
-*{box-sizing:border-box;font-family:system-ui,sans-serif}
-
 body{
   margin:0;
-  background:var(--bg);
-  color:var(--text);
+  font-family:system-ui,sans-serif;
+  background:#083a34;
+  color:#fff;
 }
-
-header{ padding:20px }
-
 .card{
-  margin:16px;
-  background:linear-gradient(135deg,var(--card),var(--card2));
-  border-radius:18px;
+  margin:20px;
   padding:20px;
+  border-radius:16px;
+  background:#0b5f56;
 }
-
-.row{
-  display:flex;
-  justify-content:space-between;
-  margin:10px 0;
-}
-
-input{
+input,button{
   width:100%;
   padding:14px;
-  border-radius:12px;
+  margin-top:12px;
+  border-radius:10px;
   border:none;
-  margin-top:10px;
   font-size:16px;
 }
-
-.summary{
-  margin-top:14px;
-  font-size:14px;
-}
-
 button{
-  width:100%;
-  padding:16px;
-  border-radius:30px;
-  border:none;
-  margin-top:18px;
-  font-weight:600;
-  font-size:16px;
-  background:linear-gradient(90deg,var(--accent),#00d4ff);
+  background:#22ff9a;
   color:#00352f;
-  cursor:pointer;
-}
-
-.note{
-  margin-top:14px;
-  font-size:12px;
-  opacity:.9;
+  font-weight:600;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h2>Confirm Investment</h2>
-</header>
-
 <div class="card">
-  <h3 id="planName">—</h3>
+  <h2 id="planName">Loading plan…</h2>
+  <p id="planDuration"></p>
 
-  <div class="row">
-    <span>Duration</span>
-    <strong id="planDuration">—</strong>
-  </div>
-
-  <label>Amount to invest (ZMW)</label>
   <input id="amount" type="number" placeholder="Enter amount" />
 
-  <div class="summary" id="summary">
-    Enter amount to see payout
+  <div id="summary" style="margin-top:10px;font-size:14px;">
+    —
   </div>
 
   <button id="confirmBtn">Confirm Investment</button>
-
-  <div class="note">
-    • Funds are locked until maturity<br>
-    • Earnings go to Earnings Wallet
-  </div>
 </div>
 
-<!-- ✅ THIS MUST BE type="module" -->
 <script type="module">
-/* ================= IMPORT YOUR EXISTING FILE ================= */
+/* ===============================
+   HARD PROOFS – NO SILENCE
+================================ */
+alert("✅ confirm-investment.html JS loaded");
+console.log("✅ Module running");
+
+/* ===============================
+   IMPORT FIREBASE
+================================ */
 import { auth, createInvestment } from "./js/firebase.js";
 import { onAuthStateChanged } from
   "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-/* ================= DEBUG CONFIRM ================= */
-console.log("✅ confirm-investment.js loaded");
+alert("✅ firebase.js imported");
 
-/* ================= LOAD PLAN ================= */
-const plan = JSON.parse(localStorage.getItem("selectedPlan"));
-if (!plan) {
-  alert("No plan selected");
-  location.href = "investments.html";
-}
-
-document.getElementById("planName").innerText = plan.name;
-document.getElementById("planDuration").innerText = plan.days + " days";
-
+/* ===============================
+   ELEMENTS
+================================ */
+const planNameEl = document.getElementById("planName");
+const planDurationEl = document.getElementById("planDuration");
 const amountEl = document.getElementById("amount");
 const summaryEl = document.getElementById("summary");
 const btn = document.getElementById("confirmBtn");
 
-/* ================= LIVE CALCULATOR ================= */
+/* ===============================
+   LOAD PLAN
+================================ */
+const plan = JSON.parse(localStorage.getItem("selectedPlan"));
+
+if (!plan) {
+  alert("❌ No plan found");
+  window.location.href = "investments.html";
+}
+
+planNameEl.textContent = plan.name;
+planDurationEl.textContent = `${plan.days} days`;
+
+/* ===============================
+   AUTH
+================================ */
+let currentUser = null;
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    alert("❌ Not logged in");
+    window.location.href = "login.html";
+  }
+  currentUser = user;
+  console.log("✅ Logged in:", user.uid);
+});
+
+/* ===============================
+   CALCULATOR
+================================ */
 amountEl.addEventListener("input", () => {
   const amount = Number(amountEl.value);
   if (!amount) {
-    summaryEl.innerText = "Enter amount to see payout";
+    summaryEl.textContent = "—";
     return;
   }
-
   const profit = amount * plan.percent / 100;
-  summaryEl.innerHTML = `
-    You invest <b>ZMW ${amount}</b><br>
-    You receive <b>ZMW ${amount + profit}</b><br>
-    Profit: ZMW ${profit}
-  `;
+  summaryEl.innerHTML =
+    `You invest ZMW ${amount}<br>
+     Profit ZMW ${profit}<br>
+     Total ZMW ${amount + profit}`;
 });
 
-/* ================= BUTTON CLICK ================= */
-btn.addEventListener("click", () => {
-  console.log("🔥 Confirm button clicked");
+/* ===============================
+   BUTTON CLICK (GUARANTEED)
+================================ */
+btn.addEventListener("click", async () => {
+  alert("🟢 BUTTON CLICKED");
+
+  if (!currentUser) {
+    alert("User not ready");
+    return;
+  }
 
   const amount = Number(amountEl.value);
   if (!amount || amount <= 0) {
-    alert("Enter a valid amount");
+    alert("Enter valid amount");
     return;
   }
 
-  onAuthStateChanged(auth, async user => {
-    if (!user) {
-      alert("Please log in");
-      return;
-    }
+  btn.disabled = true;
+  btn.textContent = "Processing…";
 
-    btn.disabled = true;
-    btn.textContent = "Processing...";
-
-    try {
-      await createInvestment(user.uid, plan, amount);
-      alert("Investment successful");
-      localStorage.removeItem("selectedPlan");
-      location.href = "dashboard.html";
-    } catch (e) {
-      alert(e.message);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Confirm Investment";
-    }
-  });
+  try {
+    alert("➡️ Calling createInvestment()");
+    await createInvestment(currentUser.uid, plan, amount);
+    alert("✅ Investment successful");
+    localStorage.removeItem("selectedPlan");
+    window.location.href = "dashboard.html";
+  } catch (e) {
+    alert("❌ ERROR: " + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Confirm Investment";
+  }
 });
 </script>
 
