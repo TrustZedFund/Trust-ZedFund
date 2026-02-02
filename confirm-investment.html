@@ -23,9 +23,7 @@ body{
   color:var(--text);
 }
 
-header{
-  padding:20px;
-}
+header{ padding:20px }
 
 .card{
   margin:16px;
@@ -104,13 +102,17 @@ button{
   </div>
 </div>
 
-<!-- 🔥 LOAD FIREBASE FIRST -->
-<script src="./js/firebase.js"></script>
+<!-- ✅ THIS MUST BE type="module" -->
+<script type="module">
+/* ================= IMPORT YOUR EXISTING FILE ================= */
+import { auth, createInvestment } from "./js/firebase.js";
+import { onAuthStateChanged } from
+  "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-<script>
-alert("Confirm Investment JS Loaded");
+/* ================= DEBUG CONFIRM ================= */
+console.log("✅ confirm-investment.js loaded");
 
-// Load selected plan
+/* ================= LOAD PLAN ================= */
 const plan = JSON.parse(localStorage.getItem("selectedPlan"));
 if (!plan) {
   alert("No plan selected");
@@ -124,8 +126,8 @@ const amountEl = document.getElementById("amount");
 const summaryEl = document.getElementById("summary");
 const btn = document.getElementById("confirmBtn");
 
-// Live calculator
-amountEl.oninput = function () {
+/* ================= LIVE CALCULATOR ================= */
+amountEl.addEventListener("input", () => {
   const amount = Number(amountEl.value);
   if (!amount) {
     summaryEl.innerText = "Enter amount to see payout";
@@ -138,17 +140,26 @@ amountEl.oninput = function () {
     You receive <b>ZMW ${amount + profit}</b><br>
     Profit: ZMW ${profit}
   `;
-};
+});
 
-// Button click (THIS NOW WORKS)
-btn.onclick = function () {
-  alert("Button clicked");
+/* ================= BUTTON CLICK ================= */
+btn.addEventListener("click", () => {
+  console.log("🔥 Confirm button clicked");
 
   const amount = Number(amountEl.value);
-  if (!amount) return alert("Enter a valid amount");
+  if (!amount || amount <= 0) {
+    alert("Enter a valid amount");
+    return;
+  }
 
-  auth.onAuthStateChanged(async user => {
-    if (!user) return alert("Please log in");
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      alert("Please log in");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Processing...";
 
     try {
       await createInvestment(user.uid, plan, amount);
@@ -157,9 +168,12 @@ btn.onclick = function () {
       location.href = "dashboard.html";
     } catch (e) {
       alert(e.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Confirm Investment";
     }
   });
-};
+});
 </script>
 
 </body>
