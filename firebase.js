@@ -1,9 +1,19 @@
-// firebase.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { getDatabase, ref, set, update, get, onValue } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import {
+  getAuth
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import {
+  getDatabase,
+  ref,
+  set,
+  update,
+  get,
+  onValue,
+  push
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-// ================= FIREBASE CONFIG =================
+/* ================= FIREBASE CONFIG ================= */
+
 const firebaseConfig = {
   apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
   authDomain: "trust-zedfund.firebaseapp.com",
@@ -15,310 +25,56 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
 export const auth = getAuth(app);
 export const db = getDatabase(app);
-console.log("🔥 Firebase initialized for Trust ZedFund");
 
-/* ==================================
+console.log("🔥 Firebase initialized");
+
+/* ===================================================
    USER BALANCES
-================================== */
-export async function initUserBalances(userId) {
-  const balRef = ref(db, `users/${userId}/balances`);
+=================================================== */
+
+export async function initUserBalances(uid) {
+  const balRef = ref(db, `users/${uid}/balances`);
   const snap = await get(balRef);
+
   if (!snap.exists()) {
-    await set(balRef, { deposit:0, earnings:0, referralWallet:0 });
+    await set(balRef, {
+      deposit: 0,
+      earnings: 0,
+      referralWallet: 0
+    });
   }
 }
 
-export async function updateUserBalance(userId, type, amount) {
-  const balRef = ref(db, `users/${userId}/balances`);
-  const snap = await get(balRef);
-  const balances = snap.exists() ? snap.val() : { deposit:0, earnings:0, referralWallet:0 };
-  balances[type] = (balances[type] || 0) + amount;
-  await update(balRef, balances);
-}
-
-export function onBalanceChange(userId, callback){
-  const balRef = ref(db, `users/${userId}/balances`);
-  onValue(balRef, snap => callback(snap.exists() ? snap.val() : { deposit:0, earnings:0, referralWallet:0 }));
-}
-
-/* ==================================
-   WITHDRAWALS + ADMIN QUEUE
-================================== */
-export async function requestWithdrawal(userId, withdrawData){
-  const withdrawId = "w_" + Date.now();
-  withdrawData.uid = userId;
-
-  await set(ref(db, `users/${userId}/withdrawals/${withdrawId}`), withdrawData);
-  await set(ref(db, `withdrawalRequests/${withdrawId}`), withdrawData);
-
-  const snap = await get(ref(db, `users/${userId}/balances/earnings`));
-  const currentEarnings = snap.exists() ? Number(snap.val()) : 0;
-  await update(ref(db, `users/${userId}/balances`), { earnings: currentEarnings - withdrawData.amount });
-}
-
-export function onUserWithdrawalsChange(userId, callback){
-  const wRef = ref(db, `users/${userId}/withdrawals`);
-  onValue(wRef, snap => callback(snap.exists()? snap.val() : {}));
-}
-
-export function onUserTransactionsChange(userId, callback){
-  const tRef = ref(db, `users/${userId}/transactions`);
-  onValue(tRef, snap => callback(snap.exists()? snap.val() : {}));
-}
-
-export function onAdminWithdrawalQueue(callback){
-  const queueRef = ref(db, "withdrawalRequests");
-  onValue(queueRef, snap => callback(snap.exists()? snap.val() : {}));
-}
-
-export async function approveWithdrawal(withdrawId){
-  const wRef = ref(db, `withdrawalRequests/${withdrawId}`);
-  const snap = await get(wRef);
-  if(!snap.exists()) throw new Error("Withdrawal request not found");
-
-  const data = snap.val();
-  data.status = "approved";
-  await update(ref(db, `users/${data.uid}/withdrawals/${withdrawId}`), { status:"approved" });
-  await set(wRef, null);
-  return data;
-}
-
-export async function rejectWithdrawal(withdrawId){
-  const wRef = ref(db, `withdrawalRequests/${withdrawId}`);
-  const snap = await get(wRef);
-  if(!snap.exists()) throw new Error("Withdrawal request not found");
-
-  const data = snap.val();
-  data.status = "rejected";
-
-  const balSnap = await get(ref(db, `users/${data.uid}/balances/earnings`));
-  const currentEarnings = balSnap.exists()? Number(balSnap.val()) : 0;
-  await update(ref(db, `users/${data.uid}/balances`), { earnings: currentEarnings + data.amount });
-  await update(ref(db, `users/${data.uid}/withdrawals/${withdrawId}`), { status:"rejected" });
-  await set(wRef, null);
-  return data;
-}
-
-/* ==================================
-   VENTURES + CONTRIBUTIONS
-================================== */
-export async function seedVentures(){
-  const venturesSnap = await get(ref(db, 'ventures'));
-  if(!venturesSnap.exists()){
-    const demo = {
-      "v_001": { name:"Mary & James Bakery", description:"Community bakery in Lusaka", totalAllocated:0, contributors:{} },
-      "v_002": { name:"Eco Solar Kits", description:"Solar kits for rural homes", totalAllocated:0, contributors:{} },
-      "v_003": { name:"Local Artisans Hub", description:"Support local crafts", totalAllocated:0, contributors:{} }
-    };
-    for(const id in demo){
-      await set(ref(db, `ventures/${id}`), demo[id]);
-    }
-  }
-}
-
-export async function contributeToVenture(userId, ventureId, amount){
-  const balSnap = await get(ref(db, `users/${userId}/balances`));
-  const balances = balSnap.exists()? balSnap.val() : { deposit:0, earnings:0, referralWallet:0 };
-  const totalAvailable = (balances.deposit||0)+(balances.earnings||0);
-
-  if(amount>totalAvailable) throw new Error("Insufficient funds");
-
-  let depositDeduct = Math.min(amount, balances.deposit||0);
-  let earningsDeduct = amount - depositDeduct;
-  balances.deposit -= depositDeduct;
-  balances.earnings -= earningsDeduct;
-  await update(ref(db, `users/${userId}/balances`), balances);
-
-  const ventureRef = ref(db, `ventures/${ventureId}`);
-  const ventureSnap = await get(ventureRef);
-  if(!ventureSnap.exists()) throw new Error("Venture not found");
-
-  const venture = ventureSnap.val();
-  venture.totalAllocated = (venture.totalAllocated||0)+amount;
-  venture.contributors = venture.contributors||{};
-  venture.contributors[userId] = (venture.contributors[userId]||0)+amount;
-  await update(ventureRef, venture);
-
-  const txId = "tx_" + Date.now();
-  await set(ref(db, `users/${userId}/transactions/${txId}`), {
-    type:"Venture Contribution",
-    amount,
-    to:venture.name,
-    status:"Completed",
-    date:new Date().toISOString()
+export function onBalanceChange(uid, callback) {
+  onValue(ref(db, `users/${uid}/balances`), snap => {
+    callback(
+      snap.exists()
+        ? snap.val()
+        : { deposit: 0, earnings: 0, referralWallet: 0 }
+    );
   });
-
-  return { balances, ventureTotal: venture.totalAllocated };
 }
 
-export function onVenturesChange(callback){
-  const venturesRef = ref(db, 'ventures');
-  onValue(venturesRef, snap => callback(snap.exists()? snap.val() : {}));
-}
-/* ==================================
-   COMMUNITY SAVINGS / TRUST CIRCLES
-================================== */
-
-// Initialize demo circles if empty
-export async function seedCircles() {
-  const circlesSnap = await get(ref(db, 'circles'));
-  if (!circlesSnap.exists()) {
-    const demo = {
-      "c_001": { name:"Family Circle", totalAllocated:0, members:{}, contributions:{} },
-      "c_002": { name:"Friends Circle", totalAllocated:0, members:{}, contributions:{} },
-      "c_003": { name:"Community Circle", totalAllocated:0, members:{}, contributions:{} }
-    };
-    for (const id in demo) {
-      await set(ref(db, `circles/${id}`), demo[id]);
-    }
-  }
-}
-
-// Join a circle
-export async function joinCircle(userId, circleId) {
-  const circleRef = ref(db, `circles/${circleId}/members/${userId}`);
-  await set(circleRef, { joinedAt: new Date().toISOString() });
-}
-
-// Contribute to a circle
-export async function contributeToCircle(userId, circleId, amount) {
-  const balSnap = await get(ref(db, `users/${userId}/balances`));
-  const balances = balSnap.exists() ? balSnap.val() : { deposit:0, earnings:0, referralWallet:0 };
-  const totalAvailable = (balances.deposit||0) + (balances.earnings||0);
-
-  if (amount > totalAvailable) throw new Error("Insufficient funds");
-
-  let depositDeduct = Math.min(amount, balances.deposit||0);
-  let earningsDeduct = amount - depositDeduct;
-  balances.deposit -= depositDeduct;
-  balances.earnings -= earningsDeduct;
-  await update(ref(db, `users/${userId}/balances`), balances);
-
-  const circleRef = ref(db, `circles/${circleId}`);
-  const circleSnap = await get(circleRef);
-  if (!circleSnap.exists()) throw new Error("Circle not found");
-
-  const circle = circleSnap.val();
-  circle.totalAllocated = (circle.totalAllocated||0) + amount;
-  circle.contributions = circle.contributions || {};
-  circle.contributions[userId] = (circle.contributions[userId]||0) + amount;
-  await update(circleRef, circle);
-
-  const txId = "tx_" + Date.now();
-  await set(ref(db, `users/${userId}/transactions/${txId}`), {
-    type:"Circle Contribution",
-    amount,
-    to:circle.name,
-    status:"Completed",
-    date:new Date().toISOString()
-  });
-
-  return { balances, circleTotal: circle.totalAllocated };
-}
-
-// Real-time updates for circles
-export function onCirclesChange(callback){
-  const circlesRef = ref(db, 'circles');
-  onValue(circlesRef, snap => callback(snap.exists()? snap.val() : {}));
-}
-/* ==================================
-   INVESTMENTS
-================================== */
-
-// Create investment (deducts DEPOSIT only)
-export async function createInvestment(userId, plan, amount) {
-
-  // 1. Load balances
-  const balRef = ref(db, `users/${userId}/balances`);
-  const balSnap = await get(balRef);
-  const balances = balSnap.exists()
-    ? balSnap.val()
-    : { deposit:0, earnings:0, referralWallet:0 };
-
-  if (balances.deposit < amount) {
-    throw new Error("Insufficient deposit balance");
-  }
-
-  // 2. Deduct deposit wallet
-  balances.deposit -= amount;
-  await update(balRef, { deposit: balances.deposit });
-
-  // 3. Calculate returns
-  const profit = amount * plan.percent / 100;
-  const totalPayout = amount + profit;
-
-  // 4. Save investment
-  const invId = "inv_" + Date.now();
-  await set(ref(db, `users/${userId}/investments/${invId}`), {
-    planName: plan.name,
-    amount,
-    profit,
-    totalPayout,
-    startDate: new Date().toISOString(),
-    maturityDate: addDays(plan.days),
-    status: "active"
-  });
-
-  // 5. Log transaction
-  const txId = "tx_" + Date.now();
-  await set(ref(db, `users/${userId}/transactions/${txId}`), {
-    type: "Investment",
-    plan: plan.name,
-    amount,
-    status: "Locked",
-    date: new Date().toISOString()
-  });
-
-  return { invId, totalPayout };
-}
-
-// Auto-maturity checker
-export async function processInvestmentMaturity(userId) {
-  const invRef = ref(db, `users/${userId}/investments`);
-  const snap = await get(invRef);
-  if (!snap.exists()) return;
-
-  const investments = snap.val();
-  const now = new Date();
-
-  for (const id in investments) {
-    const inv = investments[id];
-
-    if (
-      inv.status === "active" &&
-      new Date(inv.maturityDate) <= now
-    ) {
-      // Credit earnings wallet
-      await update(ref(db, `users/${userId}/balances`), {
-        earnings: (await get(ref(db, `users/${userId}/balances/earnings`)))
-          .val() + inv.totalPayout
-      });
-
-      // Mark investment complete
-      await update(ref(db, `users/${userId}/investments/${id}`), {
-        status: "completed",
-        completedAt: new Date().toISOString()
-      });
-    }
-  }
-}
-
-// Helper
-function addDays(days) {
-  const d = new Date();
-  d.setDate(d.getDate() + days);
-  return d.toISOString();
-}
-import { ref, get, set, update } from
-"https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+/* ===================================================
+   INVESTMENTS (DAILY PROFIT ENGINE)
+=================================================== */
 
 export async function createInvestment(uid, plan, amount) {
-  const userBalRef = ref(db, `users/${uid}/balances`);
-  const balSnap = await get(userBalRef);
 
-  if (!balSnap.exists()) throw new Error("Wallet not found");
+  if (!amount || amount < 500) {
+    throw new Error("Minimum investment is ZMK 500");
+  }
+
+  // 1️⃣ Load balances
+  const balRef = ref(db, `users/${uid}/balances`);
+  const balSnap = await get(balRef);
+
+  if (!balSnap.exists()) {
+    throw new Error("Wallet not found");
+  }
 
   const balances = balSnap.val();
 
@@ -326,26 +82,95 @@ export async function createInvestment(uid, plan, amount) {
     throw new Error("Insufficient deposit balance");
   }
 
-  // ❗ deduct deposit
-  await update(userBalRef, {
+  // 2️⃣ Deduct deposit
+  await update(balRef, {
     deposit: balances.deposit - amount
   });
 
+  // 3️⃣ Daily profit logic
+  const dailyProfit = (amount / 500) * 10;
+
   const now = Date.now();
-  const maturity = now + plan.days * 86400000;
-  const profit = amount * plan.percent / 100;
+  const maturityTime = now + plan.days * 86400000;
 
-  const invId = "inv_" + now;
+  // 4️⃣ Save investment
+  const invRef = push(ref(db, `users/${uid}/investments`));
 
-  await set(ref(db, `users/${uid}/investments/${invId}`), {
-    plan: plan.name,
+  await set(invRef, {
+    planName: plan.name,
     amount,
-    profit,
-    total: amount + profit,
-    start: now,
-    maturity,
+    dailyProfit,
+    startTime: now,
+    maturityTime,
+    lastProfitCalc: now,
+    totalEarned: 0,
     status: "active"
   });
 
-  return invId;
+  // 5️⃣ Transaction log
+  await set(push(ref(db, `users/${uid}/transactions`)), {
+    type: "Investment",
+    plan: plan.name,
+    amount,
+    status: "Active",
+    date: new Date().toISOString()
+  });
+
+  return {
+    investmentId: invRef.key,
+    dailyProfit
+  };
+}
+
+/* ===================================================
+   PROFIT ACCRUAL (RUN ON DASHBOARD LOAD)
+=================================================== */
+
+export async function processInvestmentProfits(uid) {
+
+  const invRef = ref(db, `users/${uid}/investments`);
+  const snap = await get(invRef);
+
+  if (!snap.exists()) return;
+
+  const investments = snap.val();
+  const now = Date.now();
+
+  for (const id in investments) {
+    const inv = investments[id];
+    if (inv.status !== "active") continue;
+
+    const elapsedMs = now - inv.lastProfitCalc;
+    const daysPassed = Math.floor(elapsedMs / 86400000);
+
+    if (daysPassed <= 0) continue;
+
+    const profitToAdd = daysPassed * inv.dailyProfit;
+
+    // Credit earnings
+    const earnRef = ref(db, `users/${uid}/balances/earnings`);
+    const earnSnap = await get(earnRef);
+    const current = earnSnap.exists() ? Number(earnSnap.val()) : 0;
+
+    await update(ref(db, `users/${uid}/balances`), {
+      earnings: current + profitToAdd
+    });
+
+    // Update investment record
+    await update(ref(db, `users/${uid}/investments/${id}`), {
+      lastProfitCalc: inv.lastProfitCalc + daysPassed * 86400000,
+      totalEarned: (inv.totalEarned || 0) + profitToAdd,
+      matured: now >= inv.maturityTime
+    });
+  }
+}
+
+/* ===================================================
+   REAL-TIME INVESTMENTS
+=================================================== */
+
+export function onUserInvestments(uid, callback) {
+  onValue(ref(db, `users/${uid}/investments`), snap => {
+    callback(snap.exists() ? snap.val() : {});
+  });
 }
