@@ -1,192 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investment Plans</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Invest</title>
 
 <style>
-:root{
-  --card:linear-gradient(135deg,#10c7a7,#0b5f56);
-  --accent:#22ff9a;
-  --text:#fff;
-  --muted:#d6f1ec;
-  --dark:#083a34;
+:root {
+  --green: #0ea5a4;
+  --dark: #083a34;
+  --accent: #22ff9a;
+  --bg: #f4f7f7;
 }
 
-*{box-sizing:border-box;font-family:system-ui,sans-serif}
-body{
-  margin:0;
-  background:#f4f7f7;
-  padding-bottom:90px;
+* {
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
 }
 
-header{
-  background:var(--dark);
-  color:#fff;
-  padding:22px;
+body {
+  margin: 0;
+  background: var(--bg);
+  padding-bottom: 80px;
 }
 
-.container{padding:16px}
-
-/* PLANS */
-.plan{
-  background:var(--card);
-  border-radius:18px;
-  padding:20px;
-  margin-bottom:18px;
-  color:var(--text);
-}
-.plan h3{margin:0 0 6px}
-.plan small{color:var(--muted)}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:14px;
-  font-size:14px;
+/* HEADER */
+header {
+  padding: 22px;
+  background: var(--dark);
+  color: white;
 }
 
-.calc{
-  margin-top:14px;
-  background:rgba(255,255,255,.15);
-  border-radius:14px;
-  padding:14px;
-}
-.calc input{
-  width:100%;
-  padding:10px;
-  border-radius:8px;
-  border:none;
-}
-.note{
-  font-size:13px;
-  margin-top:8px;
-  color:#e8fffb;
+/* INVEST PLANS */
+.container {
+  padding: 16px;
 }
 
-button{
-  width:100%;
-  padding:14px;
-  border-radius:30px;
-  border:none;
-  font-weight:600;
-  background:linear-gradient(90deg,var(--accent),#00d4ff);
-  color:#00352f;
-  cursor:pointer;
-  margin-top:16px;
+.plan {
+  background: linear-gradient(135deg, #10c7a7, #0b5f56);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 18px;
+  color: white;
 }
 
-/* DEPOSIT SECTION */
-.deposit-section{
-  display:none;
-  margin-top:30px;
+.plan h3 {
+  margin: 0 0 6px;
 }
 
-.deposit-card{
-  background:var(--card);
-  color:#fff;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:16px;
+.plan small {
+  opacity: .85;
 }
 
-.deposit-form{
-  background:#fff;
-  border-radius:20px;
-  padding:20px;
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 14px;
 }
 
-.deposit-form h3{
-  margin:0 0 10px;
-  color:#083a34;
+.calc {
+  margin-top: 14px;
+  background: rgba(255,255,255,.15);
+  border-radius: 14px;
+  padding: 14px;
 }
 
-label{
-  display:block;
-  margin-top:14px;
-  font-weight:600;
-  font-size:14px;
+.calc input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 6px;
 }
 
-input,select{
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  border:1px solid #ddd;
-  margin-top:6px;
+.note {
+  font-size: 13px;
+  margin-top: 8px;
 }
 
-.submit{
-  width:100%;
-  padding:16px;
-  border-radius:30px;
-  border:none;
-  font-weight:600;
-  background:linear-gradient(90deg,var(--accent),#00d4ff);
-  color:#00352f;
-  margin-top:20px;
+.plan button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--accent), #00d4ff);
+  color: #00352f;
+  cursor: pointer;
+  margin-top: 16px;
 }
 
-/* FOOTER */
-.footer{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:#fff;
-  box-shadow:0 -4px 12px rgba(0,0,0,.1);
-  display:flex;
-  justify-content:space-around;
-  padding:10px 0;
-}
-.footer a{
-  text-decoration:none;
-  color:#083a34;
-  font-size:12px;
-  text-align:center;
-}
-.footer span{
-  display:block;
-  font-size:20px;
-}
-.deposit-page {
-  padding: 24px 16px 100px;
-  background: #f4f7fb;
+/* DEPOSIT SECTION (FULL PAGE LOOK) */
+.deposit-section {
+  padding: 24px 16px;
+  background: white;
 }
 
-.deposit-page h2 {
+.deposit-section h2 {
   text-align: center;
   margin-bottom: 20px;
-  font-size: 22px;
-  color: #0f172a;
 }
 
-.deposit-method {
+.method {
   background: linear-gradient(135deg, #0ea5a4, #0f766e);
-  color: #fff;
-  padding: 20px;
+  color: white;
+  padding: 18px;
   border-radius: 14px;
   margin-bottom: 14px;
 }
 
-.deposit-method h3 {
+.method h3 {
   margin: 0 0 6px;
-  font-size: 18px;
-}
-
-.deposit-method p {
-  margin: 0;
-  opacity: 0.95;
 }
 
 .deposit-form {
-  background: #ffffff;
+  margin-top: 24px;
+  background: #f9fafb;
   padding: 20px;
   border-radius: 16px;
-  margin-top: 24px;
-  box-shadow: 0 10px 25px rgba(0,0,0,.08);
 }
 
 .deposit-form label {
@@ -201,39 +134,38 @@ input,select{
   padding: 12px;
   border-radius: 10px;
   border: 1px solid #ddd;
-  font-size: 15px;
 }
 
 .deposit-form button {
-  margin-top: 20px;
   width: 100%;
+  margin-top: 20px;
   padding: 14px;
   border-radius: 999px;
   border: none;
-  background: #0ea5a4;
+  background: var(--green);
   color: white;
-  font-size: 16px;
   font-weight: 700;
 }
-.app-footer {
+
+/* FOOTER */
+.footer {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   height: 64px;
-  background: #ffffff;
-  border-top: 1px solid #e5e7eb;
+  background: white;
+  border-top: 1px solid #ddd;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 999;
 }
 
-.app-footer a {
+.footer a {
   text-decoration: none;
-  color: #0f172a;
-  font-size: 14px;
+  color: #083a34;
   font-weight: 600;
+  font-size: 14px;
 }
 </style>
 </head>
@@ -242,56 +174,79 @@ input,select{
 
 <header>
   <h2>Investment Plans</h2>
-  <p>Earn daily. Get paid at maturity.</p>
+  <p>Earn daily. Paid at maturity.</p>
 </header>
 
 <div class="container">
 
-<!-- STARTER PLAN -->
+<!-- STARTER -->
 <div class="plan">
   <h3>Starter Plan</h3>
-  <small>Payout after 30 days</small>
+  <small>30 days • Daily earnings</small>
 
   <div class="grid">
     <div>Minimum<br><strong>ZMW 500</strong></div>
     <div>Daily Profit<br><strong>ZMW 10 / 500</strong></div>
+    <div>Duration<br>30 days</div>
+    <div>Payout<br>At maturity</div>
   </div>
 
   <div class="calc">
-    <input id="amount" type="number" min="500" placeholder="Enter amount">
-    <div id="result" class="note"></div>
+    <input type="number" placeholder="Try amount" oninput="calc(this.value,30,'r1')">
+    <div class="note" id="r1"></div>
   </div>
 
-  <button onclick="invest()">Invest</button>
+  <button onclick="goDeposit(500)">Invest</button>
 </div>
 
-<!-- INLINE DEPOSIT SECTION -->
-<!-- ================= MAKE A DEPOSIT ================= -->
-<section class="deposit-page">
+<!-- GROWTH -->
+<div class="plan">
+  <h3>Growth Plan</h3>
+  <small>60 days • Daily earnings</small>
+
+  <div class="grid">
+    <div>Minimum<br><strong>ZMW 500</strong></div>
+    <div>Daily Profit<br><strong>ZMW 10 / 500</strong></div>
+    <div>Duration<br>60 days</div>
+    <div>Payout<br>At maturity</div>
+  </div>
+
+  <div class="calc">
+    <input type="number" placeholder="Try amount" oninput="calc(this.value,60,'r2')">
+    <div class="note" id="r2"></div>
+  </div>
+
+  <button onclick="goDeposit(500)">Invest</button>
+</div>
+
+</div>
+
+<!-- DEPOSIT -->
+<section id="deposit" class="deposit-section">
   <h2>Make a Deposit</h2>
 
-  <div class="deposit-method">
+  <div class="method">
     <h3>MTN Mobile Money</h3>
     <p>Send to: <strong>097XXXXXXX</strong></p>
   </div>
 
-  <div class="deposit-method">
+  <div class="method">
     <h3>Airtel Money</h3>
     <p>Send to: <strong>096XXXXXXX</strong></p>
   </div>
 
-  <div class="deposit-method">
+  <div class="method">
     <h3>Zamtel Kwacha</h3>
     <p>Send to: <strong>095XXXXXXX</strong></p>
   </div>
 
   <form class="deposit-form">
     <label>Amount (ZMW)</label>
-    <input type="number" placeholder="Enter amount" required>
+    <input type="number" required>
 
     <label>Select Network</label>
     <select required>
-      <option value="">Choose Network</option>
+      <option value="">Choose</option>
       <option>MTN</option>
       <option>Airtel</option>
       <option>Zamtel</option>
@@ -303,50 +258,29 @@ input,select{
     <button type="submit">Submit Deposit</button>
   </form>
 </section>
-</div>
 
-</div>
-
-<nav class="app-footer">
+<!-- FOOTER -->
+<nav class="footer">
   <a href="#">🏠 Home</a>
-  <a href="#">💼 Invest</a>
+  <a href="#deposit">💼 Invest</a>
   <a href="#">🎁 Refer</a>
   <a href="#">👤 Profile</a>
 </nav>
-</div>
 
 <script>
-const amountEl = document.getElementById("amount");
-const resultEl = document.getElementById("result");
-const depositSection = document.getElementById("depositSection");
-
-// demo balance (replace with Firebase)
-let walletBalance = 0;
-
-amountEl.oninput = () => {
-  const amt = Number(amountEl.value);
-  if (!amt || amt < 500) {
-    resultEl.textContent = "Minimum investment is ZMW 500";
+function calc(amount, days, out) {
+  if (!amount || amount < 500) {
+    document.getElementById(out).innerText = "Minimum ZMW 500";
     return;
   }
-  const profit = (amt / 500) * 10 * 30;
-  resultEl.innerHTML = `You receive <strong>ZMW ${(amt+profit).toFixed(2)}</strong>`;
-};
+  let daily = (amount / 500) * 10;
+  let total = daily * days;
+  document.getElementById(out).innerText =
+    `Daily: ZMW ${daily} | Total profit: ZMW ${total}`;
+}
 
-function invest(){
-  const amt = Number(amountEl.value);
-  if (!amt || amt < 500) {
-    alert("Minimum investment is ZMW 500");
-    return;
-  }
-
-  if (walletBalance < amt) {
-    depositSection.style.display = "block";
-    depositSection.scrollIntoView({behavior:"smooth"});
-    return;
-  }
-
-  alert("Investment successful");
+function goDeposit(min) {
+  document.getElementById("deposit").scrollIntoView({ behavior: "smooth" });
 }
 </script>
 
