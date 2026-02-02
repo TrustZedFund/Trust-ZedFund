@@ -6,7 +6,36 @@
 <title>Confirm Investment</title>
 
 <style>
-/* ... your existing styles ... */
+body{
+  margin:0;
+  font-family:system-ui,sans-serif;
+  background:#083a34;
+  color:#fff;
+}
+.card{
+  margin:20px;
+  padding:20px;
+  border-radius:16px;
+  background:#0b5f56;
+}
+input,button{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border-radius:10px;
+  border:none;
+  font-size:16px;
+}
+button{
+  background:#22ff9a;
+  color:#00352f;
+  font-weight:600;
+  cursor:pointer;
+}
+button:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+}
 </style>
 </head>
 
@@ -24,22 +53,42 @@
 
   <button id="confirmBtn">Confirm Investment</button>
 </div>
+// Quick test
+console.log("Test 1: Script loading");
+alert("Page loaded - if you see this, JavaScript is running");
 
+document.addEventListener('DOMContentLoaded', () => {
+  console.log("Test 2: DOM loaded");
+  const btn = document.getElementById('confirmBtn');
+  console.log("Button found:", !!btn);
+  
+  if (btn) {
+    btn.addEventListener('click', () => {
+      console.log("Test 3: Button clicked!");
+      alert("Button works!");
+    });
+  }
+});
 <script type="module">
-// Debug immediately
-console.log("✅ confirm-investment.html JS loaded");
-
 /* ===============================
-   IMPORT FIREBASE - CONSISTENT VERSION
+   MINIMAL DEBUGGING
 ================================ */
-import { auth, createInvestment } from "./js/firebase.js";
-import { onAuthStateChanged } from 
-  "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-
-console.log("✅ firebase.js imported");
+console.log("🚀 confirm-investment.html script started");
 
 /* ===============================
-   ELEMENTS
+   SINGLE IMPORT - NO MIXED IMPORTS!
+================================ */
+import { 
+  auth, 
+  createInvestment,
+  onAuthStateChanged,  // Now imported from firebase.js
+  getCurrentUser       // New helper function
+} from "./js/firebase.js";
+
+console.log("✅ Firebase imported successfully");
+
+/* ===============================
+   GET DOM ELEMENTS
 ================================ */
 const planNameEl = document.getElementById("planName");
 const planDurationEl = document.getElementById("planDuration");
@@ -47,146 +96,222 @@ const amountEl = document.getElementById("amount");
 const summaryEl = document.getElementById("summary");
 const btn = document.getElementById("confirmBtn");
 
-/* ===============================
-   LOAD PLAN
-================================ */
-const plan = JSON.parse(localStorage.getItem("selectedPlan"));
-
-if (!plan) {
-  alert("❌ No plan found");
-  window.location.href = "investments.html";
-} else {
-  console.log("✅ Plan loaded:", plan);
+// Verify elements exist
+if (!btn) {
+  console.error("❌ Button element not found!");
+  alert("Page error: Button not found. Please refresh.");
 }
 
-planNameEl.textContent = plan.name;
-planDurationEl.textContent = `${plan.days} days`;
-
 /* ===============================
-   AUTH STATE
+   LOAD PLAN FROM LOCALSTORAGE
 ================================ */
-let currentUser = null;
-let isAuthReady = false;
+let currentPlan = null;
 
-onAuthStateChanged(auth, user => {
-  if (user) {
-    currentUser = user;
-    isAuthReady = true;
-    console.log("✅ User authenticated:", user.uid);
-  } else {
-    alert("❌ Not logged in");
-    window.location.href = "login.html";
+try {
+  const planData = localStorage.getItem("selectedPlan");
+  console.log("Plan from localStorage:", planData);
+  
+  if (!planData) {
+    throw new Error("No plan selected");
   }
-});
+  
+  currentPlan = JSON.parse(planData);
+  
+  if (!currentPlan || !currentPlan.name || !currentPlan.percent || !currentPlan.days) {
+    throw new Error("Invalid plan data");
+  }
+  
+  // Display plan
+  planNameEl.textContent = currentPlan.name;
+  planDurationEl.textContent = `${currentPlan.days} days - ${currentPlan.percent}% return`;
+  
+} catch (error) {
+  console.error("Plan loading error:", error);
+  alert("Please select an investment plan first.");
+  window.location.href = "investments.html";
+}
 
 /* ===============================
-   CALCULATOR
+   AMOUNT CALCULATOR
 ================================ */
-amountEl.addEventListener("input", () => {
-  const amount = Number(amountEl.value);
-  if (!amount || amount <= 0) {
+amountEl.addEventListener("input", function() {
+  const amount = parseFloat(this.value);
+  
+  if (!amount || amount <= 0 || isNaN(amount)) {
     summaryEl.textContent = "—";
     return;
   }
-  const profit = amount * plan.percent / 100;
-  summaryEl.innerHTML =
-    `You invest ZMW ${amount.toFixed(2)}<br>
-     Profit ZMW ${profit.toFixed(2)}<br>
-     Total ZMW ${(amount + profit).toFixed(2)}`;
+  
+  const profit = (amount * currentPlan.percent) / 100;
+  const total = amount + profit;
+  
+  summaryEl.innerHTML = `
+    <strong>Investment Summary:</strong><br>
+    • Amount: ZMW ${amount.toFixed(2)}<br>
+    • Profit: ZMW ${profit.toFixed(2)}<br>
+    • Total Return: ZMW ${total.toFixed(2)}
+  `;
 });
 
 /* ===============================
-   BUTTON CLICK HANDLER (IMPROVED)
+   AUTH STATE CHECK
 ================================ */
-btn.addEventListener("click", async () => {
-  console.log("🟢 BUTTON CLICKED - Starting investment process");
-  
-  // Validate auth
-  if (!isAuthReady) {
-    alert("⚠️ Authentication still loading. Please wait...");
-    return;
-  }
-  
-  if (!currentUser) {
-    alert("❌ Please log in first");
+let currentUser = null;
+
+// Use the helper function to get user
+getCurrentUser().then(user => {
+  if (user) {
+    currentUser = user;
+    console.log("✅ User authenticated:", user.uid);
+  } else {
+    console.log("❌ No user logged in");
+    alert("Please login to continue.");
     window.location.href = "login.html";
-    return;
+  }
+}).catch(error => {
+  console.error("Auth error:", error);
+  alert("Authentication error. Please login again.");
+  window.location.href = "login.html";
+});
+
+/* ===============================
+   INVESTMENT FUNCTION
+================================ */
+async function handleInvestment() {
+  console.log("💡 handleInvestment() triggered");
+  
+  // 1. Validate user
+  if (!currentUser) {
+    alert("⚠️ Please wait, checking authentication...");
+    
+    try {
+      const user = await getCurrentUser();
+      if (!user) {
+        alert("You must be logged in to invest.");
+        window.location.href = "login.html";
+        return;
+      }
+      currentUser = user;
+    } catch (error) {
+      alert("Authentication failed. Please login again.");
+      window.location.href = "login.html";
+      return;
+    }
   }
   
-  // Validate amount
-  const amount = Number(amountEl.value);
-  if (!amount || amount <= 0) {
-    alert("❌ Please enter a valid amount greater than 0");
+  // 2. Validate amount
+  const amount = parseFloat(amountEl.value);
+  console.log("Amount to invest:", amount);
+  
+  if (!amount || amount <= 0 || isNaN(amount)) {
+    alert("Please enter a valid amount (greater than 0).");
     amountEl.focus();
     return;
   }
   
-  // Validate plan
-  if (!plan || !plan.name || !plan.percent || !plan.days) {
-    alert("❌ Invalid plan selected");
+  // 3. Validate plan
+  if (!currentPlan) {
+    alert("No investment plan selected.");
     window.location.href = "investments.html";
     return;
   }
   
-  // Show confirmation
-  const confirmInvest = confirm(
-    `Confirm investment?\n\n` +
-    `Plan: ${plan.name}\n` +
-    `Amount: ZMW ${amount.toFixed(2)}\n` +
-    `Duration: ${plan.days} days\n` +
-    `Expected Profit: ZMW ${(amount * plan.percent / 100).toFixed(2)}`
-  );
+  // 4. Confirmation dialog
+  const confirmMessage = `
+    Confirm Investment?
+    
+    Plan: ${currentPlan.name}
+    Amount: ZMW ${amount.toFixed(2)}
+    Duration: ${currentPlan.days} days
+    Expected Profit: ZMW ${((amount * currentPlan.percent) / 100).toFixed(2)}
+    
+    This amount will be deducted from your deposit wallet.
+  `;
   
-  if (!confirmInvest) return;
+  if (!confirm(confirmMessage)) {
+    console.log("Investment cancelled by user");
+    return;
+  }
   
-  // Disable button and show loading
-  const originalText = btn.textContent;
+  // 5. Disable button and show loading
   btn.disabled = true;
-  btn.textContent = "Processing…";
-  btn.style.opacity = "0.7";
+  btn.textContent = "Processing...";
   
   try {
-    console.log("➡️ Calling createInvestment() with:", {
+    console.log("📤 Creating investment with:", {
       uid: currentUser.uid,
-      plan,
-      amount
+      plan: currentPlan,
+      amount: amount
     });
     
-    const result = await createInvestment(currentUser.uid, plan, amount);
-    console.log("✅ Investment successful:", result);
+    // Call createInvestment from firebase.js
+    const result = await createInvestment(currentUser.uid, currentPlan, amount);
     
-    alert("🎉 Investment Successful!\nYour funds have been locked for the selected period.");
+    console.log("✅ Investment result:", result);
     
-    // Cleanup and redirect
+    // Success message
+    alert(`
+      🎉 Investment Successful!
+      
+      Amount: ZMW ${amount.toFixed(2)}
+      Plan: ${currentPlan.name}
+      Investment ID: ${result.investmentId}
+      
+      Redirecting to dashboard...
+    `);
+    
+    // Clean up and redirect
     localStorage.removeItem("selectedPlan");
+    
     setTimeout(() => {
       window.location.href = "dashboard.html";
-    }, 500);
+    }, 1500);
     
   } catch (error) {
     console.error("❌ Investment error:", error);
-    alert(`Investment Failed:\n${error.message}`);
+    
+    // User-friendly error messages
+    let errorMsg = error.message;
+    
+    if (errorMsg.includes("Insufficient")) {
+      errorMsg = "Insufficient deposit balance. Please add funds first.";
+    } else if (errorMsg.includes("not found")) {
+      errorMsg = "Account error. Please contact support.";
+    } else if (errorMsg.includes("permission") || errorMsg.includes("permission")) {
+      errorMsg = "Authentication error. Please login again.";
+    }
+    
+    alert(`Investment Failed:\n${errorMsg}`);
     
     // Re-enable button
     btn.disabled = false;
-    btn.textContent = originalText;
-    btn.style.opacity = "1";
+    btn.textContent = "Confirm Investment";
+  }
+}
+
+/* ===============================
+   ATTACH EVENT LISTENER
+================================ */
+btn.addEventListener("click", handleInvestment);
+
+// Allow Enter key to trigger investment
+amountEl.addEventListener("keypress", function(e) {
+  if (e.key === "Enter") {
+    handleInvestment();
   }
 });
 
 /* ===============================
-   ADDITIONAL DEBUGGING
+   PAGE INITIALIZATION
 ================================ */
-// Check if button exists and can be clicked
-console.log("Button element found:", !!btn);
-console.log("Plan loaded:", plan);
-
-// Add Enter key support for amount field
-amountEl.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    btn.click();
+// Focus on amount input after page loads
+setTimeout(() => {
+  if (amountEl) {
+    amountEl.focus();
   }
-});
+}, 500);
+
+console.log("✅ Page setup complete");
 </script>
 
 </body>
