@@ -1,186 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Investments</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Investment Plans</title>
 
-  <style>
-    :root {
-      --bg: #0b2f2a;
-      --card: linear-gradient(135deg, #0fb9a8, #0a5c55);
-      --accent: #22ff9a;
-      --danger: #ff5c5c;
-      --text: #ffffff;
-      --muted: #cde7e4;
-    }
+<style>
+:root {
+  --card: linear-gradient(135deg, #10c7a7, #0b5f56);
+  --accent: #22ff9a;
+  --text: #ffffff;
+  --muted: #d6f1ec;
+}
 
-    * {
-      box-sizing: border-box;
-      font-family: "Segoe UI", system-ui, sans-serif;
-    }
+* { box-sizing: border-box; font-family: system-ui, sans-serif; }
 
-    body {
-      margin: 0;
-      background: #f4f7f7;
-      color: var(--text);
-    }
+body {
+  margin: 0;
+  background: #f4f7f7;
+}
 
-    header {
-      padding: 24px;
-      background: var(--bg);
-    }
+header {
+  padding: 22px;
+  background: #083a34;
+  color: white;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-    }
+.container { padding: 16px; }
 
-    header p {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+.plan {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 18px;
+  color: var(--text);
+}
 
-    .container {
-      padding: 16px;
-    }
+.plan h3 { margin: 0 0 6px; }
+.plan small { color: var(--muted); }
 
-    .plan-card {
-      background: var(--card);
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    }
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
 
-    .plan-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.cta {
+  margin-top: 16px;
+}
 
-    .plan-title {
-      font-size: 18px;
-      font-weight: 600;
-    }
+button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 30px;
+  border: none;
+  font-weight: 600;
+  background: linear-gradient(90deg, var(--accent), #00d4ff);
+  color: #00352f;
+  cursor: pointer;
+}
 
-    .risk {
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.15);
-    }
+.calc {
+  margin-top: 14px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 14px;
+  padding: 14px;
+}
 
-    .details {
-      margin-top: 14px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      font-size: 14px;
-    }
+.calc input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 6px;
+}
 
-    .details span {
-      color: var(--muted);
-    }
-
-    .cta {
-      margin-top: 18px;
-    }
-
-    .cta button {
-      width: 100%;
-      padding: 14px;
-      border-radius: 30px;
-      border: none;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      background: linear-gradient(90deg, var(--accent), #00d4ff);
-      color: #00332c;
-    }
-
-    .cta button:active {
-      transform: scale(0.98);
-    }
-  </style>
+.note {
+  font-size: 12px;
+  margin-top: 8px;
+  color: #e8fffb;
+}
+</style>
 </head>
+
 <body>
 
 <header>
-  <h1>Investment Plans</h1>
-  <p>Choose how you want your money to grow</p>
+  <h2>Investment Plans</h2>
+  <p>Choose how your money will grow</p>
 </header>
 
 <div class="container">
 
-  <!-- PLAN 1 -->
-  <div class="plan-card">
-    <div class="plan-header">
-      <div class="plan-title">Starter Plan</div>
-      <div class="risk">Low Risk</div>
-    </div>
+<!-- STARTER PLAN -->
+<div class="plan">
+  <h3>Starter Plan</h3>
+  <small>Low Risk • 7 Days</small>
 
-    <div class="details">
-      <div><span>Min Invest</span><br>ZMK 100</div>
-      <div><span>Duration</span><br>7 Days</div>
-      <div><span>Return</span><br>5%</div>
-      <div><span>Payout</span><br>Fixed</div>
-    </div>
-
-    <div class="cta">
-      <button onclick="selectPlan('starter')">Invest</button>
-    </div>
+  <div class="grid">
+    <div>You Invest<br><strong>ZMK 100</strong></div>
+    <div>You Receive<br><strong>ZMK 105</strong></div>
+    <div>Profit<br>ZMK 5</div>
+    <div>Payout<br>After 7 days</div>
   </div>
 
-  <!-- PLAN 2 -->
-  <div class="plan-card">
-    <div class="plan-header">
-      <div class="plan-title">Growth Plan</div>
-      <div class="risk">Medium Risk</div>
-    </div>
-
-    <div class="details">
-      <div><span>Min Invest</span><br>ZMK 300</div>
-      <div><span>Duration</span><br>30 Days</div>
-      <div><span>Return</span><br>18%</div>
-      <div><span>Payout</span><br>Fixed</div>
-    </div>
-
-    <div class="cta">
-      <button onclick="selectPlan('growth')">Invest</button>
-    </div>
+  <div class="calc">
+    <label>Try your own amount</label>
+    <input type="number" min="100" placeholder="Enter amount"
+      oninput="calculate(this.value, 5, 'starterResult')">
+    <div id="starterResult" class="note"></div>
   </div>
 
-  <!-- PLAN 3 -->
-  <div class="plan-card">
-    <div class="plan-header">
-      <div class="plan-title">Premium Plan</div>
-      <div class="risk">High Risk</div>
-    </div>
-
-    <div class="details">
-      <div><span>Min Invest</span><br>ZMK 1,000</div>
-      <div><span>Duration</span><br>90 Days</div>
-      <div><span>Return</span><br>45%</div>
-      <div><span>Payout</span><br>Fixed</div>
-    </div>
-
-    <div class="cta">
-      <button onclick="selectPlan('premium')">Invest</button>
-    </div>
+  <div class="cta">
+    <button onclick="selectPlan('Starter Plan',7,5)">Invest</button>
   </div>
+</div>
+
+<!-- GROWTH PLAN -->
+<div class="plan">
+  <h3>Growth Plan</h3>
+  <small>Medium Risk • 30 Days</small>
+
+  <div class="grid">
+    <div>You Invest<br><strong>ZMK 300</strong></div>
+    <div>You Receive<br><strong>ZMK 354</strong></div>
+    <div>Profit<br>ZMK 54</div>
+    <div>Payout<br>After 30 days</div>
+  </div>
+
+  <div class="calc">
+    <label>Try your own amount</label>
+    <input type="number" min="300" placeholder="Enter amount"
+      oninput="calculate(this.value, 18, 'growthResult')">
+    <div id="growthResult" class="note"></div>
+  </div>
+
+  <div class="cta">
+    <button onclick="selectPlan('Growth Plan',30,18)">Invest</button>
+  </div>
+</div>
+
+<!-- PREMIUM PLAN -->
+<div class="plan">
+  <h3>Premium Plan</h3>
+  <small>High Risk • 90 Days</small>
+
+  <div class="grid">
+    <div>You Invest<br><strong>ZMK 1,000</strong></div>
+    <div>You Receive<br><strong>ZMK 1,450</strong></div>
+    <div>Profit<br>ZMK 450</div>
+    <div>Payout<br>After 90 days</div>
+  </div>
+
+  <div class="calc">
+    <label>Try your own amount</label>
+    <input type="number" min="1000" placeholder="Enter amount"
+      oninput="calculate(this.value, 45, 'premiumResult')">
+    <div id="premiumResult" class="note"></div>
+  </div>
+
+  <div class="cta">
+    <button onclick="selectPlan('Premium Plan',90,45)">Invest</button>
+  </div>
+</div>
 
 </div>
 
 <script>
-  function selectPlan(planId) {
-    // Save selected plan
-    localStorage.setItem("selectedPlan", planId);
+function calculate(amount, percent, outputId) {
+  if (!amount || amount <= 0) return;
+  let profit = amount * percent / 100;
+  let total = Number(amount) + profit;
+  document.getElementById(outputId).innerHTML =
+    `You will receive <strong>ZMK ${total.toFixed(2)}</strong>
+     (Profit: ZMK ${profit.toFixed(2)})`;
+}
 
-    // Redirect to confirmation screen
-    window.location.href = "confirm-investment.html";
-  }
+function selectPlan(name, days, percent) {
+  localStorage.setItem("plan", JSON.stringify({name, days, percent}));
+  window.location.href = "confirm-investment.html";
+}
 </script>
 
 </body>
