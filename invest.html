@@ -1,36 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Invest</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <style>
-body { font-family:system-ui; margin:0; background:#f4f7f7; }
-header { background:#083a34; color:#fff; padding:20px; }
-.plan {
-  background:linear-gradient(135deg,#0f8f6a,#083a34);
-  margin:16px;
-  padding:20px;
+:root{
+  --card:linear-gradient(135deg,#10c7a7,#0b5f56);
+  --accent:#22ff9a;
+  --text:#fff;
+  --muted:#d6f1ec;
+  --dark:#083a34;
+}
+
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+body{margin:0;background:#f4f7f7}
+header{background:var(--dark);color:#fff;padding:22px}
+.container{padding:16px}
+
+/* PLANS */
+.plan{
+  background:var(--card);
   border-radius:18px;
-  color:#fff;
+  padding:20px;
+  margin-bottom:18px;
+  color:var(--text);
 }
-input {
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:none;
-  margin-top:10px;
-}
-button {
-  width:100%;
+.plan h3{margin:0 0 6px}
+.plan small{color:var(--muted)}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
   margin-top:14px;
+  font-size:14px;
+}
+.calc{
+  margin-top:14px;
+  background:rgba(255,255,255,.15);
+  border-radius:14px;
+  padding:14px;
+}
+.calc input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+}
+.note{font-size:13px;margin-top:8px;color:#e8fffb}
+
+button{
+  width:100%;
   padding:14px;
   border-radius:30px;
   border:none;
   font-weight:600;
-  background:#22ff9a;
+  background:linear-gradient(90deg,var(--accent),#00d4ff);
   color:#00352f;
+  cursor:pointer;
+  margin-top:16px;
+}
+
+/* DEPOSIT SECTION */
+.deposit-box{
+  display:none;
+  background:#fff;
+  border-radius:20px;
+  padding:18px;
+  margin-top:24px;
+}
+.deposit-box h3{
+  margin:0 0 6px;
+  color:#083a34;
+}
+.deposit-method{
+  background:#f2f7f7;
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:10px;
+  font-size:14px;
+}
+label{
+  display:block;
+  margin-top:14px;
+  font-weight:600;
+  font-size:14px;
+}
+input,select{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  margin-top:6px;
+}
+.actions{
+  display:flex;
+  gap:12px;
+  margin-top:18px;
+}
+.cancel{
+  background:#eee;
+}
+.submit{
+  background:linear-gradient(90deg,var(--accent),#00d4ff);
 }
 </style>
 </head>
@@ -39,98 +112,110 @@ button {
 
 <header>
   <h2>Investment Plans</h2>
+  <p>Earn daily. Paid at maturity.</p>
 </header>
 
+<div class="container">
+
+<!-- PLAN -->
 <div class="plan">
   <h3>Starter Plan</h3>
-  <p>Minimum: ZMK 500</p>
+  <small>Payout after 30 days</small>
 
-  <input id="amount" type="number" min="500" placeholder="Enter amount">
+  <div class="grid">
+    <div>Minimum<br><strong>ZMW 500</strong></div>
+    <div>Daily Profit<br><strong>ZMW 10 / 500</strong></div>
+  </div>
 
-  <button id="investBtn">Invest</button>
+  <div class="calc">
+    <input id="amount" type="number" min="500" placeholder="Enter amount">
+    <div id="result" class="note"></div>
+  </div>
+
+  <button onclick="invest()">Invest</button>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { getDatabase, ref, get, update, push, set } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+<!-- DEPOSIT SECTION (INLINE) -->
+<div id="depositBox" class="deposit-box">
+  <h3>Make a Deposit</h3>
+  <p style="font-size:14px;color:#555">
+    Insufficient balance. Deposit to continue.
+  </p>
 
-/* FIREBASE */
-const firebaseConfig = {
-  apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
-  authDomain: "trust-zedfund.firebaseapp.com",
-  databaseURL: "https://trust-zedfund-default-rtdb.firebaseio.com",
-  projectId: "trust-zedfund",
-  storageBucket: "trust-zedfund.firebasestorage.app",
-  messagingSenderId: "129257684900",
-  appId: "1:129257684900:web:95e94293366a26f9448b31"
+  <div class="deposit-method">
+    <strong>MTN Mobile Money</strong><br>
+    Send to: 097XXXXXXX
+  </div>
+
+  <div class="deposit-method">
+    <strong>Airtel Money</strong><br>
+    Send to: 096XXXXXXX
+  </div>
+
+  <div class="deposit-method">
+    <strong>Zamtel Kwacha</strong><br>
+    Send to: 095XXXXXXX
+  </div>
+
+  <label>Amount (ZMW)</label>
+  <input type="number" placeholder="Enter deposit amount">
+
+  <label>Select Network</label>
+  <select>
+    <option>Select</option>
+    <option>MTN</option>
+    <option>Airtel</option>
+    <option>Zamtel</option>
+  </select>
+
+  <label>Upload Payment Proof</label>
+  <input type="file">
+
+  <div class="actions">
+    <button class="cancel" onclick="closeDeposit()">Cancel</button>
+    <button class="submit">Submit Deposit</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const depositBox = document.getElementById("depositBox");
+const amountEl = document.getElementById("amount");
+const resultEl = document.getElementById("result");
+
+// DEMO balance (replace with Firebase balance)
+let walletBalance = 0;
+
+amountEl.oninput = () => {
+  const amt = Number(amountEl.value);
+  if (!amt || amt < 500) {
+    resultEl.innerHTML = "Minimum ZMW 500";
+    return;
+  }
+  const profit = (amt / 500) * 10 * 30;
+  resultEl.innerHTML = `You receive ZMW ${(amt + profit).toFixed(2)}`;
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
-
-let user;
-
-/* AUTH */
-onAuthStateChanged(auth, u => {
-  if (!u) location.href = "login.html";
-  user = u;
-});
-
-/* INVEST BUTTON — THIS ALWAYS WORKS */
-document.getElementById("investBtn").addEventListener("click", async () => {
-
-  const amount = Number(document.getElementById("amount").value);
-  if (!amount || amount < 500) {
-    alert("Minimum investment is ZMK 500");
+function invest(){
+  const amt = Number(amountEl.value);
+  if (!amt || amt < 500) {
+    alert("Minimum investment is ZMW 500");
     return;
   }
 
-  /* GET BALANCE */
-  const balRef = ref(db, `users/${user.uid}/balances/deposit`);
-  const balSnap = await get(balRef);
-  const balance = balSnap.exists() ? Number(balSnap.val()) : 0;
-
-  if (balance < amount) {
-    alert("Insufficient funds. Please deposit.");
-    location.href = "deposit.html";
+  if (walletBalance < amt) {
+    depositBox.style.display = "block";
+    depositBox.scrollIntoView({behavior:"smooth"});
     return;
   }
 
-  /* CALCULATE */
-  const days = 30;
-  const dailyRate = 10;
-  const dailyProfit = (amount / 500) * dailyRate;
-  const totalProfit = dailyProfit * days;
+  alert("Investment successful");
+}
 
-  /* DEDUCT */
-  await update(ref(db, `users/${user.uid}/balances`), {
-    deposit: balance - amount
-  });
-
-  /* SAVE INVESTMENT */
-  await set(push(ref(db, `users/${user.uid}/investments`)), {
-    plan: "Starter Plan",
-    amount,
-    dailyProfit,
-    totalProfit,
-    days,
-    startTime: Date.now(),
-    maturityTime: Date.now() + days * 86400000,
-    status: "active"
-  });
-
-  /* TRANSACTION */
-  await set(push(ref(db, `users/${user.uid}/transactions`)), {
-    type: "Investment",
-    amount,
-    date: new Date().toISOString()
-  });
-
-  alert("Investment successful!");
-  location.href = "dashboard.html";
-});
+function closeDeposit(){
+  depositBox.style.display = "none";
+}
 </script>
 
 </body>
