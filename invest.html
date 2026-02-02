@@ -7,15 +7,22 @@
 
 <style>
 :root {
-  --card: linear-gradient(135deg, #10c7a7, #0b5f56);
+  --card: linear-gradient(135deg, #0f8f6a, #083a34);
   --accent: #22ff9a;
+  --danger: #ff5c5c;
   --text: #ffffff;
-  --muted: #d6f1ec;
 }
 * { box-sizing:border-box; font-family:system-ui,sans-serif; }
 body { margin:0; background:#f4f7f7; }
-header { padding:22px; background:#083a34; color:white; }
+
+header {
+  padding:22px;
+  background:#083a34;
+  color:white;
+}
+
 .container { padding:16px; }
+
 .plan {
   background:var(--card);
   border-radius:18px;
@@ -23,8 +30,7 @@ header { padding:22px; background:#083a34; color:white; }
   margin-bottom:18px;
   color:var(--text);
 }
-.plan h3 { margin:0 0 6px; }
-.plan small { color:var(--muted); }
+
 .grid {
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -32,20 +38,21 @@ header { padding:22px; background:#083a34; color:white; }
   margin-top:14px;
   font-size:14px;
 }
+
 .calc {
   margin-top:14px;
   background:rgba(255,255,255,0.15);
   border-radius:14px;
   padding:14px;
 }
+
 .calc input {
   width:100%;
   padding:10px;
   border-radius:8px;
   border:none;
-  margin-top:6px;
 }
-.note { font-size:13px; margin-top:8px; color:#e8fffb; }
+
 button {
   width:100%;
   padding:14px;
@@ -57,6 +64,49 @@ button {
   cursor:pointer;
   margin-top:16px;
 }
+
+/* ===== MODAL ===== */
+.modal {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.modal-box {
+  background:#083a34;
+  color:white;
+  width:90%;
+  max-width:420px;
+  border-radius:20px;
+  padding:20px;
+}
+
+.modal h3 { margin-top:0; }
+.modal .row {
+  display:flex;
+  justify-content:space-between;
+  margin:10px 0;
+}
+
+.modal .warn {
+  color:var(--danger);
+  font-size:14px;
+  margin-top:8px;
+}
+
+.modal-footer {
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+
+.modal-footer button {
+  flex:1;
+}
 </style>
 </head>
 
@@ -64,75 +114,69 @@ button {
 
 <header>
   <h2>Investment Plans</h2>
-  <p>Earn daily. Get paid at maturity.</p>
+  <p>Earn daily. Paid at maturity.</p>
 </header>
 
 <div class="container">
 
-<!-- STARTER -->
+<!-- PLAN -->
 <div class="plan">
   <h3>Starter Plan</h3>
-  <small>Earn daily • Payout after 30 days</small>
+  <small>30 days • Earn daily</small>
   <div class="grid">
     <div>Minimum<br><strong>ZMK 500</strong></div>
-    <div>Daily Profit<br><strong>ZMK 10 per 500</strong></div>
-    <div>Total Days<br>30 days</div>
-    <div>Payout<br>Once at maturity</div>
+    <div>Daily Profit<br><strong>ZMK 10 / 500</strong></div>
   </div>
+
   <div class="calc">
-    <label>Try your amount</label>
     <input id="starterAmount" type="number" min="500"
-      placeholder="Minimum ZMK 500"
+      placeholder="Enter amount"
       oninput="calculate(this.value,10,30,'starterResult')" />
-    <div id="starterResult" class="note"></div>
+    <div id="starterResult"></div>
   </div>
-  <button onclick="invest('Starter Plan',30,10,'starterAmount')">Invest</button>
+
+  <button onclick="openInvest('Starter Plan',30,10,'starterAmount')">
+    Invest
+  </button>
 </div>
 
-<!-- GROWTH -->
-<div class="plan">
-  <h3>Growth Plan</h3>
-  <small>Earn daily • Payout after 60 days</small>
-  <div class="grid">
-    <div>Minimum<br><strong>ZMK 500</strong></div>
-    <div>Daily Profit<br><strong>ZMK 10 per 500</strong></div>
-    <div>Total Days<br>60 days</div>
-    <div>Payout<br>Once at maturity</div>
-  </div>
-  <div class="calc">
-    <label>Try your amount</label>
-    <input id="growthAmount" type="number" min="500"
-      placeholder="Minimum ZMK 500"
-      oninput="calculate(this.value,10,60,'growthResult')" />
-    <div id="growthResult" class="note"></div>
-  </div>
-  <button onclick="invest('Growth Plan',60,10,'growthAmount')">Invest</button>
 </div>
 
-<!-- PREMIUM -->
-<div class="plan">
-  <h3>Premium Plan</h3>
-  <small>Earn daily • Payout after 90 days</small>
-  <div class="grid">
-    <div>Minimum<br><strong>ZMK 500</strong></div>
-    <div>Daily Profit<br><strong>ZMK 10 per 500</strong></div>
-    <div>Total Days<br>90 days</div>
-    <div>Payout<br>Once at maturity</div>
-  </div>
-  <div class="calc">
-    <label>Try your amount</label>
-    <input id="premiumAmount" type="number" min="500"
-      placeholder="Minimum ZMK 500"
-      oninput="calculate(this.value,10,90,'premiumResult')" />
-    <div id="premiumResult" class="note"></div>
-  </div>
-  <button onclick="invest('Premium Plan',90,10,'premiumAmount')">Invest</button>
-</div>
+<!-- ===== INVEST MODAL ===== -->
+<div class="modal" id="investModal">
+  <div class="modal-box">
+    <h3>Confirm Investment</h3>
 
+    <div class="row">
+      <span>Plan</span>
+      <strong id="mPlan"></strong>
+    </div>
+
+    <div class="row">
+      <span>Amount</span>
+      <strong>ZMK <span id="mAmount"></span></strong>
+    </div>
+
+    <div class="row">
+      <span>Wallet Balance</span>
+      <strong>ZMK <span id="mBalance"></span></strong>
+    </div>
+
+    <div class="row">
+      <span>Total Profit</span>
+      <strong>ZMK <span id="mProfit"></span></strong>
+    </div>
+
+    <div id="mWarn" class="warn"></div>
+
+    <div class="modal-footer">
+      <button onclick="closeModal()">Cancel</button>
+      <button onclick="confirmInvest()">Confirm</button>
+    </div>
+  </div>
 </div>
 
 <script type="module">
-/* ===== FIREBASE ===== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import { getDatabase, ref, get, update, push, set } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
@@ -151,75 +195,75 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-let currentUser = null;
+let user, investData = {};
 
-onAuthStateChanged(auth, user => {
-  if (!user) {
-    alert("Please login first");
-    window.location.href = "login.html";
-  }
-  currentUser = user;
+onAuthStateChanged(auth, u => {
+  if (!u) location.href = "login.html";
+  user = u;
 });
 
-/* ===== INVEST ===== */
-window.invest = async function(name, days, dailyRate, inputId) {
+window.openInvest = async (plan, days, rate, inputId) => {
   const amount = Number(document.getElementById(inputId).value);
-  if (!amount || amount < 500) {
-    alert("Minimum investment is ZMK 500");
+  if (amount < 500) return alert("Minimum ZMK 500");
+
+  const balSnap = await get(ref(db, `users/${user.uid}/balances/deposit`));
+  const balance = balSnap.exists() ? Number(balSnap.val()) : 0;
+
+  const profit = (amount / 500) * rate * days;
+
+  investData = { plan, amount, days, rate, profit, balance };
+
+  mPlan.textContent = plan;
+  mAmount.textContent = amount;
+  mBalance.textContent = balance;
+  mProfit.textContent = profit.toFixed(2);
+
+  mWarn.textContent =
+    balance < amount ? "Insufficient balance. Please deposit." : "";
+
+  investModal.style.display = "flex";
+};
+
+window.confirmInvest = async () => {
+  if (investData.balance < investData.amount) {
+    location.href = "deposit.html";
     return;
   }
 
-  const balRef = ref(db, `users/${currentUser.uid}/balances`);
-  const balSnap = await get(balRef);
-  const deposit = balSnap.exists() ? Number(balSnap.val().deposit || 0) : 0;
+  const balRef = ref(db, `users/${user.uid}/balances`);
+  await update(balRef, {
+    deposit: investData.balance - investData.amount
+  });
 
-  if (deposit < amount) {
-    alert("Insufficient funds. Please deposit first.");
-    window.location.href = "deposit.html";
-    return;
-  }
-
-  const dailyProfit = (amount / 500) * dailyRate;
-  const totalProfit = dailyProfit * days;
-
-  await update(balRef, { deposit: deposit - amount });
-
-  await set(push(ref(db, `users/${currentUser.uid}/investments`)), {
-    plan: name,
-    amount,
-    dailyProfit,
-    totalProfit,
-    days,
+  await set(push(ref(db, `users/${user.uid}/investments`)), {
+    ...investData,
     startTime: Date.now(),
-    maturityTime: Date.now() + days * 86400000,
+    maturityTime: Date.now() + investData.days * 86400000,
     status: "active"
   });
 
-  await set(push(ref(db, `users/${currentUser.uid}/transactions`)), {
+  await set(push(ref(db, `users/${user.uid}/transactions`)), {
     type: "Investment",
-    plan: name,
-    amount,
+    plan: investData.plan,
+    amount: investData.amount,
     date: new Date().toISOString()
   });
 
   alert("Investment successful!");
-  window.location.href = "dashboard.html";
+  location.href = "dashboard.html";
 };
+
+window.closeModal = () => investModal.style.display = "none";
 </script>
 
 <script>
-function calculate(amount, dailyRate, days, out) {
+function calculate(amount, rate, days, out) {
   amount = Number(amount);
-  if (!amount || amount < 500) {
-    document.getElementById(out).innerHTML = "Minimum investment is ZMK 500";
-    return;
-  }
-  const daily = (amount / 500) * dailyRate;
-  const profit = daily * days;
+  if (amount < 500) return;
+  const profit = (amount / 500) * rate * days;
   document.getElementById(out).innerHTML =
-    `Daily profit: <strong>ZMK ${daily.toFixed(2)}</strong><br>
-     Total profit: ZMK ${profit.toFixed(2)}<br>
-     You receive: <strong>ZMK ${(amount+profit).toFixed(2)}</strong>`;
+    `Profit: ZMK ${profit.toFixed(2)}<br>
+     Total: ZMK ${(amount + profit).toFixed(2)}`;
 }
 </script>
 
