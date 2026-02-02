@@ -3,229 +3,268 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trust ZedFund – Earn Daily From Your Money</title>
+<title>Trust ZedFund – Community-Powered Investments</title>
 
 <style>
 :root {
-  --bg:#083a34;
-  --card:#0f6f63;
-  --accent:#22ff9a;
-  --text:#ffffff;
-  --muted:#cceee7;
+  --green-dark: #083a34;
+  --green-main: #0fae96;
+  --green-light: #22ff9a;
+  --text-dark: #0b2e2a;
+  --bg: #f4f7f7;
 }
 
-* { box-sizing:border-box; font-family:system-ui,sans-serif; }
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
 
 body {
-  margin:0;
-  background:#f4f7f7;
-  color:#222;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-dark);
 }
 
-header {
-  background:var(--bg);
-  color:var(--text);
-  padding:32px 20px;
-  text-align:center;
+/* NAVBAR */
+.navbar {
+  background: white;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-header h1 {
-  margin:0 0 12px;
-  font-size:28px;
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-header p {
-  margin:0;
-  font-size:16px;
-  color:var(--muted);
+.logo span {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--green-dark);
 }
 
-.hero-btn {
-  margin-top:22px;
-  padding:16px 32px;
-  border-radius:40px;
-  border:none;
-  font-size:16px;
-  font-weight:600;
-  background:linear-gradient(90deg,var(--accent),#00d4ff);
-  color:#00352f;
-  cursor:pointer;
+.nav-actions a {
+  margin-left: 10px;
+  padding: 10px 18px;
+  border-radius: 24px;
+  text-decoration: none;
+  font-weight: 600;
 }
 
-.hero-btn.secondary {
-  background:none;
-  color:#fff;
-  border:1px solid rgba(255,255,255,.4);
-  margin-left:10px;
+.login {
+  color: var(--green-dark);
 }
 
-section {
-  padding:28px 18px;
+.signup {
+  background: linear-gradient(90deg, var(--green-light), var(--green-main));
+  color: #00352f;
 }
 
-.section-title {
-  text-align:center;
-  font-size:22px;
-  margin-bottom:18px;
+/* HERO */
+.hero {
+  padding: 60px 20px;
+  text-align: center;
+  background: linear-gradient(180deg, #ffffff, #e9f7f4);
 }
 
-.steps {
-  display:grid;
-  gap:16px;
+.hero h1 {
+  font-size: 32px;
+  max-width: 700px;
+  margin: 0 auto 14px;
 }
 
-.step {
-  background:white;
-  border-radius:16px;
-  padding:18px;
+.hero p {
+  max-width: 720px;
+  margin: 0 auto 24px;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-.step h3 {
-  margin:0 0 6px;
+.hero .cta {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
 }
 
-.example {
-  background:linear-gradient(135deg,#10c7a7,#0b5f56);
-  color:white;
-  border-radius:18px;
-  padding:22px;
+.hero .cta a {
+  padding: 14px 26px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 700;
 }
 
-.example strong {
-  font-size:18px;
+.primary {
+  background: linear-gradient(90deg, var(--green-light), var(--green-main));
+  color: #00352f;
 }
 
-.plans {
-  display:grid;
-  gap:16px;
+.secondary {
+  border: 2px solid var(--green-main);
+  color: var(--green-main);
 }
 
-.plan {
-  background:white;
-  border-radius:18px;
-  padding:18px;
-  border-left:6px solid var(--accent);
+/* SECTIONS */
+.section {
+  padding: 50px 20px;
+  max-width: 1000px;
+  margin: auto;
 }
 
-.plan h3 { margin:0 0 6px; }
-
-.lock {
-  margin-top:12px;
-  font-size:14px;
-  color:#777;
+.section h2 {
+  text-align: center;
+  margin-bottom: 10px;
 }
 
-.footer-cta {
-  background:var(--bg);
-  color:white;
-  text-align:center;
-  padding:30px 20px;
+.section p {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 30px;
 }
 
-.footer-cta h2 {
-  margin:0 0 14px;
+/* FEATURES */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.feature {
+  background: white;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+.feature h4 {
+  margin-top: 0;
+  color: var(--green-dark);
+}
+
+/* TRUST */
+.trust {
+  background: var(--green-dark);
+  color: white;
+}
+
+.trust p {
+  color: #d6f1ec;
+}
+
+/* FOOTER */
+footer {
+  padding: 30px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #567a75;
 }
 </style>
 </head>
 
 <body>
 
-<!-- HERO -->
-<header>
-  <h1>Earn Daily Income From Your Money</h1>
-  <p>Simple investment plans that grow your money every day — even if you don’t withdraw.</p>
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="logo">
+    <img src="https://raw.githubusercontent.com/TrustZedFund/Trust-ZedFund/main/images/Trust%20ZedFund.png"
+         alt="Trust ZedFund Logo" width="60">
+    <span>Trust ZedFund</span>
+  </div>
 
-  <div>
-    <button class="hero-btn" onclick="goRegister()">Create Free Account</button>
-    <button class="hero-btn secondary" onclick="goLogin()">Log in</button>
+  <div class="nav-actions">
+    <a href="login.html" class="login">Log In</a>
+    <a href="signup.html" class="signup">Create Account</a>
   </div>
 </header>
 
-<!-- HOW IT WORKS -->
-<section>
-  <h2 class="section-title">How It Works</h2>
+<!-- HERO -->
+<section class="hero">
+  <h1>A Community-Powered Investment Platform Built for Zambians</h1>
+  <p>
+    Trust ZedFund is a real, transparent, and trusted investment web app designed
+    for people who understand the Zambian Kwacha and want to grow money together —
+    safely, clearly, and fairly.
+  </p>
 
-  <div class="steps">
-    <div class="step">
-      <h3>💰 Deposit Money</h3>
-      <p>Fund your wallet securely and stay in full control.</p>
+  <div class="cta">
+    <a href="signup.html" class="primary">Start Investing</a>
+    <a href="login.html" class="secondary">I Have an Account</a>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="section">
+  <h2>Why Trust ZedFund?</h2>
+  <p>
+    We combine community trust, simple investment rules, and modern technology
+    to create opportunities accessible to everyday people.
+  </p>
+
+  <div class="features">
+    <div class="feature">
+      <h4>🇿🇲 Zambian-First</h4>
+      <p>
+        Built around the Zambian Kwacha (ZMW) for people who live, earn, and invest locally.
+      </p>
     </div>
 
-    <div class="step">
-      <h3>📈 Earn Daily Profit</h3>
-      <p>Your investment earns money every single day.</p>
+    <div class="feature">
+      <h4>🤝 Community-Powered</h4>
+      <p>
+        Investments are fueled by community participation, transparency, and shared growth.
+      </p>
     </div>
 
-    <div class="step">
-      <h3>⏳ Wait for Maturity</h3>
-      <p>Withdraw after 30, 60, or 90 days depending on your plan.</p>
+    <div class="feature">
+      <h4>📱 Mobile Money Ready</h4>
+      <p>
+        Designed for users with access to Mobile Money platforms and digital payments.
+      </p>
     </div>
 
-    <div class="step">
-      <h3>💵 Withdraw Anytime</h3>
-      <p>If you don’t withdraw, your profit continues growing daily.</p>
+    <div class="feature">
+      <h4>🔐 Secure & Transparent</h4>
+      <p>
+        Every investment, balance, and payout is tracked clearly inside your account.
+      </p>
     </div>
   </div>
 </section>
 
-<!-- EXAMPLE -->
-<section>
-  <h2 class="section-title">Example Earnings</h2>
+<!-- TRUST -->
+<section class="section trust">
+  <h2>Built on Trust, Not Hype</h2>
+  <p>
+    Trust ZedFund is not a get-rich-quick scheme.  
+    It is a long-term, community-driven financial platform for people who value clarity,
+    patience, and real growth.
+  </p>
+</section>
 
-  <div class="example">
-    <p><strong>Invest ZMK 500</strong></p>
-    <p>Daily Profit: <strong>ZMK 10</strong></p>
-    <p>After 30 days: <strong>ZMK 300 profit</strong></p>
-    <p style="opacity:.9;font-size:14px">
-      Don’t withdraw after 30 days?  
-      Your profit keeps increasing every day.
-    </p>
+<!-- CTA -->
+<section class="section">
+  <h2>Ready to Join the Community?</h2>
+  <p>
+    You must create an account to access investments, dashboards, and earnings.
+  </p>
+
+  <div style="text-align:center;">
+    <a href="signup.html" class="primary" style="padding:16px 34px; border-radius:34px; display:inline-block;">
+      Create Free Account
+    </a>
   </div>
 </section>
 
-<!-- PLANS -->
-<section>
-  <h2 class="section-title">Investment Plans</h2>
-
-  <div class="plans">
-    <div class="plan">
-      <h3>Starter Plan</h3>
-      <p>Minimum: ZMK 500</p>
-      <p>Payout after 30 days</p>
-      <div class="lock">🔒 Sign up to invest</div>
-    </div>
-
-    <div class="plan">
-      <h3>Growth Plan</h3>
-      <p>Higher daily earnings</p>
-      <p>Payout after 60 days</p>
-      <div class="lock">🔒 Sign up to invest</div>
-    </div>
-
-    <div class="plan">
-      <h3>Premium Plan</h3>
-      <p>Maximum daily returns</p>
-      <p>Payout after 90 days</p>
-      <div class="lock">🔒 Sign up to invest</div>
-    </div>
-  </div>
-</section>
-
-<!-- FINAL CTA -->
-<div class="footer-cta">
-  <h2>Start Earning Daily Today</h2>
-  <button class="hero-btn" onclick="goRegister()">Create Free Account</button>
-</div>
-
-<script>
-function goRegister(){
-  window.location.href = "register.html";
-}
-
-function goLogin(){
-  window.location.href = "login.html";
-}
-</script>
+<footer>
+  © 2026 Trust ZedFund • Community-Powered Investments
+</footer>
 
 </body>
 </html>
