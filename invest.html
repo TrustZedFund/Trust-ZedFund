@@ -22,9 +22,10 @@ header{
   padding:22px;
 }
 .balance{
-  margin-top:8px;
+  margin-top:10px;
   font-weight:700;
   color:#22ff9a;
+  font-size:16px;
 }
 
 /* PLANS */
@@ -36,6 +37,7 @@ header{
   padding:20px;
   margin-bottom:18px;
 }
+.plan h3{margin:0}
 .plan small{opacity:.85}
 .grid{
   display:grid;
@@ -68,12 +70,13 @@ header{
   cursor:pointer;
 }
 
-/* DEPOSIT */
+/* DEPOSIT SECTION */
 .deposit-section{
   background:#fff;
   padding:24px 16px;
 }
 .deposit-section h2{text-align:center}
+
 .method{
   background:linear-gradient(135deg,#0ea5a4,#0f766e);
   color:#fff;
@@ -81,13 +84,18 @@ header{
   border-radius:14px;
   margin-bottom:14px;
 }
+
 .deposit-form{
   margin-top:20px;
   background:#f9fafb;
   padding:20px;
   border-radius:16px;
 }
-.deposit-form label{font-weight:600;margin-top:12px;display:block}
+.deposit-form label{
+  font-weight:600;
+  margin-top:12px;
+  display:block;
+}
 .deposit-form input,
 .deposit-form select{
   width:100%;
@@ -117,7 +125,11 @@ header{
   justify-content:space-around;
   align-items:center;
 }
-.footer a{text-decoration:none;color:#083a34;font-weight:600}
+.footer a{
+  text-decoration:none;
+  color:#083a34;
+  font-weight:600;
+}
 </style>
 </head>
 
@@ -126,7 +138,9 @@ header{
 <header>
   <h2>Investment Plans</h2>
   <p>Earn daily • Paid at maturity</p>
-  <div class="balance">Wallet Balance: ZMW <span id="walletBalance">0.00</span></div>
+  <div class="balance">
+    Wallet Balance: ZMW <span id="walletBalance">0.00</span>
+  </div>
 </header>
 
 <div class="container">
@@ -148,7 +162,9 @@ header{
     <div class="note" id="starterNote"></div>
   </div>
 
-  <button onclick="invest('Starter',30,10,'starterAmt')">Invest</button>
+  <button onclick="invest('Starter Plan',30,10,'starterAmt')">
+    Invest
+  </button>
 </div>
 
 </div>
@@ -174,20 +190,20 @@ header{
 
   <form class="deposit-form">
     <label>Amount (ZMW)</label>
-    <input id="depositAmount" type="number" required>
+    <input id="depositAmount" type="number" placeholder="Auto-filled if needed">
 
-    <label>Network</label>
-    <select required>
-      <option value="">Select</option>
+    <label>Select Network</label>
+    <select>
+      <option value="">Choose</option>
       <option>MTN</option>
       <option>Airtel</option>
       <option>Zamtel</option>
     </select>
 
     <label>Upload Payment Proof</label>
-    <input type="file" required>
+    <input type="file">
 
-    <button type="submit">Submit Deposit</button>
+    <button type="button">Submit Deposit</button>
   </form>
 </section>
 
@@ -198,11 +214,11 @@ header{
   <a href="#">👤 Profile</a>
 </nav>
 
-<!-- FIREBASE -->
+<!-- FIREBASE + LOGIC -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { getDatabase, ref, get, update, push, set, onValue } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import { getDatabase, ref, onValue, update, push, set } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
@@ -218,45 +234,69 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-let user=null;
-let currentBalance=0;
+let currentUser = null;
+let depositBalance = 0;
 
-onAuthStateChanged(auth,u=>{
-  if(!u){alert("Login first");return}
-  user=u;
+/* AUTH + REAL BALANCE */
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    alert("Please login first");
+    return;
+  }
 
-  const balRef = ref(db,`users/${user.uid}/balances/deposit`);
-  onValue(balRef,snap=>{
-    currentBalance = snap.exists() ? Number(snap.val()) : 0;
+  currentUser = user;
+
+  const balRef = ref(db, `users/${user.uid}/balances`);
+  onValue(balRef, snap => {
+    const data = snap.exists() ? snap.val() : {};
+    depositBalance = Number(data.deposit || 0);
+
     document.getElementById("walletBalance").textContent =
-      currentBalance.toFixed(2);
+      depositBalance.toFixed(2);
   });
 });
 
-window.invest = async function(plan,days,rate,inputId){
+/* INVEST */
+window.invest = async function(plan, days, rate, inputId) {
+  if (!currentUser) return;
+
   const amount = Number(document.getElementById(inputId).value);
-  if(amount < 500){
+
+  if (!amount || amount < 500) {
     alert("Minimum investment is ZMW 500");
     return;
   }
 
-  if(currentBalance < amount){
-    alert("Insufficient balance. Please deposit first.");
-    document.getElementById("depositAmount").value = amount;
+  if (depositBalance < amount) {
+    alert("Insufficient balance. Deposit first.");
+
+    // 🔥 AUTO-FILL MISSING AMOUNT
+    document.getElementById("depositAmount").value =
+      amount - depositBalance;
+
+    // 🔥 AUTO-SCROLL
     document.getElementById("deposit")
-      .scrollIntoView({behavior:"smooth"});
+      .scrollIntoView({ behavior: "smooth" });
+
     return;
   }
 
-  const daily = (amount/500)*rate;
-  const total = daily*days;
+  const dailyProfit = (amount / 500) * rate;
+  const totalProfit = dailyProfit * days;
 
-  const balRef = ref(db,`users/${user.uid}/balances`);
-  await update(balRef,{deposit:currentBalance-amount});
+  await update(ref(db, `users/${currentUser.uid}/balances`), {
+    deposit: depositBalance - amount
+  });
 
-  await set(push(ref(db,`users/${user.uid}/investments`)),{
-    plan,amount,dailyProfit:daily,totalProfit:total,
-    days,start:Date.now(),status:"active"
+  await set(push(ref(db, `users/${currentUser.uid}/investments`)), {
+    plan,
+    amount,
+    dailyProfit,
+    totalProfit,
+    days,
+    startTime: Date.now(),
+    maturityTime: Date.now() + days * 86400000,
+    status: "active"
   });
 
   alert("Investment successful!");
