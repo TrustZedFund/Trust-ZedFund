@@ -34,62 +34,56 @@ button{
 button:disabled{
   opacity:.6;
 }
-.small{
-  font-size:13px;
-  opacity:.85;
-}
 </style>
 </head>
 
 <body>
 
 <div class="card">
-  <!-- NOTE: No "Loading plan…" anymore -->
   <h2 id="planName">Confirm Investment</h2>
-  <p id="planDuration" class="small"></p>
+  <p id="planInfo"></p>
 
   <input id="amount" type="number" placeholder="Enter amount" />
 
-  <div id="summary" class="small" style="margin-top:10px;">—</div>
+  <div id="summary" style="margin-top:10px;font-size:14px;">—</div>
 
   <button id="confirmBtn" disabled>Confirm Investment</button>
 </div>
 
 <script type="module">
+/* ================= HARD PROOF ================= */
+alert("MODULE LOADED");
+console.log("MODULE LOADED");
+
 /* ================= IMPORTS ================= */
-import { auth, createInvestment } from "/Trust-ZedFund/js/firebase.js";
+import { auth, createInvestment } from "./js/firebase.js";
 import { onAuthStateChanged }
 from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
 /* ================= ELEMENTS ================= */
 const planNameEl = document.getElementById("planName");
-const planDurationEl = document.getElementById("planDuration");
+const planInfoEl = document.getElementById("planInfo");
 const amountEl = document.getElementById("amount");
 const summaryEl = document.getElementById("summary");
 const btn = document.getElementById("confirmBtn");
 
-/* ================= LOAD PLAN (SAFE) ================= */
-let plan = null;
+/* ================= LOAD PLAN ================= */
+const plan = JSON.parse(localStorage.getItem("selectedPlan"));
 
-try {
-  plan = JSON.parse(localStorage.getItem("selectedPlan"));
-} catch (e) {}
-
-if (!plan || !plan.name || !plan.percent || !plan.days) {
-  alert("Investment plan not found. Please select a plan again.");
+if (!plan) {
+  alert("No plan selected");
   location.href = "investments.html";
 }
 
-/* Inject plan into UI */
 planNameEl.textContent = plan.name;
-planDurationEl.textContent =
-  `${plan.days} days • ${plan.percent}% return`;
+planInfoEl.textContent = `${plan.days} days • ${plan.percent}%`;
 
 /* ================= AUTH ================= */
 let currentUser = null;
 
 onAuthStateChanged(auth, user => {
   if (!user) {
+    alert("Not logged in");
     location.href = "login.html";
     return;
   }
@@ -109,12 +103,14 @@ amountEl.addEventListener("input", () => {
   summaryEl.innerHTML = `
     Invest: ZMW ${amount}<br>
     Profit: ZMW ${profit}<br>
-    Total return: ZMW ${amount + profit}
+    Total: ZMW ${amount + profit}
   `;
 });
 
 /* ================= CONFIRM ================= */
 btn.addEventListener("click", async () => {
+  alert("BUTTON CLICKED");
+
   if (!currentUser) {
     alert("User not ready");
     return;
@@ -122,7 +118,7 @@ btn.addEventListener("click", async () => {
 
   const amount = Number(amountEl.value);
   if (!amount || amount <= 0) {
-    alert("Enter a valid amount");
+    alert("Invalid amount");
     return;
   }
 
@@ -135,7 +131,7 @@ btn.addEventListener("click", async () => {
     localStorage.removeItem("selectedPlan");
     location.href = "dashboard.html";
   } catch (e) {
-    alert(e.message);
+    alert("ERROR: " + e.message);
     btn.disabled = false;
     btn.textContent = "Confirm Investment";
   }
