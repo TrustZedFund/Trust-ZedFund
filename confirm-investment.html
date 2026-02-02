@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Confirm Investment</title>
+
+<style>
+body {
+  margin: 0;
+  background: #083a34;
+  color: white;
+  font-family: system-ui, sans-serif;
+}
+.card {
+  margin: 24px;
+  background: linear-gradient(135deg,#10c7a7,#0b5f56);
+  padding: 22px;
+  border-radius: 18px;
+}
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  margin-top: 8px;
+}
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 18px;
+  border-radius: 30px;
+  border: none;
+  font-weight: 600;
+  background: linear-gradient(90deg,#22ff9a,#00d4ff);
+  color: #00352f;
+}
+.small { font-size: 13px; opacity: .9; margin-top: 10px; }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h3 id="planName"></h3>
+  <p id="planInfo"></p>
+
+  <label>Amount to invest (ZMK)</label>
+  <input type="number" id="amount" oninput="updateReturn()">
+
+  <p id="summary" class="small"></p>
+
+  <button onclick="confirm()">Confirm Investment</button>
+
+  <p class="small">
+    Your money will be locked until maturity.<br>
+    Earnings will be sent to your Earnings Wallet.
+  </p>
+</div>
+
+<script>
+const plan = JSON.parse(localStorage.getItem("plan"));
+document.getElementById("planName").innerText = plan.name;
+document.getElementById("planInfo").innerText =
+  `Payout after ${plan.days} days`;
+
+function updateReturn() {
+  let amt = document.getElementById("amount").value;
+  if (!amt) return;
+  let profit = amt * plan.percent / 100;
+  let total = Number(amt) + profit;
+  document.getElementById("summary").innerHTML =
+    `You invest ZMK ${amt}<br>
+     You receive ZMK ${total.toFixed(2)}<br>
+     Profit: ZMK ${profit.toFixed(2)}`;
+}
+
+function confirm() {
+  alert("Investment created (backend coming next)");
+}
+</script>
+
+</body>
+</html>
