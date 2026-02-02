@@ -223,3 +223,91 @@ export function onCirclesChange(callback){
   const circlesRef = ref(db, 'circles');
   onValue(circlesRef, snap => callback(snap.exists()? snap.val() : {}));
 }
+/* ==================================
+   INVESTMENTS
+================================== */
+
+// Create investment (deducts DEPOSIT only)
+export async function createInvestment(userId, plan, amount) {
+
+  // 1. Load balances
+  const balRef = ref(db, `users/${userId}/balances`);
+  const balSnap = await get(balRef);
+  const balances = balSnap.exists()
+    ? balSnap.val()
+    : { deposit:0, earnings:0, referralWallet:0 };
+
+  if (balances.deposit < amount) {
+    throw new Error("Insufficient deposit balance");
+  }
+
+  // 2. Deduct deposit wallet
+  balances.deposit -= amount;
+  await update(balRef, { deposit: balances.deposit });
+
+  // 3. Calculate returns
+  const profit = amount * plan.percent / 100;
+  const totalPayout = amount + profit;
+
+  // 4. Save investment
+  const invId = "inv_" + Date.now();
+  await set(ref(db, `users/${userId}/investments/${invId}`), {
+    planName: plan.name,
+    amount,
+    profit,
+    totalPayout,
+    startDate: new Date().toISOString(),
+    maturityDate: addDays(plan.days),
+    status: "active"
+  });
+
+  // 5. Log transaction
+  const txId = "tx_" + Date.now();
+  await set(ref(db, `users/${userId}/transactions/${txId}`), {
+    type: "Investment",
+    plan: plan.name,
+    amount,
+    status: "Locked",
+    date: new Date().toISOString()
+  });
+
+  return { invId, totalPayout };
+}
+
+// Auto-maturity checker
+export async function processInvestmentMaturity(userId) {
+  const invRef = ref(db, `users/${userId}/investments`);
+  const snap = await get(invRef);
+  if (!snap.exists()) return;
+
+  const investments = snap.val();
+  const now = new Date();
+
+  for (const id in investments) {
+    const inv = investments[id];
+
+    if (
+      inv.status === "active" &&
+      new Date(inv.maturityDate) <= now
+    ) {
+      // Credit earnings wallet
+      await update(ref(db, `users/${userId}/balances`), {
+        earnings: (await get(ref(db, `users/${userId}/balances/earnings`)))
+          .val() + inv.totalPayout
+      });
+
+      // Mark investment complete
+      await update(ref(db, `users/${userId}/investments/${id}`), {
+        status: "completed",
+        completedAt: new Date().toISOString()
+      });
+    }
+  }
+}
+
+// Helper
+function addDays(days) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString();
+}
