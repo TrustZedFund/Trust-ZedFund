@@ -1,111 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Investment Plans</title>
+<meta charset="UTF-8">
+<title>Invest</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <style>
-:root {
-  --card: linear-gradient(135deg, #0f8f6a, #083a34);
-  --accent: #22ff9a;
-  --danger: #ff5c5c;
-  --text: #ffffff;
-}
-* { box-sizing:border-box; font-family:system-ui,sans-serif; }
-body { margin:0; background:#f4f7f7; }
-
-header {
-  padding:22px;
-  background:#083a34;
-  color:white;
-}
-
-.container { padding:16px; }
-
+body { font-family:system-ui; margin:0; background:#f4f7f7; }
+header { background:#083a34; color:#fff; padding:20px; }
 .plan {
-  background:var(--card);
-  border-radius:18px;
+  background:linear-gradient(135deg,#0f8f6a,#083a34);
+  margin:16px;
   padding:20px;
-  margin-bottom:18px;
-  color:var(--text);
+  border-radius:18px;
+  color:#fff;
 }
-
-.grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:14px;
-  font-size:14px;
-}
-
-.calc {
-  margin-top:14px;
-  background:rgba(255,255,255,0.15);
-  border-radius:14px;
-  padding:14px;
-}
-
-.calc input {
+input {
   width:100%;
-  padding:10px;
-  border-radius:8px;
+  padding:12px;
+  border-radius:10px;
   border:none;
+  margin-top:10px;
 }
-
 button {
   width:100%;
+  margin-top:14px;
   padding:14px;
   border-radius:30px;
   border:none;
   font-weight:600;
-  background:linear-gradient(90deg,var(--accent),#00d4ff);
+  background:#22ff9a;
   color:#00352f;
-  cursor:pointer;
-  margin-top:16px;
-}
-
-/* ===== MODAL ===== */
-.modal {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-}
-
-.modal-box {
-  background:#083a34;
-  color:white;
-  width:90%;
-  max-width:420px;
-  border-radius:20px;
-  padding:20px;
-}
-
-.modal h3 { margin-top:0; }
-.modal .row {
-  display:flex;
-  justify-content:space-between;
-  margin:10px 0;
-}
-
-.modal .warn {
-  color:var(--danger);
-  font-size:14px;
-  margin-top:8px;
-}
-
-.modal-footer {
-  display:flex;
-  gap:10px;
-  margin-top:16px;
-}
-
-.modal-footer button {
-  flex:1;
 }
 </style>
 </head>
@@ -114,66 +39,15 @@ button {
 
 <header>
   <h2>Investment Plans</h2>
-  <p>Earn daily. Paid at maturity.</p>
 </header>
 
-<div class="container">
-
-<!-- PLAN -->
 <div class="plan">
   <h3>Starter Plan</h3>
-  <small>30 days • Earn daily</small>
-  <div class="grid">
-    <div>Minimum<br><strong>ZMK 500</strong></div>
-    <div>Daily Profit<br><strong>ZMK 10 / 500</strong></div>
-  </div>
+  <p>Minimum: ZMK 500</p>
 
-  <div class="calc">
-    <input id="starterAmount" type="number" min="500"
-      placeholder="Enter amount"
-      oninput="calculate(this.value,10,30,'starterResult')" />
-    <div id="starterResult"></div>
-  </div>
+  <input id="amount" type="number" min="500" placeholder="Enter amount">
 
-  <button onclick="openInvest('Starter Plan',30,10,'starterAmount')">
-    Invest
-  </button>
-</div>
-
-</div>
-
-<!-- ===== INVEST MODAL ===== -->
-<div class="modal" id="investModal">
-  <div class="modal-box">
-    <h3>Confirm Investment</h3>
-
-    <div class="row">
-      <span>Plan</span>
-      <strong id="mPlan"></strong>
-    </div>
-
-    <div class="row">
-      <span>Amount</span>
-      <strong>ZMK <span id="mAmount"></span></strong>
-    </div>
-
-    <div class="row">
-      <span>Wallet Balance</span>
-      <strong>ZMK <span id="mBalance"></span></strong>
-    </div>
-
-    <div class="row">
-      <span>Total Profit</span>
-      <strong>ZMK <span id="mProfit"></span></strong>
-    </div>
-
-    <div id="mWarn" class="warn"></div>
-
-    <div class="modal-footer">
-      <button onclick="closeModal()">Cancel</button>
-      <button onclick="confirmInvest()">Confirm</button>
-    </div>
-  </div>
+  <button id="investBtn">Invest</button>
 </div>
 
 <script type="module">
@@ -181,6 +55,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebas
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import { getDatabase, ref, get, update, push, set } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
+/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
   authDomain: "trust-zedfund.firebaseapp.com",
@@ -195,76 +70,67 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-let user, investData = {};
+let user;
 
+/* AUTH */
 onAuthStateChanged(auth, u => {
   if (!u) location.href = "login.html";
   user = u;
 });
 
-window.openInvest = async (plan, days, rate, inputId) => {
-  const amount = Number(document.getElementById(inputId).value);
-  if (amount < 500) return alert("Minimum ZMK 500");
+/* INVEST BUTTON — THIS ALWAYS WORKS */
+document.getElementById("investBtn").addEventListener("click", async () => {
 
-  const balSnap = await get(ref(db, `users/${user.uid}/balances/deposit`));
+  const amount = Number(document.getElementById("amount").value);
+  if (!amount || amount < 500) {
+    alert("Minimum investment is ZMK 500");
+    return;
+  }
+
+  /* GET BALANCE */
+  const balRef = ref(db, `users/${user.uid}/balances/deposit`);
+  const balSnap = await get(balRef);
   const balance = balSnap.exists() ? Number(balSnap.val()) : 0;
 
-  const profit = (amount / 500) * rate * days;
-
-  investData = { plan, amount, days, rate, profit, balance };
-
-  mPlan.textContent = plan;
-  mAmount.textContent = amount;
-  mBalance.textContent = balance;
-  mProfit.textContent = profit.toFixed(2);
-
-  mWarn.textContent =
-    balance < amount ? "Insufficient balance. Please deposit." : "";
-
-  investModal.style.display = "flex";
-};
-
-window.confirmInvest = async () => {
-  if (investData.balance < investData.amount) {
+  if (balance < amount) {
+    alert("Insufficient funds. Please deposit.");
     location.href = "deposit.html";
     return;
   }
 
-  const balRef = ref(db, `users/${user.uid}/balances`);
-  await update(balRef, {
-    deposit: investData.balance - investData.amount
+  /* CALCULATE */
+  const days = 30;
+  const dailyRate = 10;
+  const dailyProfit = (amount / 500) * dailyRate;
+  const totalProfit = dailyProfit * days;
+
+  /* DEDUCT */
+  await update(ref(db, `users/${user.uid}/balances`), {
+    deposit: balance - amount
   });
 
+  /* SAVE INVESTMENT */
   await set(push(ref(db, `users/${user.uid}/investments`)), {
-    ...investData,
+    plan: "Starter Plan",
+    amount,
+    dailyProfit,
+    totalProfit,
+    days,
     startTime: Date.now(),
-    maturityTime: Date.now() + investData.days * 86400000,
+    maturityTime: Date.now() + days * 86400000,
     status: "active"
   });
 
+  /* TRANSACTION */
   await set(push(ref(db, `users/${user.uid}/transactions`)), {
     type: "Investment",
-    plan: investData.plan,
-    amount: investData.amount,
+    amount,
     date: new Date().toISOString()
   });
 
   alert("Investment successful!");
   location.href = "dashboard.html";
-};
-
-window.closeModal = () => investModal.style.display = "none";
-</script>
-
-<script>
-function calculate(amount, rate, days, out) {
-  amount = Number(amount);
-  if (amount < 500) return;
-  const profit = (amount / 500) * rate * days;
-  document.getElementById(out).innerHTML =
-    `Profit: ZMK ${profit.toFixed(2)}<br>
-     Total: ZMK ${(amount + profit).toFixed(2)}`;
-}
+});
 </script>
 
 </body>
