@@ -41,7 +41,7 @@ button:disabled{
 
 <div class="card">
   <h2 id="planName">Confirm Investment</h2>
-  <p id="planInfo"></p>
+  <p id="planDuration"></p>
 
   <input id="amount" type="number" placeholder="Enter amount" />
 
@@ -52,8 +52,7 @@ button:disabled{
 
 <script type="module">
 /* ================= HARD PROOF ================= */
-alert("MODULE LOADED");
-console.log("MODULE LOADED");
+console.log("✅ confirm-investment module loaded");
 
 /* ================= IMPORTS ================= */
 import { auth, createInvestment } from "./js/firebase.js";
@@ -62,7 +61,7 @@ from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
 /* ================= ELEMENTS ================= */
 const planNameEl = document.getElementById("planName");
-const planInfoEl = document.getElementById("planInfo");
+const planDurationEl = document.getElementById("planDuration");
 const amountEl = document.getElementById("amount");
 const summaryEl = document.getElementById("summary");
 const btn = document.getElementById("confirmBtn");
@@ -76,14 +75,13 @@ if (!plan) {
 }
 
 planNameEl.textContent = plan.name;
-planInfoEl.textContent = `${plan.days} days • ${plan.percent}%`;
+planDurationEl.textContent = `${plan.days} days • ${plan.percent}%`;
 
 /* ================= AUTH ================= */
 let currentUser = null;
 
 onAuthStateChanged(auth, user => {
   if (!user) {
-    alert("Not logged in");
     location.href = "login.html";
     return;
   }
@@ -98,7 +96,6 @@ amountEl.addEventListener("input", () => {
     summaryEl.textContent = "—";
     return;
   }
-
   const profit = amount * plan.percent / 100;
   summaryEl.innerHTML = `
     Invest: ZMW ${amount}<br>
@@ -107,9 +104,9 @@ amountEl.addEventListener("input", () => {
   `;
 });
 
-/* ================= CONFIRM ================= */
+/* ================= CONFIRM BUTTON ================= */
 btn.addEventListener("click", async () => {
-  alert("BUTTON CLICKED");
+  console.log("🟢 Confirm button clicked");
 
   if (!currentUser) {
     alert("User not ready");
@@ -118,7 +115,7 @@ btn.addEventListener("click", async () => {
 
   const amount = Number(amountEl.value);
   if (!amount || amount <= 0) {
-    alert("Invalid amount");
+    alert("Enter valid amount");
     return;
   }
 
@@ -131,7 +128,7 @@ btn.addEventListener("click", async () => {
     localStorage.removeItem("selectedPlan");
     location.href = "dashboard.html";
   } catch (e) {
-    alert("ERROR: " + e.message);
+    alert("Error: " + e.message);
     btn.disabled = false;
     btn.textContent = "Confirm Investment";
   }
