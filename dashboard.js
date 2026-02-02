@@ -154,3 +154,59 @@ auth.onAuthStateChanged(async (user) => {
   document.getElementById("depositWallet").textContent = 
       `ZMK ${(userData.balance || 0).toFixed(2)}`;
 });
+import { auth, db } from "./firebase.js";
+import {
+  ref,
+  onValue
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+const container = document.getElementById("investments");
+
+auth.onAuthStateChanged(user => {
+  if (!user) return;
+
+  const invRef = ref(db, `users/${user.uid}/investments`);
+
+  onValue(invRef, snapshot => {
+    container.innerHTML = "";
+
+    if (!snapshot.exists()) {
+      container.innerHTML = "<p>No active investments</p>";
+      return;
+    }
+
+    snapshot.forEach(child => {
+      const inv = child.val();
+      if (inv.status !== "active") return;
+
+      container.appendChild(renderInvestment(child.key, inv));
+    });
+  });
+});
+
+function renderInvestment(id, inv) {
+  const div = document.createElement("div");
+  div.className = "investment";
+
+  const countdown = getRemaining(inv.maturity);
+
+  div.innerHTML = `
+    <strong>${inv.plan}</strong><br>
+    Invested: ZMK ${inv.amount}<br>
+    Payout: ZMK ${inv.total}<br>
+    <small>${countdown}</small><br>
+    <button onclick="withdraw('${id}')">Withdraw Early</button>
+  `;
+
+  return div;
+}
+
+function getRemaining(maturity) {
+  const diff = maturity - Date.now();
+  if (diff <= 0) return "Matured";
+
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+
+  return `${days} days ${hours} hrs remaining`;
+}
