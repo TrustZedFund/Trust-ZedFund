@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Invest</title>
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui,sans-serif;
+  background:#083a34;
+  color:#fff;
+}
+.card{
+  margin:20px;
+  padding:20px;
+  border-radius:16px;
+  background:#0b5f56;
+}
+input,button,select{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border-radius:10px;
+  border:none;
+  font-size:16px;
+}
+button{
+  background:#22ff9a;
+  color:#00352f;
+  font-weight:600;
+}
+small{opacity:.85}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Invest</h2>
+
+  <label>Choose Plan</label>
+  <select id="plan">
+    <option value="" disabled selected>Select plan</option>
+    <option value="starter">Starter – 10% / 7 days</option>
+    <option value="pro">Pro – 25% / 14 days</option>
+  </select>
+
+  <input id="amount" type="number" placeholder="Enter amount (ZMW)" />
+
+  <div id="summary" style="margin-top:10px;font-size:14px;">—</div>
+
+  <button id="investBtn">Invest Now</button>
+
+  <small id="walletInfo"></small>
+</div>
+
+<script type="module">
+/* ================= FIREBASE IMPORTS ================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { getDatabase, ref, get, update, push, set } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+/* ================= FIREBASE CONFIG ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
+  authDomain: "trust-zedfund.firebaseapp.com",
+  databaseURL: "https://trust-zedfund-default-rtdb.firebaseio.com",
+  projectId: "trust-zedfund",
+  storageBucket: "trust-zedfund.firebasestorage.app",
+  messagingSenderId: "129257684900",
+  appId: "1:129257684900:web:95e94293366a26f9448b31"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+/* ================= PLANS ================= */
+const PLANS = {
+  starter: { name:"Starter", percent:10, days:7 },
+  pro: { name:"Pro", percent:25, days:14 }
+};
+
+/* ================= ELEMENTS ================= */
+const planEl = document.getElementById("plan");
+const amountEl = document.getElementById("amount");
+const summaryEl = document.getElementById("summary");
+const walletInfo = document.getElementById("walletInfo");
+const btn = document.getElementById("investBtn");
+
+let currentUser = null;
+let currentDeposit = 0;
+
+/* ================= AUTH ================= */
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    alert("Please login first");
+    window.location.href = "login.html";
+    return;
+  }
+  currentUser = user;
+
+  // Load wallet
+  const balSnap = await get(ref(db, `users/${user.uid}/balances/deposit`));
+  currentDeposit = balSnap.exists() ? Number(balSnap.val()) : 0;
+  walletInfo.textContent = `Deposit balance: ZMW ${currentDeposit}`;
+});
+
+/* ================= CALCULATOR ================= */
+function updateSummary(){
+  const plan = PLANS[planEl.value];
+  const amount = Number(amountEl.value);
+  if (!plan || !amount) {
+    summaryEl.textContent = "—";
+    return;
+  }
+  const profit = amount * plan.percent / 100;
+  summaryEl.innerHTML =
+    `Profit: ZMW ${profit}<br>Total return: ZMW ${amount + profit}`;
+}
+
+planEl.addEventListener("change", updateSummary);
+amountEl.addEventListener("input", updateSummary);
+
+/* ================= INVEST BUTTON ================= */
+btn.addEventListener("click", async () => {
+  if (!currentUser) return;
+
+  const plan = PLANS[planEl.value];
+  const amount = Number(amountEl.value);
+
+  if (!plan || !amount || amount <= 0) {
+    alert("Select plan and enter amount");
+    return;
+  }
+
+  // 🔥 LIVE WALLET CHECK
+  const balRef = ref(db, `users/${currentUser.uid}/balances`);
+  const balSnap = await get(balRef);
+  const deposit = balSnap.exists() ? Number(balSnap.val().deposit || 0) : 0;
+
+  if (deposit < amount) {
+    alert("Insufficient funds. Please deposit first.");
+    window.location.href = "deposit.html";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Processing...";
+
+  try {
+    // Deduct wallet
+    await update(balRef, { deposit: deposit - amount });
+
+    const profit = amount * plan.percent / 100;
+    const now = Date.now();
+
+    // Save investment
+    await set(push(ref(db, `users/${currentUser.uid}/investments`)), {
+      plan: plan.name,
+      amount,
+      profit,
+      percent: plan.percent,
+      startTime: now,
+      maturityTime: now + plan.days * 86400000,
+      status: "active"
+    });
+
+    // Log transaction
+    await set(push(ref(db, `users/${currentUser.uid}/transactions`)), {
+      type: "Investment",
+      amount,
+      plan: plan.name,
+      date: new Date().toISOString()
+    });
+
+    alert("Investment successful!");
+    window.location.href = "dashboard.html";
+
+  } catch (e) {
+    alert("Error: " + e.message);
+    btn.disabled = false;
+    btn.textContent = "Invest Now";
+  }
+});
+</script>
+
+</body>
+</html>
