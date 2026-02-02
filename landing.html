@@ -1,167 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trust ZedFund – Invest with Confidence</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Trust ZedFund — Invest Smarter in Zambian Kwacha</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #f4f7f7;
-  color: #0b2e2a;
+:root {
+  --green-dark: #083a34;
+  --green: #10c7a7;
+  --accent: #22ff9a;
+  --text-dark: #083a34;
+  --bg: #f4f7f7;
 }
 
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-dark);
+}
+
+/* ================= STICKY HEADER ================= */
+
 .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   background: white;
   padding: 14px 18px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
 .logo {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: 700;
+  font-weight: 800;
+  font-size: 18px;
 }
 
-.navbar a {
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.actions a {
   text-decoration: none;
-  margin-left: 10px;
-  font-weight: 600;
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: 30px;
+  white-space: nowrap;
 }
 
-.signup {
-  padding: 10px 20px;
-  border-radius: 22px;
-  background: linear-gradient(90deg, #22ff9a, #0fae96);
+.actions .login {
+  color: var(--green-dark);
+}
+
+.actions .signup {
+  background: linear-gradient(90deg, var(--accent), #00d4ff);
   color: #00352f;
 }
 
+/* ================= HERO ================= */
+
 .hero {
-  padding: 60px 20px;
+  padding: 80px 20px 60px;
+  background: linear-gradient(135deg, #0b5f56, #083a34);
+  color: white;
   text-align: center;
 }
 
 .hero h1 {
-  font-size: 30px;
-  max-width: 720px;
-  margin: auto;
+  font-size: 36px;
+  margin-bottom: 14px;
 }
 
 .hero p {
-  max-width: 700px;
-  margin: 14px auto 26px;
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 18px;
+  max-width: 620px;
+  margin: 0 auto 30px;
+  opacity: 0.95;
 }
 
-.hero a {
-  display: inline-block;
-  padding: 16px 34px;
-  border-radius: 34px;
-  background: linear-gradient(90deg, #22ff9a, #0fae96);
-  color: #00352f;
+.hero .cta {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero .cta a {
+  padding: 14px 26px;
+  border-radius: 30px;
   font-weight: 700;
   text-decoration: none;
 }
 
-.section {
-  max-width: 900px;
-  margin: auto;
-  padding: 40px 20px;
+.primary {
+  background: linear-gradient(90deg, var(--accent), #00d4ff);
+  color: #00352f;
 }
 
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-}
-
-.feature {
-  background: white;
-  padding: 22px;
-  border-radius: 16px;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
-}
-
-.feature h4 {
-  margin-top: 0;
-}
-
-.trust {
-  background: #083a34;
+.secondary {
+  border: 2px solid white;
   color: white;
-  text-align: center;
-  padding: 40px 20px;
 }
+
+/* ================= SECTIONS ================= */
+
+.section {
+  padding: 60px 20px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.section h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.card strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* ================= FOOTER ================= */
 
 footer {
+  background: #083a34;
+  color: white;
+  padding: 30px 20px;
   text-align: center;
-  padding: 24px;
   font-size: 14px;
-  color: #567a75;
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- ================= HEADER ================= -->
+
 <header class="navbar">
   <div class="logo">
-    <img src="https://raw.githubusercontent.com/TrustZedFund/Trust-ZedFund/main/images/Trust%20ZedFund.png" width="50">
+    <img src="https://raw.githubusercontent.com/TrustZedFund/Trust-ZedFund/main/images/Trust%20ZedFund.png"
+         alt="Trust ZedFund Logo" width="48">
     Trust ZedFund
   </div>
-  <div>
-    <a href="login.html">Log In</a>
+
+  <div class="actions">
+    <a href="login.html" class="login">Log In</a>
     <a href="signup.html" class="signup">Create Account</a>
   </div>
 </header>
 
+<!-- ================= HERO ================= -->
+
 <section class="hero">
-  <h1>Invest in Zambian Kwacha. Grow with a Real Community.</h1>
+  <h1>Grow Your Money. In Kwacha. With Trust.</h1>
   <p>
-    Trust ZedFund is a community-powered investment platform built for people
-    who understand ZMW, use Mobile Money or Crypto, and want transparent,
-    predictable returns — not hype.
+    Trust ZedFund is a community-powered investment platform built for
+    Zambians and Africans who understand real money, real risk, and real returns.
   </p>
-  <a href="signup.html">Create Free Account</a>
+
+  <div class="cta">
+    <a href="signup.html" class="primary">Start Investing</a>
+    <a href="#how" class="secondary">How It Works</a>
+  </div>
 </section>
 
-<section class="section">
-  <div class="features">
-    <div class="feature">
-      <h4>Zambian-First</h4>
-      <p>Built around real ZMW value and local financial reality.</p>
+<!-- ================= VALUE PROPOSITION ================= -->
+
+<section class="section" id="how">
+  <h2>Why Trust ZedFund?</h2>
+
+  <div class="grid">
+    <div class="card">
+      <strong>💰 Kwacha-First Investing</strong>
+      Invest in ZMW with returns you can understand — not confusing percentages.
     </div>
-    <div class="feature">
-      <h4>Clear Daily Profits</h4>
-      <p>Know exactly how much your investment earns each day.</p>
+
+    <div class="card">
+      <strong>🤝 Community-Powered</strong>
+      Built around trust circles, shared growth, and transparent earnings.
     </div>
-    <div class="feature">
-      <h4>Community Powered</h4>
-      <p>Growth driven by participation, trust, and transparency.</p>
+
+    <div class="card">
+      <strong>📈 Daily Earnings Logic</strong>
+      Your profit grows daily — even if you don’t cash out immediately.
     </div>
-    <div class="feature">
-      <h4>Secure Access</h4>
-      <p>Full access only after signup and authentication.</p>
+
+    <div class="card">
+      <strong>📱 Mobile Money & Crypto</strong>
+      Designed for users with mobile money and crypto access across Africa.
     </div>
   </div>
 </section>
 
-<section class="trust">
-  <p>
-    This is not a shortcut.  
-    This is a disciplined investment platform for people who value trust and clarity.
-  </p>
+<!-- ================= TRUST ================= -->
+
+<section class="section">
+  <h2>Real Platform. Real People.</h2>
+
+  <div class="grid">
+    <div class="card">
+      No fake dashboards. No hidden math.  
+      See exactly how much you invest and how much you earn.
+    </div>
+
+    <div class="card">
+      Secure accounts, real-time balances, and transparent investment tracking.
+    </div>
+  </div>
 </section>
 
+<!-- ================= FOOTER ================= -->
+
 <footer>
-  © 2026 Trust ZedFund
+  © 2026 Trust ZedFund • Community-Powered Finance for Africa
 </footer>
 
 </body>
