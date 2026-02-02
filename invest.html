@@ -79,98 +79,77 @@ button {
 
 <div class="container">
 
-<!-- STARTER PLAN -->
+<!-- STARTER -->
 <div class="plan">
   <h3>Starter Plan</h3>
   <small>Payout after 30 days</small>
-
   <div class="grid">
     <div>Minimum<br><strong>ZMK 500</strong></div>
     <div>Daily Profit<br><strong>ZMK 10 / 500</strong></div>
     <div>Days<br>30</div>
     <div>Payout<br>Maturity</div>
   </div>
-
   <div class="calc">
-    <label>Enter amount</label>
+    <label>Amount</label>
     <input id="starterAmount" type="number" min="500"
       placeholder="Minimum ZMK 500"
       oninput="calc(this.value,30,'starterNote')" />
     <div id="starterNote" class="note"></div>
   </div>
-
-  <button onclick="investPlan('Starter Plan',30,'starterAmount')">
-    Invest
-  </button>
+  <button onclick="investPlan('Starter Plan',30,'starterAmount')">Invest</button>
 </div>
 
-<!-- GROWTH PLAN -->
+<!-- GROWTH -->
 <div class="plan">
   <h3>Growth Plan</h3>
   <small>Payout after 60 days</small>
-
   <div class="grid">
     <div>Minimum<br><strong>ZMK 500</strong></div>
     <div>Daily Profit<br><strong>ZMK 10 / 500</strong></div>
     <div>Days<br>60</div>
     <div>Payout<br>Maturity</div>
   </div>
-
   <div class="calc">
-    <label>Enter amount</label>
+    <label>Amount</label>
     <input id="growthAmount" type="number" min="500"
       placeholder="Minimum ZMK 500"
       oninput="calc(this.value,60,'growthNote')" />
     <div id="growthNote" class="note"></div>
   </div>
-
-  <button onclick="investPlan('Growth Plan',60,'growthAmount')">
-    Invest
-  </button>
+  <button onclick="investPlan('Growth Plan',60,'growthAmount')">Invest</button>
 </div>
 
-<!-- PREMIUM PLAN -->
+<!-- PREMIUM -->
 <div class="plan">
   <h3>Premium Plan</h3>
   <small>Payout after 90 days</small>
-
   <div class="grid">
     <div>Minimum<br><strong>ZMK 500</strong></div>
     <div>Daily Profit<br><strong>ZMK 10 / 500</strong></div>
     <div>Days<br>90</div>
     <div>Payout<br>Maturity</div>
   </div>
-
   <div class="calc">
-    <label>Enter amount</label>
+    <label>Amount</label>
     <input id="premiumAmount" type="number" min="500"
       placeholder="Minimum ZMK 500"
       oninput="calc(this.value,90,'premiumNote')" />
     <div id="premiumNote" class="note"></div>
   </div>
-
-  <button onclick="investPlan('Premium Plan',90,'premiumAmount')">
-    Invest
-  </button>
+  <button onclick="investPlan('Premium Plan',90,'premiumAmount')">Invest</button>
 </div>
 
 </div>
 
-<!-- ================= LOGIC (NO FIREBASE CODE) ================= -->
+<!-- ✅ ONLY THIS IMPORT -->
 <script type="module">
-import { auth, createInvestment } from "./firebase.js";
-import { onAuthStateChanged } from
-  "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { createInvestment } from "./firebase.js";
 
-let uid = null;
+const uid = localStorage.getItem("uid");
 
-onAuthStateChanged(auth, user => {
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
-  uid = user.uid;
-});
+if (!uid) {
+  window.location.href = "login.html";
+}
 
 window.investPlan = async function(planName, days, inputId) {
   const amount = Number(document.getElementById(inputId).value);
@@ -205,9 +184,9 @@ function calc(amount, days, out) {
   const daily = (amount / 500) * 10;
   const profit = daily * days;
   document.getElementById(out).innerHTML =
-    `Daily profit: ZMK ${daily.toFixed(2)}<br>
-     Total profit: ZMK ${profit.toFixed(2)}<br>
-     You receive: <strong>ZMK ${(amount + profit).toFixed(2)}</strong>`;
+    `Daily: ZMK ${daily.toFixed(2)}<br>
+     Profit: ZMK ${profit.toFixed(2)}<br>
+     Total: <strong>ZMK ${(amount + profit).toFixed(2)}</strong>`;
 }
 </script>
 
