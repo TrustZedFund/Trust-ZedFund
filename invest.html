@@ -151,6 +151,90 @@ input,select{
   display:block;
   font-size:20px;
 }
+.deposit-page {
+  padding: 24px 16px 100px;
+  background: #f4f7fb;
+}
+
+.deposit-page h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #0f172a;
+}
+
+.deposit-method {
+  background: linear-gradient(135deg, #0ea5a4, #0f766e);
+  color: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+
+.deposit-method h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.deposit-method p {
+  margin: 0;
+  opacity: 0.95;
+}
+
+.deposit-form {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 16px;
+  margin-top: 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.08);
+}
+
+.deposit-form label {
+  display: block;
+  margin: 14px 0 6px;
+  font-weight: 600;
+}
+
+.deposit-form input,
+.deposit-form select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+}
+
+.deposit-form button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 999px;
+  border: none;
+  background: #0ea5a4;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+}
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 999;
+}
+
+.app-footer a {
+  text-decoration: none;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
+}
 </style>
 </head>
 
@@ -182,54 +266,53 @@ input,select{
 </div>
 
 <!-- INLINE DEPOSIT SECTION -->
-<div id="depositSection" class="deposit-section">
+<!-- ================= MAKE A DEPOSIT ================= -->
+<section class="deposit-page">
+  <h2>Make a Deposit</h2>
 
-  <h3 style="color:#083a34">Make a Deposit</h3>
-
-  <div class="deposit-card">
-    <strong>MTN Mobile Money</strong><br>
-    Send to: 097XXXXXXX
+  <div class="deposit-method">
+    <h3>MTN Mobile Money</h3>
+    <p>Send to: <strong>097XXXXXXX</strong></p>
   </div>
 
-  <div class="deposit-card">
-    <strong>Airtel Money</strong><br>
-    Send to: 096XXXXXXX
+  <div class="deposit-method">
+    <h3>Airtel Money</h3>
+    <p>Send to: <strong>096XXXXXXX</strong></p>
   </div>
 
-  <div class="deposit-card">
-    <strong>Zamtel Kwacha</strong><br>
-    Send to: 095XXXXXXX
+  <div class="deposit-method">
+    <h3>Zamtel Kwacha</h3>
+    <p>Send to: <strong>095XXXXXXX</strong></p>
   </div>
 
-  <div class="deposit-form">
-    <h3>Upload Payment Proof</h3>
-
+  <form class="deposit-form">
     <label>Amount (ZMW)</label>
-    <input type="number">
+    <input type="number" placeholder="Enter amount" required>
 
     <label>Select Network</label>
-    <select>
-      <option>MTN Mobile Money</option>
-      <option>Airtel Money</option>
-      <option>Zamtel Kwacha</option>
+    <select required>
+      <option value="">Choose Network</option>
+      <option>MTN</option>
+      <option>Airtel</option>
+      <option>Zamtel</option>
     </select>
 
-    <label>Payment Proof</label>
-    <input type="file">
+    <label>Upload Payment Proof</label>
+    <input type="file" required>
 
-    <button class="submit">Submit Deposit</button>
-  </div>
-
+    <button type="submit">Submit Deposit</button>
+  </form>
+</section>
 </div>
 
 </div>
 
-<!-- FOOTER NAV -->
-<div class="footer">
-  <a href="#"><span>🏠</span>Home</a>
-  <a href="#"><span>📈</span>Invest</a>
-  <a href="#"><span>🎁</span>Refer</a>
-  <a href="#"><span>👤</span>Profile</a>
+<nav class="app-footer">
+  <a href="#">🏠 Home</a>
+  <a href="#">💼 Invest</a>
+  <a href="#">🎁 Refer</a>
+  <a href="#">👤 Profile</a>
+</nav>
 </div>
 
 <script>
