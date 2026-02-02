@@ -311,3 +311,41 @@ function addDays(days) {
   d.setDate(d.getDate() + days);
   return d.toISOString();
 }
+import { ref, get, set, update } from
+"https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+export async function createInvestment(uid, plan, amount) {
+  const userBalRef = ref(db, `users/${uid}/balances`);
+  const balSnap = await get(userBalRef);
+
+  if (!balSnap.exists()) throw new Error("Wallet not found");
+
+  const balances = balSnap.val();
+
+  if ((balances.deposit || 0) < amount) {
+    throw new Error("Insufficient deposit balance");
+  }
+
+  // ❗ deduct deposit
+  await update(userBalRef, {
+    deposit: balances.deposit - amount
+  });
+
+  const now = Date.now();
+  const maturity = now + plan.days * 86400000;
+  const profit = amount * plan.percent / 100;
+
+  const invId = "inv_" + now;
+
+  await set(ref(db, `users/${uid}/investments/${invId}`), {
+    plan: plan.name,
+    amount,
+    profit,
+    total: amount + profit,
+    start: now,
+    maturity,
+    status: "active"
+  });
+
+  return invId;
+}
