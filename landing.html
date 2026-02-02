@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust ZedFund – Earn Daily From Your Money</title>
+
+<style>
+:root {
+  --bg:#083a34;
+  --card:#0f6f63;
+  --accent:#22ff9a;
+  --text:#ffffff;
+  --muted:#cceee7;
+}
+
+* { box-sizing:border-box; font-family:system-ui,sans-serif; }
+
+body {
+  margin:0;
+  background:#f4f7f7;
+  color:#222;
+}
+
+header {
+  background:var(--bg);
+  color:var(--text);
+  padding:32px 20px;
+  text-align:center;
+}
+
+header h1 {
+  margin:0 0 12px;
+  font-size:28px;
+}
+
+header p {
+  margin:0;
+  font-size:16px;
+  color:var(--muted);
+}
+
+.hero-btn {
+  margin-top:22px;
+  padding:16px 32px;
+  border-radius:40px;
+  border:none;
+  font-size:16px;
+  font-weight:600;
+  background:linear-gradient(90deg,var(--accent),#00d4ff);
+  color:#00352f;
+  cursor:pointer;
+}
+
+.hero-btn.secondary {
+  background:none;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.4);
+  margin-left:10px;
+}
+
+section {
+  padding:28px 18px;
+}
+
+.section-title {
+  text-align:center;
+  font-size:22px;
+  margin-bottom:18px;
+}
+
+.steps {
+  display:grid;
+  gap:16px;
+}
+
+.step {
+  background:white;
+  border-radius:16px;
+  padding:18px;
+}
+
+.step h3 {
+  margin:0 0 6px;
+}
+
+.example {
+  background:linear-gradient(135deg,#10c7a7,#0b5f56);
+  color:white;
+  border-radius:18px;
+  padding:22px;
+}
+
+.example strong {
+  font-size:18px;
+}
+
+.plans {
+  display:grid;
+  gap:16px;
+}
+
+.plan {
+  background:white;
+  border-radius:18px;
+  padding:18px;
+  border-left:6px solid var(--accent);
+}
+
+.plan h3 { margin:0 0 6px; }
+
+.lock {
+  margin-top:12px;
+  font-size:14px;
+  color:#777;
+}
+
+.footer-cta {
+  background:var(--bg);
+  color:white;
+  text-align:center;
+  padding:30px 20px;
+}
+
+.footer-cta h2 {
+  margin:0 0 14px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HERO -->
+<header>
+  <h1>Earn Daily Income From Your Money</h1>
+  <p>Simple investment plans that grow your money every day — even if you don’t withdraw.</p>
+
+  <div>
+    <button class="hero-btn" onclick="goRegister()">Create Free Account</button>
+    <button class="hero-btn secondary" onclick="goLogin()">Log in</button>
+  </div>
+</header>
+
+<!-- HOW IT WORKS -->
+<section>
+  <h2 class="section-title">How It Works</h2>
+
+  <div class="steps">
+    <div class="step">
+      <h3>💰 Deposit Money</h3>
+      <p>Fund your wallet securely and stay in full control.</p>
+    </div>
+
+    <div class="step">
+      <h3>📈 Earn Daily Profit</h3>
+      <p>Your investment earns money every single day.</p>
+    </div>
+
+    <div class="step">
+      <h3>⏳ Wait for Maturity</h3>
+      <p>Withdraw after 30, 60, or 90 days depending on your plan.</p>
+    </div>
+
+    <div class="step">
+      <h3>💵 Withdraw Anytime</h3>
+      <p>If you don’t withdraw, your profit continues growing daily.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLE -->
+<section>
+  <h2 class="section-title">Example Earnings</h2>
+
+  <div class="example">
+    <p><strong>Invest ZMK 500</strong></p>
+    <p>Daily Profit: <strong>ZMK 10</strong></p>
+    <p>After 30 days: <strong>ZMK 300 profit</strong></p>
+    <p style="opacity:.9;font-size:14px">
+      Don’t withdraw after 30 days?  
+      Your profit keeps increasing every day.
+    </p>
+  </div>
+</section>
+
+<!-- PLANS -->
+<section>
+  <h2 class="section-title">Investment Plans</h2>
+
+  <div class="plans">
+    <div class="plan">
+      <h3>Starter Plan</h3>
+      <p>Minimum: ZMK 500</p>
+      <p>Payout after 30 days</p>
+      <div class="lock">🔒 Sign up to invest</div>
+    </div>
+
+    <div class="plan">
+      <h3>Growth Plan</h3>
+      <p>Higher daily earnings</p>
+      <p>Payout after 60 days</p>
+      <div class="lock">🔒 Sign up to invest</div>
+    </div>
+
+    <div class="plan">
+      <h3>Premium Plan</h3>
+      <p>Maximum daily returns</p>
+      <p>Payout after 90 days</p>
+      <div class="lock">🔒 Sign up to invest</div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<div class="footer-cta">
+  <h2>Start Earning Daily Today</h2>
+  <button class="hero-btn" onclick="goRegister()">Create Free Account</button>
+</div>
+
+<script>
+function goRegister(){
+  window.location.href = "register.html";
+}
+
+function goLogin(){
+  window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>
