@@ -6,89 +6,56 @@
 <title>Investment Plans</title>
 
 <style>
-:root {
-  --card: linear-gradient(135deg, #10c7a7, #0b5f56);
-  --accent: #22ff9a;
-  --text: #ffffff;
-  --muted: #d6f1ec;
+:root{
+  --bg:#083a34;
+  --card:#10c7a7;
+  --card2:#0b5f56;
+  --accent:#22ff9a;
+  --text:#ffffff;
+  --muted:#d6f1ec;
 }
-
-* {
-  box-sizing: border-box;
-  font-family: system-ui, sans-serif;
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+body{margin:0;background:#f3f6f6}
+header{background:var(--bg);color:white;padding:22px}
+.container{padding:16px}
+.plan{
+  background:linear-gradient(135deg,var(--card),var(--card2));
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:18px;
+  color:white;
 }
-
-body {
-  margin: 0;
-  background: #f4f7f7;
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:14px;
 }
-
-header {
-  padding: 22px;
-  background: #083a34;
-  color: white;
+.calc{
+  margin-top:14px;
+  background:rgba(255,255,255,.15);
+  border-radius:14px;
+  padding:14px;
 }
-
-.container {
-  padding: 16px;
+.calc input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin-top:6px;
 }
-
-.plan {
-  background: var(--card);
-  border-radius: 18px;
-  padding: 20px;
-  margin-bottom: 18px;
-  color: var(--text);
+button{
+  width:100%;
+  padding:14px;
+  border-radius:30px;
+  border:none;
+  font-weight:600;
+  background:linear-gradient(90deg,var(--accent),#00d4ff);
+  color:#00352f;
+  cursor:pointer;
+  margin-top:16px;
 }
-
-.plan h3 {
-  margin: 0 0 6px;
-}
-
-.plan small {
-  color: var(--muted);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 14px;
-  font-size: 14px;
-}
-
-.calc {
-  margin-top: 14px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 14px;
-  padding: 14px;
-}
-
-.calc input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  margin-top: 6px;
-}
-
-.note {
-  font-size: 13px;
-  margin-top: 8px;
-  color: #e8fffb;
-}
-
-button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 30px;
-  border: none;
-  font-weight: 600;
-  background: linear-gradient(90deg, var(--accent), #00d4ff);
-  color: #00352f;
-  cursor: pointer;
-  margin-top: 16px;
-}
+.note{font-size:12px;color:#eafffb;margin-top:8px}
 </style>
 </head>
 
@@ -96,126 +63,88 @@ button {
 
 <header>
   <h2>Investment Plans</h2>
-  <p>Earn daily. Get paid at maturity.</p>
+  <p>Earn fixed daily income on your money</p>
 </header>
 
 <div class="container">
 
-<!-- STARTER PLAN -->
+<!-- STARTER -->
 <div class="plan">
   <h3>Starter Plan</h3>
-  <small>Earn daily • Payout after 30 days</small>
+  <small>Low Risk • Withdrawable after 30 days</small>
 
   <div class="grid">
     <div>Minimum<br><strong>ZMK 500</strong></div>
-    <div>Daily Profit<br><strong>ZMK 10 per 500</strong></div>
-    <div>Total Days<br>30 days</div>
-    <div>Payout<br>Once at maturity</div>
+    <div>Daily Profit<br><strong>ZMK 10</strong></div>
   </div>
 
   <div class="calc">
     <label>Try your amount</label>
-    <input
-      type="number"
-      min="500"
-      placeholder="Minimum ZMK 500"
-      oninput="calculate(this.value, 10, 30, 'starterResult')"
-    />
-    <div id="starterResult" class="note"></div>
+    <input type="number" min="500" placeholder="Enter amount"
+      oninput="calc(this.value,'starterOut')">
+    <div id="starterOut" class="note"></div>
   </div>
 
-  <button onclick="selectPlan('Starter Plan', 30, 10)">
-    Invest
-  </button>
+  <button onclick="selectPlan('Starter Plan',30)">Invest</button>
 </div>
 
-<!-- GROWTH PLAN -->
+<!-- GROWTH -->
 <div class="plan">
   <h3>Growth Plan</h3>
-  <small>Earn daily • Payout after 60 days</small>
+  <small>Medium Risk • Withdrawable after 60 days</small>
 
   <div class="grid">
     <div>Minimum<br><strong>ZMK 500</strong></div>
     <div>Daily Profit<br><strong>ZMK 10 per 500</strong></div>
-    <div>Total Days<br>60 days</div>
-    <div>Payout<br>Once at maturity</div>
   </div>
 
   <div class="calc">
     <label>Try your amount</label>
-    <input
-      type="number"
-      min="500"
-      placeholder="Minimum ZMK 500"
-      oninput="calculate(this.value, 10, 60, 'growthResult')"
-    />
-    <div id="growthResult" class="note"></div>
+    <input type="number" min="500" placeholder="Enter amount"
+      oninput="calc(this.value,'growthOut')">
+    <div id="growthOut" class="note"></div>
   </div>
 
-  <button onclick="selectPlan('Growth Plan', 60, 10)">
-    Invest
-  </button>
+  <button onclick="selectPlan('Growth Plan',60)">Invest</button>
 </div>
 
-<!-- PREMIUM PLAN -->
+<!-- PREMIUM -->
 <div class="plan">
   <h3>Premium Plan</h3>
-  <small>Earn daily • Payout after 90 days</small>
+  <small>High Risk • Withdrawable after 90 days</small>
 
   <div class="grid">
     <div>Minimum<br><strong>ZMK 500</strong></div>
     <div>Daily Profit<br><strong>ZMK 10 per 500</strong></div>
-    <div>Total Days<br>90 days</div>
-    <div>Payout<br>Once at maturity</div>
   </div>
 
   <div class="calc">
     <label>Try your amount</label>
-    <input
-      type="number"
-      min="500"
-      placeholder="Minimum ZMK 500"
-      oninput="calculate(this.value, 10, 90, 'premiumResult')"
-    />
-    <div id="premiumResult" class="note"></div>
+    <input type="number" min="500" placeholder="Enter amount"
+      oninput="calc(this.value,'premiumOut')">
+    <div id="premiumOut" class="note"></div>
   </div>
 
-  <button onclick="selectPlan('Premium Plan', 90, 10)">
-    Invest
-  </button>
+  <button onclick="selectPlan('Premium Plan',90)">Invest</button>
 </div>
 
 </div>
 
 <script>
-function calculate(amount, dailyRate, payoutDays, outputId) {
+function calc(amount,id){
   amount = Number(amount);
-
-  if (!amount || amount < 500) {
-    document.getElementById(outputId).innerHTML =
-      "Minimum investment is ZMK 500";
+  if(!amount || amount < 500){
+    document.getElementById(id).innerHTML = "";
     return;
   }
-
-  const dailyProfit = (amount / 500) * dailyRate;
-  const totalProfit = dailyProfit * payoutDays;
-  const total = amount + totalProfit;
-
-  document.getElementById(outputId).innerHTML = `
-    Daily profit: <strong>ZMK ${dailyProfit.toFixed(2)}</strong><br>
-    Total profit (${payoutDays} days): ZMK ${totalProfit.toFixed(2)}<br>
-    You receive: <strong>ZMK ${total.toFixed(2)}</strong>
-  `;
+  const daily = (amount/500)*10;
+  document.getElementById(id).innerHTML =
+    `Daily profit: <strong>ZMK ${daily.toFixed(2)}</strong>`;
 }
 
-function selectPlan(name, payoutDays, dailyRate) {
-  localStorage.setItem("selectedPlan", JSON.stringify({
-    name,
-    payoutDays,
-    dailyRate,
-    min: 500
-  }));
-  window.location.href = "confirm-investment.html";
+function selectPlan(name,days){
+  localStorage.setItem("selectedPlan", JSON.stringify({name,days}));
+  window.location.href="confirm-investment.html";
 }
 </script>
 
