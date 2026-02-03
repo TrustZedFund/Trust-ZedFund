@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Create Account | Trust ZedFund</title>
+  <title>Create Account | Trust ZedFund - Financial Platform</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     /* Additional styles */
@@ -57,7 +57,7 @@
       margin-top: 10px;
     }
     
-    .fintech-warning {
+    .security-notice {
       background: #fef3c7;
       border: 1px solid #f59e0b;
       border-radius: 8px;
@@ -69,86 +69,133 @@
       color: #92400e;
     }
     
-    .compliance-note {
+    .compliance-box {
       background: #f0f9ff;
       border: 1px solid #7dd3fc;
       border-radius: 8px;
       padding: 15px;
-      margin: 15px 0;
+      margin: 20px 0;
       font-size: 13px;
+    }
+    
+    .password-strength {
+      margin-top: 5px;
+      font-size: 12px;
+    }
+    
+    .strength-meter {
+      height: 4px;
+      background: #e5e7eb;
+      border-radius: 2px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+    
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    
+    .terms-agreement {
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border: 1px solid #e5e7eb;
     }
   </style>
 </head>
 <body>
 
-<!-- COMPLIANCE WARNING -->
-<div class="fintech-warning">
-  ⚠️ <strong>Financial Compliance:</strong> Account creation requires explicit login. Security protocols will enforce login after account setup.
+<!-- SECURITY NOTICE -->
+<div class="security-notice">
+  🔒 <strong>Security Protocol:</strong> For compliance, you will be redirected to login page after account creation. Explicit login is required.
 </div>
 
 <!-- HERO -->
 <section class="auth-hero">
   <h1>Open Your Investment Account</h1>
   <p>
-    Complete your account registration. You will be required to login immediately after account creation.
+    Create your account in under 2 minutes. Login required immediately after registration.
   </p>
 </section>
 
 <!-- SIGNUP CARD -->
 <div class="auth-wrapper">
   <form id="signupForm" class="auth-card">
-    <h2>Create Secure Account</h2>
+    <h2>Account Registration</h2>
     
     <div id="signupSuccess" class="success-message" style="display: none;"></div>
     <div id="signupError" class="error-message" style="display: none;"></div>
 
     <div class="form-group">
       <label for="name">Full Legal Name *</label>
-      <input class="input" id="name" placeholder="John Doe" required />
-      <div class="form-hint">As it appears on your government-issued ID</div>
+      <input class="input" id="name" placeholder="John Michael Doe" required />
+      <div class="form-hint">Must match your government-issued ID</div>
     </div>
 
     <div class="form-group">
       <label for="email">Email Address *</label>
-      <input class="input" id="email" type="email" placeholder="you@example.com" required />
-      <div class="form-hint">Will be used for account verification and communication</div>
+      <input class="input" id="email" type="email" placeholder="john.doe@example.com" required />
+      <div class="form-hint">Used for account verification and communications</div>
     </div>
 
     <div class="form-group">
-      <label for="password">Password *</label>
+      <label for="password">Create Password *</label>
       <div class="password-wrap">
-        <input class="input" id="password" type="password" placeholder="••••••••" required minlength="6" />
+        <input class="input" id="password" type="password" placeholder="••••••••" required minlength="6" oninput="checkPasswordStrength(this.value)" />
         <span class="toggle-eye" onclick="togglePassword('password')">👀</span>
       </div>
-      <div class="form-hint">Minimum 6 characters (Financial security standard)</div>
+      <div class="password-strength">
+        <span id="strength-text">Password strength: None</span>
+        <div class="strength-meter">
+          <div class="strength-fill" id="strength-meter"></div>
+        </div>
+      </div>
+      <div class="form-hint">Minimum 6 characters. For security, use uppercase, lowercase, and numbers.</div>
     </div>
 
     <div class="form-group">
       <label for="referral">Referral Code (Optional)</label>
-      <input class="input" id="referral" placeholder="Enter if you have one" />
-      <div class="form-hint">For referral program participants only</div>
+      <input class="input" id="referral" placeholder="TZF-REF-12345" />
+      <div class="form-hint">Enter if you were referred by an existing member</div>
     </div>
 
-    <div class="compliance-note">
-      <p><strong>Security Protocol:</strong> After account creation:</p>
-      <ol style="margin: 10px 0 10px 20px;">
-        <li>You will be automatically signed out</li>
+    <div class="compliance-box">
+      <p><strong>Registration Process:</strong></p>
+      <ol style="margin: 10px 0 10px 20px; padding: 0;">
+        <li>Submit registration form</li>
+        <li>Account created in database</li>
+        <li><strong>Automatic logout for security</strong></li>
         <li>Redirected to login page</li>
-        <li>Required to login with your credentials</li>
-        <li>Then access your dashboard</li>
+        <li>Login with credentials to access dashboard</li>
       </ol>
+      <p style="margin-top: 10px; font-size: 12px;">
+        <em>This two-step verification enhances account security.</em>
+      </p>
     </div>
 
     <div class="terms-agreement">
       <input type="checkbox" id="terms" required />
       <label for="terms">
-        I agree to the <a href="terms.html" target="_blank">Terms of Service</a>, 
-        <a href="privacy.html" target="_blank">Privacy Policy</a>, and acknowledge that I am at least 18 years old *
+        I confirm that I am at least 18 years old and agree to the 
+        <a href="terms.html" target="_blank">Terms of Service</a>, 
+        <a href="privacy.html" target="_blank">Privacy Policy</a>, and 
+        <a href="disclosures.html" target="_blank">Risk Disclosures</a>. *
       </label>
     </div>
 
+    <div class="compliance-box" style="background: #fef2f2; border-color: #fecaca;">
+      <p><strong>Important Notice:</strong></p>
+      <p style="margin: 5px 0; font-size: 13px;">
+        You will <strong>NOT</strong> be automatically logged in after registration. 
+        For security and compliance reasons, explicit login is required.
+      </p>
+    </div>
+
     <button type="submit" class="primary-btn" id="signupBtn">
-      Create Secure Account
+      Create Account & Continue to Login
     </button>
 
     <div class="auth-divider">
@@ -162,8 +209,8 @@
     </div>
 
     <p class="auth-note">
-      * Required fields. By creating an account, you confirm your eligibility and agree to all terms.
-      Account access requires explicit login for security compliance.
+      * Required fields. By registering, you authorize Trust ZedFund to verify your information. 
+      All account activities are logged for security and compliance purposes.
     </p>
   </form>
 </div>
@@ -173,9 +220,9 @@
   <p class="footer-links">
     <a href="terms.html">Terms</a> • 
     <a href="privacy.html">Privacy</a> • 
-    <a href="contact.html">Contact</a> • 
     <a href="compliance.html">Compliance</a> • 
-    <a href="disclosures.html">Disclosures</a>
+    <a href="contact.html">Contact</a> • 
+    <a href="security.html">Security</a>
   </p>
 </footer>
 
@@ -194,6 +241,46 @@
     }
   }
 
+  // Password strength checker
+  function checkPasswordStrength(password) {
+    const meter = document.getElementById('strength-meter');
+    const text = document.getElementById('strength-text');
+    
+    let strength = 0;
+    let meterWidth = 0;
+    let meterColor = '#ef4444';
+    let strengthText = 'Weak';
+    
+    if (password.length >= 6) {
+      strength += 1;
+      meterWidth = 33;
+    }
+    
+    if (/[A-Z]/.test(password) && /[a-z]/.test(password)) {
+      strength += 1;
+      meterWidth = 66;
+      meterColor = '#f59e0b';
+      strengthText = 'Moderate';
+    }
+    
+    if (/\d/.test(password)) {
+      strength += 1;
+      meterWidth = 100;
+      meterColor = '#10b981';
+      strengthText = 'Strong';
+    }
+    
+    if (password.length >= 10 && /[!@#$%^&*]/.test(password)) {
+      meterColor = '#059669';
+      strengthText = 'Very Strong';
+    }
+    
+    meter.style.width = meterWidth + '%';
+    meter.style.backgroundColor = meterColor;
+    text.textContent = 'Password strength: ' + strengthText;
+    text.style.color = meterColor;
+  }
+
   // Auto-fill referral code from URL
   document.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
@@ -205,22 +292,24 @@
         referralInput.value = refCode;
         const label = referralInput.previousElementSibling;
         if (label && label.tagName === 'LABEL') {
-          label.innerHTML = `Referral Code <span style="color:#10b981;">(Pre-filled)</span>`;
+          label.innerHTML = `Referral Code <span style="color:#10b981;">(Auto-filled)</span>`;
         }
       }
     }
     
-    // Form validation
-    const form = document.getElementById('signupForm');
-    if (form) {
-      const requiredInputs = form.querySelectorAll('input[required]');
-      requiredInputs.forEach(input => {
-        const label = input.previousElementSibling;
-        if (label && label.tagName === 'LABEL') {
-          label.innerHTML = label.innerHTML.replace('*', '<span style="color:#ef4444;">*</span>');
+    // Add asterisk to required fields
+    const requiredInputs = document.querySelectorAll('input[required]');
+    requiredInputs.forEach(input => {
+      const label = input.previousElementSibling;
+      if (label && label.tagName === 'LABEL') {
+        if (!label.innerHTML.includes('*')) {
+          label.innerHTML = label.innerHTML + ' <span style="color:#ef4444;">*</span>';
         }
-      });
-    }
+      }
+    });
+    
+    // Focus on first input
+    document.getElementById('name')?.focus();
   });
 </script>
 
