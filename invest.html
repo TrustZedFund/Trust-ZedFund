@@ -184,12 +184,14 @@ button {
 
 </div>
 
-<nav class="footer">
-  <a href="dashboard.html">🏠 Home</a>
-  <a href="invest.html">💼 Invest</a>
-  <a href="wallet.html">💰 Wallet</a>
-  <a href="profile.html">👤 Profile</a>
-</nav>
+
+<!-- FOOTER BUTTONS -->
+<footer class="dashboard-footer">
+  <button class="footer-btn" onclick="goHome()">Home</button>
+  <button class="footer-btn" onclick="goRefer()">Refer & Earn</button>
+  <button class="footer-btn" onclick="goInvestments()">Invest</button>
+  <button class="footer-btn" onclick="goWallet()">Wallet</button>
+</footer>
 
 <!-- ================= FIREBASE ================= -->
 <script type="module">
@@ -284,6 +286,23 @@ function calculate(amount, dailyRate, days, outputId) {
     You receive: <strong>ZMW ${(amount + totalProfit).toFixed(2)}</strong>
   `;
 }
+
+  function goHome() {
+    window.location.href = "index.html";
+  }
+
+  function goRefer() {
+    window.location.href = "refer.html";
+  }
+
+  function goInvestments() {
+    window.location.href = "invest.html";
+  }
+
+  function goWallet() {
+    window.location.href = "wallet.html";
+  }
+
 </script>
 
 </body>
