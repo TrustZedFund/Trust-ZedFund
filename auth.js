@@ -1,4 +1,4 @@
-// Import everything from firebase.js
+// Import from firebase.js
 import {
   auth,
   db,
@@ -11,82 +11,73 @@ import {
   push
 } from "./firebase.js";
 
-/* ================= SIGN UP ================= */
+// ===================== GLOBAL STATE =====================
+let isAuthInitialized = false;
+
+// ===================== SIGN UP HANDLER =====================
 const signupForm = document.getElementById("signupForm");
 
 if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("Signup form submitted");
-
+    
+    // Get form values
     const name = document.getElementById("name")?.value.trim();
     const email = document.getElementById("email")?.value.trim();
     const password = document.getElementById("password")?.value;
     const referral = document.getElementById("referral")?.value.trim() || null;
-
+    
+    // Get message elements
     const errorEl = document.getElementById("signupError");
     const successEl = document.getElementById("signupSuccess");
-
+    
+    // Clear previous messages
     if (errorEl) errorEl.textContent = "";
     if (successEl) successEl.textContent = "";
-
+    
+    // Validation
     if (!name || !email || !password) {
-      if (errorEl) errorEl.textContent = "All required fields must be filled";
+      showError(errorEl, "Please fill in all required fields");
       return;
     }
-
+    
     if (password.length < 6) {
-      if (errorEl) errorEl.textContent = "Password must be at least 6 characters";
+      showError(errorEl, "Password must be at least 6 characters long");
       return;
     }
-
+    
     // Check terms agreement
     const termsCheckbox = document.getElementById('terms');
     if (termsCheckbox && !termsCheckbox.checked) {
-      if (errorEl) errorEl.textContent = "Please agree to the Terms of Service";
+      showError(errorEl, "You must agree to the Terms of Service");
       return;
     }
-
+    
+    // Email validation
+    if (!isValidEmail(email)) {
+      showError(errorEl, "Please enter a valid email address");
+      return;
+    }
+    
     try {
-      console.log("Creating user with email:", email);
+      // Disable form and show loading
+      disableForm(signupForm, true, "Creating Account...");
       
-      // Disable button and show loading
-      const submitBtn = document.getElementById('signupBtn');
-      if (submitBtn) {
-        const originalText = submitBtn.textContent;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="loader"></span> Creating Account...';
-        
-        // Store original button state to restore on error
-        submitBtn.dataset.originalText = originalText;
-      }
-
-      // IMPORTANT: Create a NEW auth instance for signup to prevent auto-login
-      // We'll use the existing auth but ensure proper signout
-      
-      // Force sign out any existing user first
-      try {
-        await signOut(auth);
-        console.log("Signed out any existing user before signup");
-      } catch (signOutError) {
-        console.log("No user to sign out:", signOutError.message);
-      }
-
-      // Create the new user account
+      // Step 1: Create user account
+      console.log("Creating user account for:", email);
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      console.log("User created successfully:", user.uid);
-
-      const referralCode = "TZF" + user.uid.slice(0, 6).toUpperCase();
-
-      // Create user data in database
+      
+      // Step 2: Save user data to database
+      const referralCode = generateReferralCode(user.uid);
+      
       await set(ref(db, `users/${user.uid}`), {
         profile: {
           name,
           email,
           createdAt: Date.now(),
           emailVerified: false,
-          lastLogin: null
+          status: "active"
         },
         balances: {
           deposit: 0,
@@ -95,376 +86,378 @@ if (signupForm) {
         },
         referral: {
           code: referralCode,
-          referredBy: referral
+          referredBy: referral,
+          referrals: []
         },
         settings: {
           theme: "light",
-          notifications: true
+          notifications: true,
+          twoFactorEnabled: false
         }
       });
-
-      // Add welcome notification
+      
+      // Step 3: Add welcome notification
       await push(ref(db, `notifications/${user.uid}`), {
-        message: "🎉 Welcome to Trust ZedFund! Please verify your email.",
+        message: "🎉 Welcome to Trust ZedFund! Your account has been created.",
+        type: "welcome",
         read: false,
-        time: Date.now(),
-        type: "welcome"
+        timestamp: Date.now()
       });
-
-      // Update referral if provided
-      if (referral) {
-        console.log("Processing referral code:", referral);
-        await push(ref(db, `referralTracking`), {
-          referrerCode: referral,
-          referredEmail: email,
-          referredUserId: user.uid,
-          timestamp: Date.now()
-        });
-      }
-
-      // CRITICAL: Force immediate sign out after account creation
-      console.log("Force signing out after account creation...");
+      
+      // Step 4: Log the user out immediately (security best practice)
+      console.log("Signing out user after account creation...");
       await signOut(auth);
-      console.log("User signed out successfully");
       
-      // Clear any auth state from localStorage/sessionStorage
-      localStorage.removeItem('userLoggedIn');
-      localStorage.removeItem('userEmail');
-      sessionStorage.clear();
+      // Step 5: Show success message
+      showSuccess(successEl, "Account created successfully! Redirecting to login...");
       
-      // Force auth state refresh
-      auth.currentUser = null;
-
-      if (successEl) {
-        successEl.innerHTML = `
-          <div class="success-message">
-            <strong>✓ Account Created Successfully!</strong><br>
-            Your account has been created. Please login to continue.
-          </div>
-        `;
-        successEl.style.display = 'block';
-      }
-
-      // Clear form
+      // Step 6: Clear form
       signupForm.reset();
-
-      // Show countdown to redirect
-      let countdown = 5;
-      const countdownEl = document.createElement('div');
-      countdownEl.className = 'countdown-text';
-      countdownEl.style.marginTop = '10px';
-      countdownEl.style.fontSize = '14px';
-      countdownEl.style.color = '#6b7280';
-      countdownEl.innerHTML = `Redirecting to login in <strong>${countdown}</strong> seconds...`;
       
-      if (successEl) {
-        successEl.appendChild(countdownEl);
-      }
-
-      const countdownInterval = setInterval(() => {
-        countdown--;
-        countdownEl.innerHTML = `Redirecting to login in <strong>${countdown}</strong> seconds...`;
-        
-        if (countdown <= 0) {
-          clearInterval(countdownInterval);
-          // Redirect to login with signup success flag
-          window.location.href = "login.html?signup=success&email=" + encodeURIComponent(email);
-        }
-      }, 1000);
-
-      // Also provide manual redirect button
+      // Step 7: Redirect to login page after delay
       setTimeout(() => {
-        const manualRedirect = document.createElement('div');
-        manualRedirect.className = 'manual-redirect';
-        manualRedirect.style.marginTop = '15px';
-        manualRedirect.innerHTML = `
-          <p style="margin-bottom: 10px;">Not redirecting automatically?</p>
-          <a href="login.html?signup=success&email=${encodeURIComponent(email)}" 
-             class="primary-btn" 
-             style="padding: 10px 20px; font-size: 14px; display: inline-block; width: auto;">
-            Go to Login Now
-          </a>
-        `;
-        if (successEl) {
-          successEl.appendChild(manualRedirect);
-        }
+        window.location.href = `login.html?signup=success&email=${encodeURIComponent(email)}`;
       }, 2000);
-
-      // IMPORTANT: Prevent any further auth state changes from redirecting
-      // Temporarily override the auth state change handler
-      const originalOnAuthStateChanged = auth.onAuthStateChanged;
-      auth.onAuthStateChanged = () => {}; // Temporarily disable
-
-      // Restore after redirect
-      setTimeout(() => {
-        auth.onAuthStateChanged = originalOnAuthStateChanged;
-      }, 3000);
-
-    } catch (err) {
-      console.error("Signup error:", err);
       
-      // Re-enable button
-      const submitBtn = document.getElementById('signupBtn');
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = submitBtn.dataset.originalText || "Create Account";
-      }
+    } catch (error) {
+      console.error("Signup error:", error);
       
-      if (errorEl) {
-        let errorMessage = err.message;
-        
-        // User-friendly error messages
-        if (err.code === 'auth/email-already-in-use') {
-          errorMessage = "This email is already registered. Please login instead.";
-        } else if (err.code === 'auth/weak-password') {
-          errorMessage = "Password is too weak. Use at least 6 characters.";
-        } else if (err.code === 'auth/invalid-email') {
-          errorMessage = "Please enter a valid email address.";
-        } else if (err.code === 'auth/network-request-failed') {
+      // Handle specific error cases
+      let errorMessage = "An error occurred during signup";
+      
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          errorMessage = "This email is already registered. Please use a different email or login.";
+          break;
+        case 'auth/invalid-email':
+          errorMessage = "The email address is not valid. Please check and try again.";
+          break;
+        case 'auth/operation-not-allowed':
+          errorMessage = "Email/password signup is currently disabled. Please contact support.";
+          break;
+        case 'auth/weak-password':
+          errorMessage = "Password is too weak. Please use a stronger password.";
+          break;
+        case 'auth/network-request-failed':
           errorMessage = "Network error. Please check your internet connection.";
-        }
-        
-        errorEl.innerHTML = `<strong>✗ Error:</strong> ${errorMessage}`;
-        errorEl.style.display = 'block';
+          break;
+        default:
+          errorMessage = error.message;
       }
+      
+      showError(errorEl, errorMessage);
+      disableForm(signupForm, false, "Create Account");
     }
   });
 }
 
-/* ================= LOGIN ================= */
+// ===================== LOGIN HANDLER =====================
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("Login form submitted");
-
+    
     const email = document.getElementById("loginEmail")?.value.trim();
     const password = document.getElementById("loginPassword")?.value;
-
     const errorEl = document.getElementById("loginError");
     const successEl = document.getElementById("loginSuccess");
-
+    
+    // Clear messages
     if (errorEl) errorEl.textContent = "";
     if (successEl) successEl.textContent = "";
-
+    
+    // Validation
     if (!email || !password) {
-      if (errorEl) errorEl.textContent = "Email and password required";
+      showError(errorEl, "Please enter both email and password");
       return;
     }
-
+    
     try {
+      // Disable form and show loading
+      disableForm(loginForm, true, "Logging in...");
+      
       console.log("Attempting login for:", email);
+      await signInWithEmailAndPassword(auth, email, password);
       
-      // Disable button during login attempt
-      const submitBtn = document.getElementById('loginBtn');
-      if (submitBtn) {
-        const originalText = submitBtn.textContent;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="loader"></span> Logging in...';
-        submitBtn.dataset.originalText = originalText;
-      }
-
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      
-      console.log("Login successful for:", user.email);
-      
-      // Update last login time in database
-      await set(ref(db, `users/${user.uid}/profile/lastLogin`), Date.now());
-      
-      // Store login state
-      localStorage.setItem('userLoggedIn', 'true');
-      localStorage.setItem('userEmail', email);
-      
-      // Show success message briefly before redirect
-      if (successEl) {
-        successEl.innerHTML = '<strong>✓ Login successful! Redirecting to dashboard...</strong>';
-        successEl.style.display = 'block';
+      // Update last login time
+      const user = auth.currentUser;
+      if (user) {
+        await set(ref(db, `users/${user.uid}/profile/lastLogin`), Date.now());
       }
       
-      // Short delay before redirect to show success message
+      // Show success message
+      showSuccess(successEl, "Login successful! Redirecting to dashboard...");
+      
+      // Redirect to dashboard after short delay
       setTimeout(() => {
         window.location.href = "dashboard.html";
       }, 1000);
-
-    } catch (err) {
-      console.error("Login error:", err);
       
-      // Re-enable button
-      const submitBtn = document.getElementById('loginBtn');
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = submitBtn.dataset.originalText || "Login";
-      }
+    } catch (error) {
+      console.error("Login error:", error);
       
-      if (errorEl) {
-        let errorMessage = err.message;
-        
-        // User-friendly error messages
-        if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+      let errorMessage = "Login failed. Please check your credentials.";
+      
+      switch (error.code) {
+        case 'auth/invalid-credential':
+        case 'auth/wrong-password':
           errorMessage = "Invalid email or password. Please try again.";
-        } else if (err.code === 'auth/user-not-found') {
-          errorMessage = "No account found with this email. Please sign up.";
-        } else if (err.code === 'auth/too-many-requests') {
-          errorMessage = "Too many failed attempts. Please try again later.";
-        } else if (err.code === 'auth/network-request-failed') {
-          errorMessage = "Network error. Please check your internet connection.";
-        }
-        
-        errorEl.innerHTML = `<strong>✗ Error:</strong> ${errorMessage}`;
-        errorEl.style.display = 'block';
+          break;
+        case 'auth/user-not-found':
+          errorMessage = "No account found with this email. Please sign up first.";
+          break;
+        case 'auth/user-disabled':
+          errorMessage = "This account has been disabled. Please contact support.";
+          break;
+        case 'auth/too-many-requests':
+          errorMessage = "Too many login attempts. Please try again later.";
+          break;
+        case 'auth/network-request-failed':
+          errorMessage = "Network error. Please check your connection.";
+          break;
       }
+      
+      showError(errorEl, errorMessage);
+      disableForm(loginForm, false, "Login");
     }
   });
 }
 
-/* ================= LOGOUT ================= */
-window.logout = async function () {
-  try {
-    // Show confirmation dialog
-    if (confirm("Are you sure you want to logout?")) {
-      const logoutBtn = document.querySelector('.logout-btn');
-      if (logoutBtn) {
-        logoutBtn.disabled = true;
-        logoutBtn.innerHTML = '<span class="loader"></span> Logging out...';
-      }
-      
+// ===================== LOGOUT FUNCTION =====================
+window.logout = async function() {
+  if (confirm("Are you sure you want to logout?")) {
+    try {
       await signOut(auth);
-      console.log("User logged out");
-      
-      // Clear any cached data
-      localStorage.removeItem('userLoggedIn');
-      localStorage.removeItem('userEmail');
-      sessionStorage.clear();
-      
-      // Redirect to login with logout message
       window.location.href = "login.html?logout=success";
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Logout failed. Please try again.");
     }
-  } catch (err) {
-    console.error("Logout error:", err);
-    alert("Logout failed. Please try again.");
   }
 };
 
-/* ================= AUTH GUARD ================= */
-// This should only run on protected pages
-function setupAuthGuard() {
-  const currentPage = window.location.pathname.split("/").pop();
-  const protectedPages = ["dashboard.html", "wallet.html", "investments.html", "profile.html"];
-  const authPages = ["login.html", "register.html", "forgot-password.html"];
+// ===================== AUTH STATE MANAGEMENT =====================
+// Only setup auth state listener on relevant pages
+function initializeAuthState() {
+  if (isAuthInitialized) return;
   
-  // Only set up auth guard on relevant pages
-  if (protectedPages.includes(currentPage) || authPages.includes(currentPage)) {
+  const currentPage = window.location.pathname.split('/').pop();
+  
+  // Define page types
+  const publicPages = ['login.html', 'register.html', 'forgot-password.html', 'index.html'];
+  const protectedPages = ['dashboard.html', 'wallet.html', 'investments.html', 'profile.html', 'withdraw.html', 'deposit.html'];
+  
+  // Only setup listener if we're on a page that needs it
+  if (publicPages.includes(currentPage) || protectedPages.includes(currentPage)) {
     onAuthStateChanged(auth, (user) => {
-      console.log("Auth state changed on", currentPage + ":", user ? `User: ${user.email}` : "No user");
+      console.log("Auth state changed. User:", user ? user.email : "No user");
       
-      if (user) {
-        localStorage.setItem('userLoggedIn', 'true');
-        localStorage.setItem('userEmail', user.email || '');
+      // On PUBLIC pages (login, register), redirect to dashboard if user is logged in
+      if (user && publicPages.includes(currentPage)) {
+        console.log("User is logged in on public page, redirecting to dashboard");
         
-        // Redirect logged-in users away from auth pages
-        if (authPages.includes(currentPage)) {
-          console.log("User already logged in, redirecting to dashboard");
-          window.location.href = "dashboard.html";
+        // Special handling for register page - allow signup flow to complete
+        if (currentPage === 'register.html') {
+          // Don't redirect if we're in the middle of signup
+          const signupForm = document.getElementById('signupForm');
+          const isSubmitting = signupForm?.querySelector('button[type="submit"]:disabled');
+          
+          if (!isSubmitting) {
+            // Small delay to avoid interrupting any ongoing process
+            setTimeout(() => {
+              if (auth.currentUser) {
+                window.location.href = "dashboard.html";
+              }
+            }, 500);
+          }
+        } else {
+          // For login page, redirect immediately
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 100);
         }
-      } else {
-        localStorage.removeItem('userLoggedIn');
-        localStorage.removeItem('userEmail');
-        
-        // Redirect non-logged-in users from protected pages
-        if (protectedPages.includes(currentPage)) {
-          console.log("No user, redirecting to login");
-          window.location.href = "login.html?redirect=" + encodeURIComponent(currentPage);
-        }
+      }
+      
+      // On PROTECTED pages, redirect to login if user is not logged in
+      if (!user && protectedPages.includes(currentPage)) {
+        console.log("No user on protected page, redirecting to login");
+        window.location.href = `login.html?redirect=${encodeURIComponent(currentPage)}`;
       }
     });
+    
+    isAuthInitialized = true;
   }
 }
 
-// Initialize auth guard
-setupAuthGuard();
-
-/* ================= CHECK SIGNUP SUCCESS ================= */
-// This function checks URL parameters for signup success
-function checkSignupSuccess() {
-  const params = new URLSearchParams(window.location.search);
-  const signupSuccess = params.get("signup");
-  const email = params.get("email");
+// ===================== PAGE INITIALIZATION =====================
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize auth state management
+  initializeAuthState();
   
-  if (signupSuccess === "success" && email) {
-    // Auto-fill the email in login form
-    const emailInput = document.getElementById("loginEmail");
-    if (emailInput) {
-      emailInput.value = decodeURIComponent(email);
-      // Auto-focus on password field
-      setTimeout(() => {
-        document.getElementById("loginPassword")?.focus();
-      }, 100);
-    }
+  // Check for URL parameters
+  checkURLParameters();
+  
+  // Auto-fill referral code if present in URL
+  autoFillReferralCode();
+});
+
+// ===================== HELPER FUNCTIONS =====================
+function showError(element, message) {
+  if (element) {
+    element.textContent = message;
+    element.style.display = 'block';
     
-    // Show success message
-    const successEl = document.getElementById("loginSuccess") || document.createElement("div");
-    if (!successEl.id) {
-      successEl.id = "loginSuccess";
-      successEl.className = "success-text";
-      const form = document.getElementById("loginForm");
-      if (form) {
-        form.insertBefore(successEl, form.firstChild);
+    // Auto-hide error after 5 seconds
+    setTimeout(() => {
+      if (element.textContent === message) {
+        element.style.display = 'none';
       }
-    }
-    
-    successEl.innerHTML = `
-      <div class="success-message">
-        <strong>✓ Account Created Successfully!</strong><br>
-        Please login with your password to continue.
-      </div>
-    `;
-    successEl.style.display = 'block';
-    
-    // Clear the URL parameters
-    if (window.history.replaceState) {
-      const cleanUrl = window.location.pathname;
-      window.history.replaceState({}, document.title, cleanUrl);
+    }, 5000);
+  }
+}
+
+function showSuccess(element, message) {
+  if (element) {
+    element.textContent = message;
+    element.style.display = 'block';
+  }
+}
+
+function disableForm(form, disabled, buttonText = "") {
+  if (!form) return;
+  
+  const inputs = form.querySelectorAll('input, button, select, textarea');
+  const submitButton = form.querySelector('button[type="submit"]');
+  
+  inputs.forEach(input => {
+    input.disabled = disabled;
+  });
+  
+  if (submitButton && buttonText) {
+    if (disabled) {
+      submitButton.dataset.originalText = submitButton.textContent;
+      submitButton.innerHTML = `
+        <span class="spinner"></span> ${buttonText}
+      `;
+    } else {
+      submitButton.textContent = submitButton.dataset.originalText || buttonText;
     }
   }
 }
 
-// Run check on login page load
-if (window.location.pathname.includes("login.html")) {
-  document.addEventListener('DOMContentLoaded', checkSignupSuccess);
+function isValidEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
 }
 
-// Additional: Check for logout message
-if (window.location.pathname.includes("login.html")) {
-  document.addEventListener('DOMContentLoaded', function() {
-    const params = new URLSearchParams(window.location.search);
-    const logoutSuccess = params.get("logout");
+function generateReferralCode(uid) {
+  return "TZF" + uid.slice(0, 8).toUpperCase();
+}
+
+function checkURLParameters() {
+  const params = new URLSearchParams(window.location.search);
+  const currentPage = window.location.pathname.split('/').pop();
+  
+  // Handle signup success on login page
+  if (currentPage === 'login.html') {
+    const signupSuccess = params.get('signup');
+    const email = params.get('email');
     
-    if (logoutSuccess === "success") {
-      const successEl = document.getElementById("loginSuccess") || document.createElement("div");
-      if (!successEl.id) {
-        successEl.id = "loginSuccess";
-        successEl.className = "success-text";
-        const form = document.getElementById("loginForm");
-        if (form) {
-          form.insertBefore(successEl, form.firstChild);
-        }
+    if (signupSuccess === 'success' && email) {
+      // Auto-fill email
+      const emailInput = document.getElementById('loginEmail');
+      if (emailInput) {
+        emailInput.value = decodeURIComponent(email);
       }
       
+      // Show success message
+      const successEl = document.getElementById('loginSuccess') || createMessageElement('loginSuccess', 'success');
       successEl.innerHTML = `
         <div class="success-message">
-          <strong>✓ Logged out successfully!</strong><br>
-          You have been logged out of your account.
+          <strong>✓ Account Created Successfully!</strong><br>
+          Please enter your password to login.
         </div>
       `;
       successEl.style.display = 'block';
       
-      // Clear URL parameters
-      if (window.history.replaceState) {
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
+      // Auto-focus password field
+      setTimeout(() => {
+        document.getElementById('loginPassword')?.focus();
+      }, 300);
+      
+      // Clean URL
+      cleanURL();
+    }
+    
+    // Handle logout success
+    const logoutSuccess = params.get('logout');
+    if (logoutSuccess === 'success') {
+      const successEl = document.getElementById('loginSuccess') || createMessageElement('loginSuccess', 'success');
+      successEl.innerHTML = `
+        <div class="success-message">
+          <strong>✓ Logged Out Successfully</strong><br>
+          You have been securely logged out.
+        </div>
+      `;
+      successEl.style.display = 'block';
+      cleanURL();
+    }
+  }
+  
+  // Handle redirect message
+  const redirectPage = params.get('redirect');
+  if (redirectPage && currentPage === 'login.html') {
+    const errorEl = document.getElementById('loginError') || createMessageElement('loginError', 'error');
+    errorEl.textContent = `Please login to access ${redirectPage}`;
+    errorEl.style.display = 'block';
+    cleanURL();
+  }
+}
+
+function createMessageElement(id, type) {
+  const element = document.createElement('div');
+  element.id = id;
+  element.className = `${type}-text`;
+  element.style.display = 'none';
+  
+  const form = document.querySelector('form');
+  if (form) {
+    form.insertBefore(element, form.firstChild);
+  }
+  
+  return element;
+}
+
+function cleanURL() {
+  if (window.history.replaceState) {
+    const cleanURL = window.location.pathname;
+    window.history.replaceState({}, document.title, cleanURL);
+  }
+}
+
+function autoFillReferralCode() {
+  const params = new URLSearchParams(window.location.search);
+  const refCode = params.get('ref');
+  
+  if (refCode) {
+    const referralInput = document.getElementById('referral');
+    if (referralInput) {
+      referralInput.value = refCode;
+      
+      // Show a note
+      const formGroup = referralInput.closest('.form-group');
+      if (formGroup) {
+        const hint = formGroup.querySelector('.form-hint');
+        if (hint) {
+          hint.textContent = `Referral code applied: ${refCode}`;
+          hint.style.color = '#10b981';
+        }
       }
     }
-  });
+  }
 }
+
+// Make helper functions available globally if needed
+window.showError = showError;
+window.showSuccess = showSuccess;
