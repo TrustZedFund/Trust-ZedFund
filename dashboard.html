@@ -567,7 +567,7 @@
     <div class="card card-returns">
       <h3>Returns Earnings</h3>
       <p id="returnsWallet">ZMK 0.00</p>
-      <button class="btn-primary" id="investmentsBtn">Invest Now</button>
+      <button class="btn-primary" id="investBtn">Invest Now</button>
     </div>
 
     <!-- Referral Bonuses -->
@@ -583,7 +583,7 @@
 <section class="dashboard-investments">
   <h3>Active Investments</h3>
   <p id="activeInvestments">No active investments yet</p>
-  <button class="btn-primary" onclick="goInvestments()">Start Investing</button>
+  <button class="btn-primary" onclick="goInvest()">Start Investing</button>
   
   <!-- Investments Container -->
   <div id="investments">
@@ -599,7 +599,7 @@
   <button class="footer-btn" onclick="goRefer()">
     🎁 Refer & Earn
   </button>
-  <button class="footer-btn" onclick="goInvestments()">
+  <button class="footer-btn" onclick="goInvest()">
     💰 Invest
   </button>
   <button class="footer-btn" onclick="goWallet()">
@@ -618,8 +618,8 @@ function goRefer() {
   window.location.href = "refer.html";
 }
 
-function goInvestments() {
-  window.location.href = "investments.html";
+function goInvest() {
+  window.location.href = "invest.html";
 }
 
 function goWallet() {
