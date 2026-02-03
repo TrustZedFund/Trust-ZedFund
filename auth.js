@@ -22,8 +22,7 @@ if (signupForm) {
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
-    const referralInput = document.getElementById("referral");
-    const referralCode = referralInput ? referralInput.value.trim() : null;
+    const referral = document.getElementById("referral")?.value.trim() || null;
 
     const errorEl = document.getElementById("signupError");
     const successEl = document.getElementById("signupSuccess");
@@ -31,30 +30,17 @@ if (signupForm) {
     errorEl.textContent = "";
     successEl.textContent = "";
 
-    if (!name || !email || !password) {
-      errorEl.textContent = "All required fields must be filled.";
-      return;
-    }
-
-    if (password.length < 6) {
-      errorEl.textContent = "Password must be at least 6 characters.";
-      return;
-    }
-
     try {
-      // Create auth account
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCred.user;
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      const user = cred.user;
 
-      // Generate referral code
       const myReferralCode = "TZF" + Math.floor(100000 + Math.random() * 900000);
 
-      // Save user profile
       await set(ref(db, `users/${user.uid}`), {
         name,
         email,
         referralCode: myReferralCode,
-        referredBy: referralCode || null,
+        referredBy: referral,
         balances: {
           deposit: 0,
           earnings: 0,
@@ -63,7 +49,6 @@ if (signupForm) {
         createdAt: serverTimestamp()
       });
 
-      // Welcome notification
       await push(ref(db, `notifications/${user.uid}`), {
         message: "🎉 Welcome to Trust ZedFund! Start investing wisely.",
         read: false,
@@ -71,15 +56,15 @@ if (signupForm) {
         type: "welcome"
       });
 
-      successEl.textContent = "Account created successfully! Redirecting…";
+      successEl.textContent = "Account created! Redirecting…";
 
       setTimeout(() => {
         window.location.href = "login.html";
       }, 1200);
 
     } catch (err) {
+      errorEl.textContent = err.message;
       console.error(err);
-      errorEl.textContent = err.message.replace("Firebase: ", "");
     }
   });
 }
@@ -99,16 +84,11 @@ if (loginForm) {
 
     errorEl.textContent = "";
 
-    if (!email || !password) {
-      errorEl.textContent = "Email and password are required.";
-      return;
-    }
-
     try {
       await signInWithEmailAndPassword(auth, email, password);
       window.location.href = "dashboard.html";
-    } catch (err) {
-      errorEl.textContent = "Invalid email or password.";
+    } catch {
+      errorEl.textContent = "Invalid email or password";
     }
   });
 }
