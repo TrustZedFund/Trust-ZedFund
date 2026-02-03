@@ -212,3 +212,29 @@ function getRemaining(maturity) {
 
   return `${days} days ${hours} hrs remaining`;
 }
+function loadNotifications(userId) {
+  const notifRef = ref(db, "notifications/" + userId);
+
+  onValue(notifRef, (snapshot) => {
+    const panel = document.getElementById("notifPanel");
+    const badge = document.getElementById("notifCount");
+
+    panel.innerHTML = "<h4>Notifications</h4>";
+
+    let unread = 0;
+
+    snapshot.forEach((child) => {
+      const data = child.val();
+      if (!data.read) unread++;
+
+      panel.innerHTML += `
+        <div class="notif-item ${data.read ? "" : "unread"}">
+          ${data.message}
+        </div>
+      `;
+    });
+
+    badge.textContent = unread;
+    badge.style.display = unread > 0 ? "inline-block" : "none";
+  });
+}
