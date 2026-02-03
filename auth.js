@@ -1,127 +1,112 @@
-// auth.js
-import { auth, db } from "./firebase.js";
-
 import {
+  getAuth,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
 import {
+  getDatabase,
   ref,
   set,
-  push,
-  serverTimestamp
+  push
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-/* =====================================================
-   SIGN UP
-===================================================== */
+const auth = getAuth();
+const db = getDatabase();
 
+/* -------------------- DOM -------------------- */
 const signupForm = document.getElementById("signupForm");
+const loginForm = document.getElementById("loginForm");
 
+const fullNameInput = document.getElementById("fullNameInput");
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
+const referralCodeInput = document.getElementById("referralCodeInput");
+
+/* -------------------- HELPERS -------------------- */
+function generateReferralCode(uid) {
+  return uid.slice(0, 6).toUpperCase();
+}
+
+/* -------------------- SIGN UP -------------------- */
 if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // ---- DOM ELEMENTS (explicit to avoid JS crashes)
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const referralInput = document.getElementById("referral");
-
-    const signupError = document.getElementById("signupError");
-    const signupSuccess = document.getElementById("signupSuccess");
-
-    signupError.textContent = "";
-    signupSuccess.textContent = "";
-
-    const name = nameInput.value.trim();
+    const fullName = fullNameInput.value.trim();
     const email = emailInput.value.trim();
     const password = passwordInput.value;
-    const referredBy = referralInput?.value.trim() || null;
+    const referredBy = referralCodeInput?.value.trim() || null;
 
     try {
-      // 1️⃣ Create Auth account
-      const cred = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
       const user = cred.user;
 
-      // 2️⃣ Generate referral code for this user
-      const referralCode =
-        "TZF" + Math.floor(100000 + Math.random() * 900000);
+      const referralCode = generateReferralCode(user.uid);
 
-      // 3️⃣ Create user record (RULE-COMPLIANT)
       await set(ref(db, `users/${user.uid}`), {
         profile: {
-          name,
-          email
+          fullName,
+          email,
+          createdAt: Date.now()
         },
-
-        referralCode: referralCode,   // user’s invite code
-        referredBy: referredBy,       // who invited them (if any)
-
         balances: {
           deposit: 0,
           earnings: 0,
-          referralWallet: 0           // 🔑 REQUIRED by rules
+          referralWallet: 0
         },
-
-        createdAt: serverTimestamp()
+        referral: {
+          code: referralCode,
+          referredBy
+        }
       });
 
-      // 4️⃣ Welcome notification (rules allow this)
       await push(ref(db, `notifications/${user.uid}`), {
-        message: "🎉 Welcome to Trust ZedFund! Start investing wisely.",
+        message: "🎉 Welcome to Trust ZedFund!",
         read: false,
         time: Date.now(),
         type: "welcome"
       });
 
-      signupSuccess.textContent = "Account created! Redirecting…";
-
-      setTimeout(() => {
-        window.location.href = "login.html";
-      }, 1200);
+      window.location.href = "dashboard.html";
 
     } catch (err) {
-      signupError.textContent = err.message;
-      console.error("Signup error:", err);
+      alert(err.message);
     }
   });
 }
 
-/* =====================================================
-   LOGIN
-===================================================== */
-
-const loginForm = document.getElementById("loginForm");
-
+/* -------------------- LOGIN -------------------- */
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const emailInput = document.getElementById("loginEmail");
-    const passwordInput = document.getElementById("loginPassword");
-    const loginError = document.getElementById("loginError");
-
-    loginError.textContent = "";
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
 
     try {
-      await signInWithEmailAndPassword(
-        auth,
-        emailInput.value.trim(),
-        passwordInput.value.trim()
-      );
-
+      await signInWithEmailAndPassword(auth, email, password);
       window.location.href = "dashboard.html";
-
     } catch (err) {
-      loginError.textContent = "Invalid email or password";
-      console.error("Login error:", err);
+      alert(err.message);
     }
   });
 }
+
+/* -------------------- LOGOUT -------------------- */
+window.logout = async function () {
+  await signOut(auth);
+  window.location.href = "login.html";
+};
+
+/* -------------------- AUTH GUARD -------------------- */
+onAuthStateChanged(auth, (user) => {
+  const protectedPages = ["dashboard.html", "wallet.html", "investments.html"];
+  const currentPage = location.pathname.split("/").pop();
+
+  if (!user && protectedPages.includes(currentPage)) {
+    window.location.href = "login.html";
+  }
+});
