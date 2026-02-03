@@ -246,3 +246,9 @@ window.withdraw = async function(id) {
 
   alert(`Withdrawn ZMK ${payout.toFixed(2)}`);
 };
+push(ref(db, "notifications/" + user.uid), {
+  message: "🏧 Withdrawal request received.",
+  read: false,
+  time: Date.now(),
+  type: "withdrawal"
+});
