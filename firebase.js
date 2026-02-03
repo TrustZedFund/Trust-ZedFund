@@ -1,6 +1,11 @@
-// firebase.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import {
   getDatabase,
   ref,
@@ -19,7 +24,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
 
 /* ================= FIREBASE CONFIG ================= */
-
 const firebaseConfig = {
   apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
   authDomain: "trust-zedfund.firebaseapp.com",
@@ -31,17 +35,41 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
-export const auth = getAuth(app);
-export const db = getDatabase(app);
-export const storage = getStorage(app);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const storage = getStorage(app);
 
 console.log("🔥 Firebase initialized");
 
 /* ===================================================
+   EXPORTS
+=================================================== */
+export { 
+  auth, 
+  db, 
+  storage,
+  // Auth functions
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  // Database functions
+  ref,
+  set,
+  update,
+  get,
+  onValue,
+  push,
+  serverTimestamp,
+  // Storage functions
+  storageRef,
+  uploadBytesResumable,
+  getDownloadURL
+};
+
+/* ===================================================
    USER BALANCES
 =================================================== */
-
 export async function initUserBalances(uid) {
   const balRef = ref(db, `users/${uid}/balances`);
   const snap = await get(balRef);
@@ -68,7 +96,6 @@ export function onBalanceChange(uid, callback) {
 /* ===================================================
    INVESTMENTS
 =================================================== */
-
 export async function createInvestment(uid, plan, amount) {
   if (!amount || amount < 500) {
     throw new Error("Minimum investment is ZMW 500");
@@ -119,7 +146,6 @@ export async function createInvestment(uid, plan, amount) {
 /* ===================================================
    PROFIT ACCRUAL
 =================================================== */
-
 export async function processInvestmentProfits(uid) {
   const invRef = ref(db, `users/${uid}/investments`);
   const snap = await get(invRef);
@@ -156,7 +182,6 @@ export async function processInvestmentProfits(uid) {
 /* ===================================================
    REAL-TIME INVESTMENTS
 =================================================== */
-
 export function onUserInvestments(uid, callback) {
   onValue(ref(db, `users/${uid}/investments`), snap => {
     callback(snap.exists() ? snap.val() : {});
@@ -166,7 +191,6 @@ export function onUserInvestments(uid, callback) {
 /* ===================================================
    DEPOSIT PROOF UPLOAD
 =================================================== */
-
 export async function submitDepositProof(uid, data, file, onProgress) {
   if (!uid) throw new Error("User not authenticated");
   if (!file) throw new Error("No proof file selected");
@@ -208,8 +232,3 @@ export async function submitDepositProof(uid, data, file, onProgress) {
     );
   });
 }
-// Add these imports at the top of firebase.js
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
-import { getStorage } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
