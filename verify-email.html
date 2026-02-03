@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verify Email | Trust ZedFund</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <h2>📧 Email Verification Required</h2>
+      <div class="info-message">
+        <p><strong>Security Verification Required</strong></p>
+        <p>To comply with financial regulations and protect your account, we require email verification.</p>
+      </div>
+      
+      <ol style="text-align: left; margin: 20px 0;">
+        <li>Check your email inbox for a verification link</li>
+        <li>Click the verification link in the email</li>
+        <li>Return here and login with your credentials</li>
+      </ol>
+      
+      <button onclick="resendVerification()" class="secondary-btn">
+        Resend Verification Email
+      </button>
+      
+      <div style="margin-top: 20px;">
+        <a href="login.html" class="primary-btn">Go to Login</a>
+      </div>
+      
+      <div class="auth-note" style="margin-top: 30px;">
+        <strong>Security Note:</strong> You cannot deposit, trade, or withdraw funds until your email is verified.
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function resendVerification() {
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('email');
+      if (email) {
+        // Call your resend verification function
+        resendVerificationEmail(decodeURIComponent(email));
+      }
+    }
+  </script>
+</body>
+</html>
