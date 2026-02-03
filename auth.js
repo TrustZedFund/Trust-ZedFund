@@ -30,13 +30,21 @@ if (signupForm) {
     if (errorEl) errorEl.textContent = "";
     if (successEl) successEl.textContent = "";
 
+    // Validation
     if (!name || !email || !password) {
       if (errorEl) errorEl.textContent = "All required fields must be filled";
       return;
     }
 
-    if (password.length < 6) {
-      if (errorEl) errorEl.textContent = "Password must be at least 6 characters";
+    if (password.length < 8) { // Changed from 6 to 8 for FinTech
+      if (errorEl) errorEl.textContent = "Password must be at least 8 characters with uppercase, lowercase, and number";
+      return;
+    }
+
+    // Check password strength for FinTech
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      if (errorEl) errorEl.textContent = "Password must include uppercase, lowercase letters, and numbers";
       return;
     }
 
@@ -57,9 +65,14 @@ if (signupForm) {
         submitBtn.innerHTML = '<span class="loader"></span> Creating Account...';
       }
 
+      // Create user in Firebase (email verification will be required)
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const user = cred.user;
       console.log("User created successfully:", user.uid);
+
+      // Send email verification - CRITICAL FOR FINTECH
+      await sendEmailVerification(user);
+      console.log("Verification email sent");
 
       const referralCode = "TZF" + user.uid.slice(0, 6).toUpperCase();
 
@@ -69,53 +82,83 @@ if (signupForm) {
           name,
           email,
           createdAt: Date.now(),
-          emailVerified: false,
-          lastLogin: null
+          emailVerified: false, // Track verification status
+          lastLogin: null,
+          accountStatus: "pending_verification", // Add account status
+          kycStatus: "not_started" // KYC tracking for FinTech
         },
         balances: {
           deposit: 0,
           earnings: 0,
-          referralWallet: 0
+          referralWallet: 0,
+          availableBalance: 0,
+          totalBalance: 0
+        },
+        security: {
+          twoFactorEnabled: false,
+          lastPasswordChange: Date.now(),
+          loginAttempts: 0
         },
         referral: {
           code: referralCode,
-          referredBy: referral
+          referredBy: referral,
+          referrals: []
         },
-        settings: {
-          theme: "light",
-          notifications: true
+        restrictions: {
+          canTrade: false, // Don't allow trading until verified
+          canWithdraw: false, // Don't allow withdrawals until verified
+          canDeposit: false // Don't allow deposits until verified
         }
       });
 
       // Add welcome notification
       await push(ref(db, `notifications/${user.uid}`), {
-        message: "🎉 Welcome to Trust ZedFund! Please verify your email.",
+        message: "🎉 Welcome to Trust ZedFund! Please verify your email to activate your account.",
         read: false,
         time: Date.now(),
-        type: "welcome"
+        type: "welcome",
+        priority: "high"
+      });
+
+      // Add email verification notification
+      await push(ref(db, `notifications/${user.uid}`), {
+        message: "📧 Verification email sent. Please check your inbox.",
+        read: false,
+        time: Date.now(),
+        type: "verification",
+        priority: "high"
       });
 
       // Update referral if provided
       if (referral) {
         console.log("Processing referral code:", referral);
-        // Add referral tracking logic here
         await push(ref(db, `referralTracking`), {
           referrerCode: referral,
           referredEmail: email,
           referredUserId: user.uid,
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          status: "pending_verification"
         });
       }
 
-      // Auto sign-out after account creation (security best practice)
+      // Sign out user immediately for security
       await signOut(auth);
-      console.log("User signed out after account creation");
+      console.log("User signed out for security");
 
+      // Show success message with verification instructions
       if (successEl) {
         successEl.innerHTML = `
           <div class="success-message">
             <strong>✓ Account Created Successfully!</strong><br>
-            Your account has been created. Please login to continue.
+            <p>A verification email has been sent to <strong>${email}</strong>.</p>
+            <p style="margin-top: 10px;"><strong>Important:</strong> You must verify your email before you can:</p>
+            <ul style="margin: 10px 0 10px 20px;">
+              <li>Login to your account</li>
+              <li>Make deposits</li>
+              <li>Start trading</li>
+              <li>Withdraw funds</li>
+            </ul>
+            <p>Check your spam folder if you don't see the email within 5 minutes.</p>
           </div>
         `;
         successEl.style.display = 'block';
@@ -124,11 +167,11 @@ if (signupForm) {
       // Clear form
       signupForm.reset();
 
-      // Show countdown to redirect
-      let countdown = 5;
+      // Show countdown to redirect to login page
+      let countdown = 10;
       const countdownEl = document.createElement('div');
       countdownEl.className = 'countdown-text';
-      countdownEl.style.marginTop = '10px';
+      countdownEl.style.marginTop = '15px';
       countdownEl.style.fontSize = '14px';
       countdownEl.style.color = '#6b7280';
       countdownEl.innerHTML = `Redirecting to login in <strong>${countdown}</strong> seconds...`;
@@ -147,23 +190,6 @@ if (signupForm) {
         }
       }, 1000);
 
-      // Also provide manual redirect button
-      setTimeout(() => {
-        const manualRedirect = document.createElement('div');
-        manualRedirect.style.marginTop = '15px';
-        manualRedirect.innerHTML = `
-          <p style="margin-bottom: 10px;">Not redirecting?</p>
-          <a href="login.html?signup=success&email=${encodeURIComponent(email)}" 
-             class="primary-btn" 
-             style="padding: 10px 20px; font-size: 14px;">
-            Go to Login Now
-          </a>
-        `;
-        if (successEl) {
-          successEl.appendChild(manualRedirect);
-        }
-      }, 2000);
-
     } catch (err) {
       console.error("Signup error:", err);
       
@@ -177,29 +203,28 @@ if (signupForm) {
       if (errorEl) {
         let errorMessage = err.message;
         
-        // User-friendly error messages
+        // Enhanced error messages for FinTech
         if (err.code === 'auth/email-already-in-use') {
-          errorMessage = "This email is already registered. Please login instead.";
+          errorMessage = "This email is already registered. Please login or use a different email.";
         } else if (err.code === 'auth/weak-password') {
-          errorMessage = "Password is too weak. Use at least 6 characters.";
+          errorMessage = "Password is too weak. Use at least 8 characters with uppercase, lowercase letters, and numbers.";
         } else if (err.code === 'auth/invalid-email') {
           errorMessage = "Please enter a valid email address.";
         } else if (err.code === 'auth/network-request-failed') {
-          errorMessage = "Network error. Please check your internet connection.";
+          errorMessage = "Network error. Please check your internet connection and try again.";
         } else if (err.code === 'auth/operation-not-allowed') {
           errorMessage = "Email/password accounts are not enabled. Please contact support.";
+        } else if (err.code === 'auth/too-many-requests') {
+          errorMessage = "Too many attempts. Please try again later.";
         }
         
-        errorEl.innerHTML = `<strong>✗ Error:</strong> ${errorMessage}`;
+        errorEl.innerHTML = `<strong>✗ Security Error:</strong> ${errorMessage}`;
         errorEl.style.display = 'block';
       }
     }
   });
 }
-
 /* ================= LOGIN ================= */
-const loginForm = document.getElementById("loginForm");
-
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -209,7 +234,7 @@ if (loginForm) {
     const password = document.getElementById("loginPassword")?.value;
 
     const errorEl = document.getElementById("loginError");
-    const successEl = document.getElementById("loginSuccess"); // Added success message for signup redirect
+    const successEl = document.getElementById("loginSuccess");
 
     if (errorEl) errorEl.textContent = "";
     if (successEl) successEl.textContent = "";
@@ -226,7 +251,7 @@ if (loginForm) {
       const submitBtn = document.getElementById('loginBtn');
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="loader"></span> Logging in...';
+        submitBtn.innerHTML = '<span class="loader"></span> Verifying...';
       }
 
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -234,19 +259,52 @@ if (loginForm) {
       
       console.log("Login successful for:", user.email);
       
+      // Check if email is verified - CRITICAL FOR FINTECH
+      if (!user.emailVerified) {
+        await signOut(auth); // Sign out immediately
+        throw {
+          code: 'auth/email-not-verified',
+          message: 'Email not verified. Please verify your email before logging in.'
+        };
+      }
+      
+      // Check account restrictions in database
+      const userRef = ref(db, `users/${user.uid}/restrictions`);
+      const snapshot = await get(userRef);
+      const restrictions = snapshot.val();
+      
+      if (restrictions?.accountLocked) {
+        await signOut(auth);
+        throw {
+          code: 'auth/account-locked',
+          message: 'Account is locked. Please contact support.'
+        };
+      }
+      
       // Update last login time in database
       await set(ref(db, `users/${user.uid}/profile/lastLogin`), Date.now());
       
-      // Show success message briefly before redirect
+      // Reset login attempts on successful login
+      await set(ref(db, `users/${user.uid}/security/loginAttempts`), 0);
+      
+      // Log the login
+      await push(ref(db, `securityLogs/${user.uid}`), {
+        action: 'login',
+        timestamp: Date.now(),
+        ip: await getIP(),
+        userAgent: navigator.userAgent
+      });
+      
+      // Show success message
       if (successEl) {
-        successEl.innerHTML = '<strong>✓ Login successful! Redirecting...</strong>';
+        successEl.innerHTML = '<strong>✓ Security verification successful! Redirecting...</strong>';
         successEl.style.display = 'block';
       }
       
-      // Short delay before redirect to show success message
+      // Short delay for security confirmation
       setTimeout(() => {
         window.location.href = "dashboard.html";
-      }, 1000);
+      }, 1500);
 
     } catch (err) {
       console.error("Login error:", err);
@@ -261,20 +319,30 @@ if (loginForm) {
       if (errorEl) {
         let errorMessage = err.message;
         
-        // User-friendly error messages
-        if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+        // Enhanced error handling for FinTech
+        if (err.code === 'auth/email-not-verified') {
+          errorMessage = `
+            Email not verified.<br>
+            <a href="#" onclick="resendVerificationEmail('${email}')" style="color: #3b82f6; text-decoration: underline;">
+              Click here to resend verification email
+            </a>
+          `;
+        } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
           errorMessage = "Invalid email or password. Please try again.";
+          // Track failed attempts here (implement rate limiting)
         } else if (err.code === 'auth/user-not-found') {
-          errorMessage = "No account found with this email. Please sign up.";
+          errorMessage = "No verified account found with this email. Please sign up or check your verification email.";
         } else if (err.code === 'auth/too-many-requests') {
-          errorMessage = "Too many failed attempts. Please try again later.";
+          errorMessage = "Too many failed attempts. Please try again in 15 minutes or reset your password.";
         } else if (err.code === 'auth/network-request-failed') {
           errorMessage = "Network error. Please check your internet connection.";
         } else if (err.code === 'auth/user-disabled') {
-          errorMessage = "This account has been disabled. Please contact support.";
+          errorMessage = "This account has been disabled for security reasons. Please contact support.";
+        } else if (err.code === 'auth/account-locked') {
+          errorMessage = "Account is temporarily locked. Please contact customer support.";
         }
         
-        errorEl.innerHTML = `<strong>✗ Error:</strong> ${errorMessage}`;
+        errorEl.innerHTML = `<strong>✗ Security Alert:</strong> ${errorMessage}`;
         errorEl.style.display = 'block';
       }
     }
@@ -383,4 +451,72 @@ function checkSignupSuccess() {
 // Run check on login page load
 if (window.location.pathname.includes("login.html")) {
   document.addEventListener('DOMContentLoaded', checkSignupSuccess);
+}
+
+onAuthStateChanged(auth, async (user) => {
+  console.log("Auth state changed:", user ? `User: ${user.email}` : "No user");
+  
+  const currentPage = window.location.pathname.split("/").pop();
+  const protectedPages = ["dashboard.html", "wallet.html", "investments.html", "profile.html", "trading.html"];
+  const authPages = ["login.html", "register.html", "forgot-password.html"];
+  
+  // If user exists
+  if (user) {
+    // Check email verification for FinTech
+    if (!user.emailVerified && protectedPages.includes(currentPage)) {
+      console.log("User not verified, redirecting to verification page");
+      await signOut(auth);
+      window.location.href = "verify-email.html?email=" + encodeURIComponent(user.email);
+      return;
+    }
+    
+    localStorage.setItem('userLoggedIn', 'true');
+    localStorage.setItem('userEmail', user.email || '');
+    
+    // Redirect logged-in, verified users away from auth pages
+    if (authPages.includes(currentPage) && user.emailVerified) {
+      console.log("Verified user already logged in, redirecting to dashboard");
+      window.location.href = "dashboard.html";
+      return;
+    }
+    
+  } else {
+    localStorage.removeItem('userLoggedIn');
+    localStorage.removeItem('userEmail');
+    
+    // Redirect non-logged-in users from protected pages
+    if (protectedPages.includes(currentPage)) {
+      console.log("No authenticated user, redirecting to login");
+      window.location.href = "login.html?redirect=" + encodeURIComponent(currentPage);
+    }
+  }
+});
+
+/* ================= EMAIL VERIFICATION ================= */
+// Function to resend verification email
+window.resendVerificationEmail = async function(email) {
+  try {
+    // Create a temporary user credential to resend verification
+    const actionCodeSettings = {
+      url: window.location.origin + '/login.html',
+      handleCodeInApp: true
+    };
+    
+    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+    alert('Verification email resent. Please check your inbox.');
+  } catch (err) {
+    console.error('Error resending verification:', err);
+    alert('Could not resend verification. Please try again or contact support.');
+  }
+};
+
+// Function to check verification status
+async function checkEmailVerification(user) {
+  try {
+    await user.reload();
+    return user.emailVerified;
+  } catch (err) {
+    console.error('Error checking verification:', err);
+    return false;
+  }
 }
