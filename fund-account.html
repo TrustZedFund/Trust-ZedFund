@@ -245,6 +245,8 @@ onAuthStateChanged(auth, user => {
 });
 
 submitBtn.addEventListener("click", async () => {
+  if (submitBtn.disabled) return;
+
   const method = methodEl.value;
   const amount = Number(amountEl.value);
   const file   = proofEl.files[0];
@@ -256,15 +258,16 @@ submitBtn.addEventListener("click", async () => {
 
   submitBtn.disabled = true;
   submitBtn.textContent = "Uploading 0%";
-  status.textContent = "⏳ Uploading transaction proof…";
+  status.textContent = "⏳ Uploading transaction proof… (0%)";
 
   try {
     await submitDepositProof(
       currentUser.uid,
       { method, amount },
-      file,
+      new File([file], file.name, { type: file.type }),
       percent => {
         submitBtn.textContent = `Uploading ${percent}%`;
+        status.textContent = `⏳ Uploading transaction proof… (${percent}%)`;
       }
     );
 
