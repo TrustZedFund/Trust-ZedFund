@@ -159,6 +159,27 @@ button {
   font-size: 14px;
   color: var(--tzf-text-muted);
 }
+.deposit-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 14px;
+  margin-top: 15px;
+  background: linear-gradient(135deg, #1dd88a, #0fb36a);
+  color: #003820;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 14px;
+  font-size: 16px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.deposit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+}
+
 </style>
 </head>
 
@@ -219,6 +240,9 @@ button {
           Confirm Deposit
         </button>
       </div>
+<a href="fund-account.html" class="deposit-btn">
+  💰 Deposit Crypto
+</a>
 
     </div>
 
