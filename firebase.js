@@ -185,37 +185,48 @@ export function onUserInvestments(uid, callback) {
    DEPOSIT PROOF UPLOAD
 =================================================== */
 
-export async function submitDepositProof(uid, data, file) {
+export async function submitDepositProof(uid, data, file, onProgress) {
   if (!uid) throw new Error("User not authenticated");
   if (!file) throw new Error("No proof file selected");
 
-  // 1️⃣ Upload file
   const filePath = `depositProofs/${uid}/${Date.now()}_${file.name}`;
   const proofRef = storageRef(storage, filePath);
 
-  await uploadBytes(proofRef, file);
-  const proofURL = await getDownloadURL(proofRef);
+  // 🔄 Upload with progress
+  const uploadTask = uploadBytesResumable(proofRef, file);
 
-  // 2️⃣ Save deposit request
-  const depositRef = push(ref(db, `depositRequests`));
+  return new Promise((resolve, reject) => {
+    uploadTask.on(
+      "state_changed",
+      snapshot => {
+        const percent =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        if (onProgress) onProgress(Math.round(percent));
+      },
+      error => reject(error),
+      async () => {
+        const proofURL = await getDownloadURL(uploadTask.snapshot.ref);
 
-  await set(depositRef, {
-    uid,
-    amount: data.amount,
-    method: data.method,
-    proofURL,
-    status: "pending",
-    createdAt: Date.now()
+        const depositRef = push(ref(db, `depositRequests`));
+        await set(depositRef, {
+          uid,
+          amount: data.amount,
+          method: data.method,
+          proofURL,
+          status: "pending",
+          createdAt: Date.now()
+        });
+
+        await set(push(ref(db, `users/${uid}/transactions`)), {
+          type: "Deposit",
+          amount: data.amount,
+          method: data.method,
+          status: "Pending",
+          date: new Date().toISOString()
+        });
+
+        resolve(true);
+      }
+    );
   });
-
-  // 3️⃣ Transaction log (pending)
-  await set(push(ref(db, `users/${uid}/transactions`)), {
-    type: "Deposit",
-    amount: data.amount,
-    method: data.method,
-    status: "Pending",
-    date: new Date().toISOString()
-  });
-
-  return true;
 }
