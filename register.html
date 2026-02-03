@@ -1,169 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up | Trust ZedFund</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account | Trust ZedFund</title>
+  <link rel="stylesheet" href="styles.css" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    /* Additional styles */
+    .success-message {
+      padding: 15px;
+      background: #d1fae5;
+      border: 1px solid #10b981;
+      border-radius: 8px;
+      color: #065f46;
+      margin: 15px 0;
     }
     
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+    .error-message {
+      padding: 15px;
+      background: #fee2e2;
+      border: 1px solid #ef4444;
+      border-radius: 8px;
+      color: #991b1b;
+      margin: 15px 0;
     }
     
-    .container {
-      width: 100%;
-      max-width: 400px;
-    }
-    
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    h2 {
-      text-align: center;
-      margin-bottom: 25px;
-      color: #333;
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    label {
-      display: block;
-      margin-bottom: 5px;
-      color: #555;
-      font-weight: bold;
-    }
-    
-    input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-    
-    input:focus {
-      outline: none;
-      border-color: #4CAF50;
-    }
-    
-    button {
-      width: 100%;
-      padding: 14px;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
+    .countdown-text {
+      font-size: 14px;
+      color: #6b7280;
       margin-top: 10px;
     }
     
-    button:hover {
-      background: #45a049;
+    .loader {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
     }
     
-    button:disabled {
-      background: #cccccc;
-      cursor: not-allowed;
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
     
-    .error {
-      color: #d32f2f;
-      background: #ffebee;
-      padding: 10px;
-      border-radius: 5px;
-      margin-bottom: 15px;
-      display: none;
-    }
-    
-    .success {
-      color: #388e3c;
-      background: #e8f5e9;
-      padding: 10px;
-      border-radius: 5px;
-      margin-bottom: 15px;
-      display: none;
-    }
-    
-    .login-link {
+    .manual-redirect {
+      margin-top: 15px;
       text-align: center;
-      margin-top: 20px;
-      color: #666;
     }
     
-    .login-link a {
-      color: #4CAF50;
-      text-decoration: none;
-    }
-    
-    .login-link a:hover {
-      text-decoration: underline;
+    .manual-redirect .primary-btn {
+      display: inline-block;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <h2>Create Account</h2>
-      
-      <div id="signupError" class="error"></div>
-      <div id="signupSuccess" class="success"></div>
-      
-      <form id="signupForm">
-        <div class="form-group">
-          <label for="name">Full Name *</label>
-          <input type="text" id="name" placeholder="Enter your full name" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="email">Email Address *</label>
-          <input type="email" id="email" placeholder="Enter your email" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="password">Password *</label>
-          <input type="password" id="password" placeholder="Create a password (min 6 chars)" required minlength="6">
-        </div>
-        
-        <div class="form-group">
-          <label for="referral">Referral Code (Optional)</label>
-          <input type="text" id="referral" placeholder="Enter referral code if any">
-        </div>
-        
-        <button type="submit" id="signupBtn">Create Account</button>
-      </form>
-      
-      <div class="login-link">
-        Already have an account? <a href="login.html">Login here</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- IMPORTANT: Load Firebase SDK FIRST -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  
-  <!-- Then load our scripts -->
-  <script src="firebase-config.js"></script>
-  <script src="auth-system.js"></script>
+<!-- HERO -->
+<section class="auth-hero">
+  <h1>Start Your Investment Journey</h1>
+  <p>
+    Create your account in under 2 minutes and start building wealth with Trust ZedFund.
+  </p>
+</section>
+
+<!-- SIGNUP CARD -->
+<div class="auth-wrapper">
+  <form id="signupForm" class="auth-card">
+    <h2>Create Your Account</h2>
+    
+    <div id="signupSuccess" class="success-message" style="display: none;"></div>
+    <div id="signupError" class="error-message" style="display: none;"></div>
+
+    <div class="form-group">
+      <label for="name">Full Name *</label>
+      <input class="input" id="name" placeholder="John Doe" required />
+      <div class="form-hint">As it appears on your official ID</div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email Address *</label>
+      <input class="input" id="email" type="email" placeholder="you@example.com" required />
+      <div class="form-hint">We'll send your login details here</div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password *</label>
+      <div class="password-wrap">
+        <input class="input" id="password" type="password" placeholder="••••••••" required minlength="6" />
+        <span class="toggle-eye" onclick="togglePassword('password')">👀</span>
+      </div>
+      <div class="form-hint">Minimum 6 characters</div>
+    </div>
+
+    <div class="form-group">
+      <label for="referral">Referral Code</label>
+      <input class="input" id="referral" placeholder="Enter if you have one" />
+      <div class="form-hint">Optional - Get bonus for referrals</div>
+    </div>
+
+    <div class="terms-agreement">
+      <input type="checkbox" id="terms" required />
+      <label for="terms">
+        I agree to the <a href="terms.html" target="_blank">Terms of Service</a> and 
+        <a href="privacy.html" target="_blank">Privacy Policy</a> *
+      </label>
+    </div>
+
+    <button type="submit" class="primary-btn" id="signupBtn">
+      Create Account
+    </button>
+
+    <div class="auth-divider">
+      <span>Already have an account?</span>
+    </div>
+
+    <div class="alternative-action">
+      <a href="login.html" class="secondary-btn">
+        Login to Existing Account
+      </a>
+    </div>
+
+    <p class="auth-note">
+      * Required fields. By creating an account, you confirm you're at least 18 years old.
+    </p>
+  </form>
+</div>
+
+<footer class="auth-footer">
+  <p>© 2026 Trust ZedFund. All investments carry risk. Past performance is not indicative of future results.</p>
+  <p class="footer-links">
+    <a href="terms.html">Terms</a> • 
+    <a href="privacy.html">Privacy</a> • 
+    <a href="contact.html">Contact</a> • 
+    <a href="faq.html">FAQ</a>
+  </p>
+</footer>
+
+<script>
+  // Password toggle function
+  function togglePassword(id) {
+    const input = document.getElementById(id);
+    const eye = input.nextElementSibling || input.parentElement.querySelector('.toggle-eye');
+    
+    if (input.type === "password") {
+      input.type = "text";
+      eye.textContent = "🙈";
+    } else {
+      input.type = "password";
+      eye.textContent = "👀";
+    }
+  }
+
+  // Auto-fill referral code from URL
+  document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    const refCode = params.get("ref");
+    
+    if (refCode) {
+      const referralInput = document.getElementById("referral");
+      if (referralInput) {
+        referralInput.value = refCode;
+        const label = referralInput.previousElementSibling;
+        if (label && label.tagName === 'LABEL') {
+          label.innerHTML = `Referral Code <span style="color:#10b981;">(Pre-filled)</span>`;
+        }
+      }
+    }
+    
+    // Form validation
+    const form = document.getElementById('signupForm');
+    if (form) {
+      const requiredInputs = form.querySelectorAll('input[required]');
+      requiredInputs.forEach(input => {
+        const label = input.previousElementSibling;
+        if (label && label.tagName === 'LABEL') {
+          label.innerHTML = label.innerHTML.replace('*', '<span style="color:#ef4444;">*</span>');
+        }
+      });
+    }
+  });
+</script>
+
+<!-- Load scripts in correct order -->
+<script type="module" src="firebase.js"></script>
+<script type="module" src="auth.js"></script>
+
 </body>
 </html>
