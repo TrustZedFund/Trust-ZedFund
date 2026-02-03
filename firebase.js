@@ -208,3 +208,8 @@ export async function submitDepositProof(uid, data, file, onProgress) {
     );
   });
 }
+// Add these imports at the top of firebase.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
