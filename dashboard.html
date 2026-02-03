@@ -303,8 +303,49 @@ function markRead(item) {
       profileDropdown.classList.remove("show");
     }
   });
+
+// Direct logout function
+function handleLogout() {
+  if (confirm("Are you sure you want to logout?")) {
+    // Show loading state
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.disabled = true;
+      logoutBtn.innerHTML = '<span class="loader"></span> Logging out...';
+    }
+    
+    // Import and use Firebase logout
+    import('./firebase.js').then(({ auth, signOut }) => {
+      signOut(auth).then(() => {
+        console.log("User logged out");
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = "login.html?logout=success";
+      }).catch(error => {
+        console.error("Logout error:", error);
+        alert("Logout failed. Please try again.");
+        if (logoutBtn) {
+          logoutBtn.disabled = false;
+          logoutBtn.innerHTML = '🚪 Logout';
+        }
+      });
+    }).catch(error => {
+      console.error("Error loading firebase module:", error);
+      // Fallback redirect
+      localStorage.clear();
+      window.location.href = "login.html";
+    });
+  }
+}
+
+// Attach logout handler when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', handleLogout);
+  }
+});
 </script>
-<script>
 // Quick fix to show user's name immediately
 document.addEventListener('DOMContentLoaded', function() {
   // Try to get name from localStorage first
