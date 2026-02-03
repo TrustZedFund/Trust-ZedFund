@@ -11,6 +11,9 @@ import {
   push
 } from "./firebase.js";
 
+// 🔥 ADD THIS GLOBAL FLAG TO CONTROL AUTH REDIRECTS
+let isSigningUp = false;
+
 /* ================= SIGN UP ================= */
 const signupForm = document.getElementById("signupForm");
 
@@ -18,6 +21,9 @@ if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     console.log("Signup form submitted");
+
+    // 🔥 SET FLAG TO PREVENT AUTO-REDIRECT
+    isSigningUp = true;
 
     const name = document.getElementById("name")?.value.trim();
     const email = document.getElementById("email")?.value.trim();
@@ -32,11 +38,13 @@ if (signupForm) {
 
     if (!name || !email || !password) {
       if (errorEl) errorEl.textContent = "All required fields must be filled";
+      isSigningUp = false; // 🔥 RESET FLAG
       return;
     }
 
     if (password.length < 6) {
       if (errorEl) errorEl.textContent = "Password must be at least 6 characters";
+      isSigningUp = false; // 🔥 RESET FLAG
       return;
     }
 
@@ -44,6 +52,7 @@ if (signupForm) {
     const termsCheckbox = document.getElementById('terms');
     if (termsCheckbox && !termsCheckbox.checked) {
       if (errorEl) errorEl.textContent = "Please agree to the Terms of Service";
+      isSigningUp = false; // 🔥 RESET FLAG
       return;
     }
 
@@ -56,9 +65,6 @@ if (signupForm) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="loader"></span> Creating Account...';
       }
-
-      // TEMPORARILY DISABLE AUTH STATE LISTENER
-      window.__skipAuthRedirect = true;
 
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const user = cred.user;
@@ -110,12 +116,12 @@ if (signupForm) {
         });
       }
 
-      // 🔥 CRITICAL FIX: SIGN OUT USER IMMEDIATELY
+      // Auto sign-out after account creation (security best practice)
       await signOut(auth);
       console.log("User signed out after account creation");
-      
-      // RE-ENABLE AUTH STATE LISTENER
-      window.__skipAuthRedirect = false;
+
+      // 🔥 RESET THE FLAG AFTER SIGNUP COMPLETES
+      isSigningUp = false;
 
       if (successEl) {
         successEl.innerHTML = `
@@ -172,6 +178,9 @@ if (signupForm) {
 
     } catch (err) {
       console.error("Signup error:", err);
+      
+      // 🔥 RESET FLAG ON ERROR
+      isSigningUp = false;
       
       // Re-enable button
       const submitBtn = document.getElementById('signupBtn');
@@ -318,9 +327,9 @@ window.logout = async function () {
 onAuthStateChanged(auth, (user) => {
   console.log("Auth state changed:", user ? `User: ${user.email}` : "No user");
   
-  // 🔥 CRITICAL FIX: Skip redirect during signup process
-  if (window.__skipAuthRedirect) {
-    console.log("Skipping auth redirect during signup");
+  // 🔥 CRITICAL FIX: SKIP REDIRECT IF USER IS IN THE MIDDLE OF SIGNING UP
+  if (isSigningUp) {
+    console.log("Skipping redirect because user is signing up");
     return;
   }
   
