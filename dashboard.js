@@ -3,6 +3,8 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 import { ref, get, update } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
 let currentUserId = null;
+import { auth, db } from "./firebase.js";
+import { onValue, ref } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
 /* ======================
    AUTH GUARD + LOAD USER
