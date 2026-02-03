@@ -243,3 +243,10 @@ function loadNotifications(userId) {
     badge.style.display = unread > 0 ? "inline-block" : "none";
   });
 }
+import { update } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+function markAsRead(userId, notifId) {
+  update(ref(db, `notifications/${userId}/${notifId}`), {
+    read: true
+  });
+}
