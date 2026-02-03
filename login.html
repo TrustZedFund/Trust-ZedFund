@@ -5,6 +5,84 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login | Trust ZedFund</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Additional styles for login page */
+    .auth-card button:disabled {
+      background-color: #3b82f6;
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
+    
+    .loader {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .error-text {
+      color: #ef4444;
+      font-weight: 500;
+      padding: 10px;
+      background-color: #fee2e2;
+      border-radius: 8px;
+      margin: 10px 0;
+      text-align: center;
+    }
+    
+    .forgot-link {
+      text-align: right;
+      margin-top: -10px;
+      margin-bottom: 20px;
+    }
+    
+    .forgot-link a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .forgot-link a:hover {
+      text-decoration: underline;
+    }
+    
+    .demo-credentials {
+      background-color: #f3f4f6;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+    
+    .demo-credentials h4 {
+      margin-top: 0;
+      color: #374151;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    
+    .demo-credentials p {
+      margin: 5px 0;
+      color: #6b7280;
+    }
+    
+    .demo-credentials code {
+      background-color: #e5e7eb;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+  </style>
 </head>
 <body>
 
@@ -15,25 +93,43 @@
 
 <div class="auth-wrapper">
   <form id="loginForm" class="auth-card">
-    <h2>Login</h2>
+    <h2>Login to Your Account</h2>
 
-    <input class="input" id="loginEmail" type="email" placeholder="Email Address" required />
+    <div class="form-group">
+      <input class="input" id="loginEmail" type="email" placeholder="Email Address" required />
+      <div class="form-hint">Enter your registered email address</div>
+    </div>
 
-    <div class="password-wrap">
-      <input class="input" id="loginPassword" type="password" placeholder="Password" required />
-      <span class="toggle-eye" onclick="togglePassword('loginPassword')">👀</span>
+    <div class="form-group">
+      <div class="password-wrap">
+        <input class="input" id="loginPassword" type="password" placeholder="Password" required />
+        <span class="toggle-eye" onclick="togglePassword('loginPassword')">👀</span>
+      </div>
+      <div class="form-hint">Enter your secure password</div>
+    </div>
+
+    <div class="forgot-link">
+      <a href="forgot-password.html">Forgot Password?</a>
     </div>
 
     <div id="loginError" class="error-text"></div>
 
-    <button type="submit" class="primary-btn">
+    <button type="submit" class="primary-btn" id="loginBtn">
       Login
     </button>
 
+    <!-- Demo credentials for testing (remove in production) -->
+    <div class="demo-credentials">
+      <h4>⚠️ Testing Demo Credentials:</h4>
+      <p>Email: <code>demo@trustzedfund.com</code></p>
+      <p>Password: <code>demo123</code></p>
+      <p><small>Use these for testing only. Replace with real credentials.</small></p>
+    </div>
+
     <p class="auth-switch">
-  Forgot password?
-  <a href="forgot-password.html">Reset Here</a>
-</p>
+      Don't have an account?
+      <a href="register.html">Sign Up</a>
+    </p>
   </form>
 </div>
 
@@ -42,17 +138,105 @@
 </footer>
 
 <script>
+  // Password toggle function
   function togglePassword(id) {
     const input = document.getElementById(id);
-    input.type = input.type === "password" ? "text" : "password";
+    const eye = input.nextElementSibling || input.parentElement.querySelector('.toggle-eye');
+    
+    if (input.type === "password") {
+      input.type = "text";
+      eye.textContent = "🙈";
+    } else {
+      input.type = "password";
+      eye.textContent = "👀";
+    }
   }
-  window.onerror = function(msg, url, line) {
-    console.error('Error: ' + msg + '\nURL: ' + url + '\nLine: ' + line);
-    alert('JavaScript Error: ' + msg);
-    return true;
-  };
+
+  // Auto-fill demo credentials for testing (remove in production)
+  document.addEventListener('DOMContentLoaded', function() {
+    // Auto-fill demo credentials for easier testing
+    const emailInput = document.getElementById('loginEmail');
+    const passwordInput = document.getElementById('loginPassword');
+    
+    if (emailInput && passwordInput) {
+      // Comment out these lines in production
+      emailInput.value = 'demo@trustzedfund.com';
+      passwordInput.value = 'demo123';
+      
+      // Form validation feedback
+      const inputs = document.querySelectorAll('#loginForm input[required]');
+      inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+          if (!this.value.trim()) {
+            this.style.borderColor = '#ef4444';
+          } else {
+            this.style.borderColor = '#d1d5db';
+          }
+        });
+        
+        input.addEventListener('input', function() {
+          if (this.value.trim()) {
+            this.style.borderColor = '#d1d5db';
+          }
+        });
+      });
+    }
+    
+    // Check if user is already logged in
+    if (localStorage.getItem('userLoggedIn') === 'true') {
+      console.log('User appears to be logged in (from localStorage)');
+    }
+    
+    // Handle Enter key submission
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+      loginForm.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const submitBtn = document.getElementById('loginBtn');
+          if (submitBtn && !submitBtn.disabled) {
+            submitBtn.click();
+          }
+        }
+      });
+    }
+  });
+
+  // Remember login state (optional)
+  function rememberLogin(email) {
+    localStorage.setItem('lastLoginEmail', email);
+    localStorage.setItem('lastLoginTime', new Date().toISOString());
+  }
+
+  // Global error handler
+  window.addEventListener('error', function(e) {
+    console.error('Global error caught:', e.error);
+    const errorEl = document.getElementById('loginError');
+    if (errorEl) {
+      errorEl.textContent = 'An unexpected error occurred. Please try again.';
+    }
+  });
+  
+  // Check for error messages in URL (e.g., from redirects)
+  window.addEventListener('load', function() {
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get('error');
+    if (error) {
+      const errorEl = document.getElementById('loginError');
+      if (errorEl) {
+        errorEl.textContent = decodeURIComponent(error);
+      }
+    }
+    
+    // Clear URL parameters after displaying error
+    if (window.history.replaceState && error) {
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  });
 </script>
 
+<!-- Load scripts in correct order -->
 <script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
 
