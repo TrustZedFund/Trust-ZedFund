@@ -46,6 +46,11 @@
     const input = document.getElementById(id);
     input.type = input.type === "password" ? "text" : "password";
   }
+  window.onerror = function(msg, url, line) {
+    console.error('Error: ' + msg + '\nURL: ' + url + '\nLine: ' + line);
+    alert('JavaScript Error: ' + msg);
+    return true;
+  };
 </script>
 
 <script type="module" src="firebase.js"></script>
