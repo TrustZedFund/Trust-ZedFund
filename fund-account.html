@@ -195,33 +195,56 @@ import { auth, submitDepositProof } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
 let currentUser = null;
+
 const status = document.getElementById("status");
+const submitBtn = document.getElementById("submitBtn");
+
+const methodEl = document.getElementById("method");
+const amountEl = document.getElementById("amount");
+const proofEl  = document.getElementById("proof");
 
 onAuthStateChanged(auth, user => {
   if (!user) {
     status.textContent = "❌ Please login to submit proof.";
-    document.getElementById("submitBtn").disabled = true;
+    submitBtn.disabled = true;
   } else {
     currentUser = user;
+    submitBtn.disabled = false;
   }
 });
 
-document.getElementById("submitBtn").onclick = async () => {
+submitBtn.addEventListener("click", async () => {
   const method = methodEl.value;
   const amount = Number(amountEl.value);
-  const file = proof.files[0];
+  const file   = proofEl.files[0];
 
   if (!method || !amount || !file) {
-    status.textContent = "⚠ Complete all fields.";
+    status.textContent = "⚠ Please complete all fields.";
     return;
   }
 
-  status.textContent = "Uploading proof...";
-  await submitDepositProof(currentUser.uid, { method, amount }, file);
-  status.textContent = "✅ Submitted. Await approval.";
-};
-</script>
+  try {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Uploading...";
+    status.textContent = "";
 
+    await submitDepositProof(
+      currentUser.uid,
+      { method, amount },
+      file
+    );
+
+    status.textContent = "✅ Deposit submitted. Await approval.";
+    submitBtn.textContent = "Submitted";
+
+  } catch (err) {
+    console.error(err);
+    status.textContent = "❌ " + err.message;
+    submitBtn.textContent = "Submit Proof";
+    submitBtn.disabled = false;
+  }
+});
+</script>
 <script>
 function copyText(id) {
   const el = document.getElementById(id);
