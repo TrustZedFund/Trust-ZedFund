@@ -304,5 +304,29 @@ function markRead(item) {
     }
   });
 </script>
+<script>
+// Quick fix to show user's name immediately
+document.addEventListener('DOMContentLoaded', function() {
+  // Try to get name from localStorage first
+  const userFirstName = localStorage.getItem('userFirstName');
+  const userEmail = localStorage.getItem('userEmail');
+  
+  if (userFirstName) {
+    document.getElementById('heroHeading').textContent = `Welcome, ${userFirstName}!`;
+  }
+  
+  if (userEmail) {
+    const emailElement = document.getElementById('userEmail');
+    if (emailElement) {
+      emailElement.textContent = userEmail;
+    }
+  }
+  
+  // Fallback to "Welcome back!" if no name found
+  if (!userFirstName && document.getElementById('heroHeading').textContent === 'Hello, User') {
+    document.getElementById('heroHeading').textContent = 'Welcome back!';
+  }
+});
+</script>
 </body>
 </html>
