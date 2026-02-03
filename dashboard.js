@@ -73,6 +73,168 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ======================
+   PROFILE DROPDOWN TOGGLE - FIXED
+====================== */
+function setupProfileDropdown() {
+  const profileBtn = document.getElementById("profileBtn");
+  const profileDropdown = document.getElementById("profileDropdown");
+  
+  if (!profileBtn || !profileDropdown) {
+    console.error("Profile dropdown elements not found");
+    return;
+  }
+  
+  console.log("Setting up profile dropdown");
+  
+  // Toggle dropdown on button click
+  profileBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    console.log("Profile button clicked");
+    
+    // Close notification panel if open
+    const notifPanel = document.getElementById("notifPanel");
+    if (notifPanel && notifPanel.style.display === "block") {
+      notifPanel.style.display = "none";
+    }
+    
+    // Toggle profile dropdown
+    profileDropdown.classList.toggle("show");
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+      profileDropdown.classList.remove("show");
+    }
+  });
+  
+  // Close dropdown when clicking on dropdown items
+  const dropdownItems = profileDropdown.querySelectorAll("button, .dropdown-link");
+  dropdownItems.forEach(item => {
+    item.addEventListener("click", () => {
+      profileDropdown.classList.remove("show");
+    });
+  });
+}
+
+/* ======================
+   NOTIFICATION TOGGLE - FIXED
+====================== */
+function setupNotifications() {
+  const notifBell = document.querySelector(".notif-bell");
+  const notifPanel = document.getElementById("notifPanel");
+  
+  if (!notifBell || !notifPanel) return;
+  
+  notifBell.addEventListener("click", (e) => {
+    e.stopPropagation();
+    
+    // Close profile dropdown if open
+    const profileDropdown = document.getElementById("profileDropdown");
+    if (profileDropdown && profileDropdown.classList.contains("show")) {
+      profileDropdown.classList.remove("show");
+    }
+    
+    // Toggle notification panel
+    notifPanel.style.display = notifPanel.style.display === "block" ? "none" : "block";
+  });
+}
+
+/* ======================
+   INITIALIZE EVERYTHING
+====================== */
+document.addEventListener('DOMContentLoaded', () => {
+  console.log("Dashboard initialized");
+  
+  // Setup profile dropdown
+  setupProfileDropdown();
+  
+  // Setup notifications
+  setupNotifications();
+  
+  // Setup logout button
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      if (confirm("Are you sure you want to logout?")) {
+        logoutBtn.disabled = true;
+        logoutBtn.textContent = "Logging out...";
+        
+        try {
+          await signOut(auth);
+          console.log("User logged out");
+          
+          // Clear all stored data
+          localStorage.clear();
+          sessionStorage.clear();
+          
+          // Redirect to login
+          window.location.href = "login.html?logout=success";
+        } catch (error) {
+          console.error("Logout error:", error);
+          alert("Logout failed. Please try again.");
+          logoutBtn.disabled = false;
+          logoutBtn.textContent = "Logout";
+        }
+      }
+    });
+  }
+  
+  // Check auth state
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    currentUserId = user.uid;
+
+    const snap = await get(ref(db, "users/" + user.uid));
+    if (!snap.exists()) return;
+    const data = snap.val();
+
+    // Extract first name from name field
+    let firstName = "User";
+    if (data.profile && data.profile.name) {
+      firstName = data.profile.name.split(" ")[0];
+    } else if (data.name) {
+      firstName = data.name.split(" ")[0];
+    }
+
+    // 🔥 FIX: Update greeting with actual name
+    document.getElementById("heroHeading").textContent = `Hello, ${firstName}`;
+    document.getElementById("heroSubheading").textContent = "Welcome to your portfolio";
+
+    // Dashboard Cards - Check both old and new data structures
+    const depositAmount = data.balances?.deposit || data.depositWallet || 0;
+    const earningsAmount = data.balances?.earnings || data.earningsWallet || 0;
+    const returnsAmount = data.balances?.returns || data.returnsWallet || 0;
+    const referralAmount = data.balances?.referralWallet || data.referralWallet || 0;
+
+    document.getElementById("depositWallet").textContent = `ZMK ${depositAmount.toFixed(2)}`;
+    document.getElementById("earningsWallet").textContent = `ZMK ${earningsAmount.toFixed(2)}`;
+    document.getElementById("returnsWallet").textContent = `ZMK ${returnsAmount.toFixed(2)}`;
+    document.getElementById("referralWallet").textContent = `ZMK ${referralAmount.toFixed(2)}`;
+    
+    // Active Investments
+    document.getElementById("activeInvestments").textContent = data.activeInvestments || "No active investments yet";
+
+    // Load notifications
+    loadNotifications(user.uid);
+    
+    // Load investments
+    loadInvestments(user.uid);
+    
+    // Set up real-time balance updates
+    setupRealTimeUpdates(user.uid);
+  });
+});
+
+// Rest of your existing functions remain the same...
+// (loadNotifications, loadInvestments, setupRealTimeUpdates, etc.)/* ======================
    PROFILE DROPDOWN TOGGLE
 ====================== */
 const profileBtn = document.getElementById("profileBtn");
