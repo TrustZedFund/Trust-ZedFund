@@ -1,11 +1,6 @@
-/* ================= FIREBASE IMPORTS ================= */
-
-import { initializeApp } from
-  "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-
-import { getAuth } from
-  "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-
+// firebase.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import {
   getDatabase,
   ref,
@@ -13,22 +8,17 @@ import {
   update,
   get,
   onValue,
-  push
-} from
-  "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
-
+  push,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 import {
   getStorage,
   ref as storageRef,
   uploadBytesResumable,
   getDownloadURL
-} from
-  "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
 
-// REMOVE THIS DUPLICATE LINE: import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-// REMOVE: import { getAuth } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-// REMOVE: import { getDatabase } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
-// REMOVE: import { getStorage } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
+/* ================= FIREBASE CONFIG ================= */
 
 const firebaseConfig = {
   apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
@@ -80,20 +70,16 @@ export function onBalanceChange(uid, callback) {
 =================================================== */
 
 export async function createInvestment(uid, plan, amount) {
-
   if (!amount || amount < 500) {
-    throw new Error("Minimum investment is ZMK 500");
+    throw new Error("Minimum investment is ZMW 500");
   }
 
   const balRef = ref(db, `users/${uid}/balances`);
   const balSnap = await get(balRef);
 
-  if (!balSnap.exists()) {
-    throw new Error("Wallet not found");
-  }
+  if (!balSnap.exists()) throw new Error("Wallet not found");
 
   const balances = balSnap.val();
-
   if ((balances.deposit || 0) < amount) {
     throw new Error("Insufficient deposit balance");
   }
@@ -135,16 +121,14 @@ export async function createInvestment(uid, plan, amount) {
 =================================================== */
 
 export async function processInvestmentProfits(uid) {
-
   const invRef = ref(db, `users/${uid}/investments`);
   const snap = await get(invRef);
   if (!snap.exists()) return;
 
-  const investments = snap.val();
   const now = Date.now();
 
-  for (const id in investments) {
-    const inv = investments[id];
+  for (const id in snap.val()) {
+    const inv = snap.val()[id];
     if (inv.status !== "active") continue;
 
     const elapsed = now - inv.lastProfitCalc;
@@ -180,38 +164,29 @@ export function onUserInvestments(uid, callback) {
 }
 
 /* ===================================================
-   DEPOSIT PROOF UPLOAD (🔥 FIXED)
+   DEPOSIT PROOF UPLOAD
 =================================================== */
 
 export async function submitDepositProof(uid, data, file, onProgress) {
-
   if (!uid) throw new Error("User not authenticated");
   if (!file) throw new Error("No proof file selected");
 
   const filePath = `depositProofs/${uid}/${Date.now()}_${file.name}`;
   const proofRef = storageRef(storage, filePath);
-
   const uploadTask = uploadBytesResumable(proofRef, file);
 
   return new Promise((resolve, reject) => {
-
     uploadTask.on(
       "state_changed",
-
-      snapshot => {
-        const percent =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      snap => {
+        const percent = (snap.bytesTransferred / snap.totalBytes) * 100;
         if (onProgress) onProgress(Math.round(percent));
       },
-
-      error => reject(error),
-
+      reject,
       async () => {
-        const proofURL =
-          await getDownloadURL(uploadTask.snapshot.ref);
+        const proofURL = await getDownloadURL(uploadTask.snapshot.ref);
 
-        const depositRef = push(ref(db, `depositRequests`));
-        await set(depositRef, {
+        await set(push(ref(db, "depositRequests")), {
           uid,
           amount: data.amount,
           method: data.method,
