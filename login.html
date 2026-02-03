@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login | Trust ZedFund</title>
+  <title>Login | Trust ZedFund - Financial Platform</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     /* Additional styles for login page */
@@ -94,48 +94,88 @@
       background: #eff6ff;
     }
     
-    .fintech-notice {
+    .security-banner {
+      background: linear-gradient(90deg, #1e40af, #3b82f6);
+      color: white;
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    
+    .security-banner strong {
+      font-weight: 600;
+    }
+    
+    .login-help {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+    
+    .login-help h4 {
+      margin: 0 0 10px 0;
+      color: #374151;
+    }
+    
+    .login-help ul {
+      margin: 10px 0 10px 20px;
+      padding: 0;
+    }
+    
+    .login-help li {
+      margin-bottom: 5px;
+    }
+    
+    .session-timeout {
       background: #fef3c7;
       border: 1px solid #f59e0b;
       border-radius: 8px;
       padding: 12px;
-      margin: 20px auto;
-      max-width: 500px;
-      text-align: center;
-      font-size: 14px;
+      margin: 15px 0;
+      font-size: 13px;
       color: #92400e;
     }
   </style>
 </head>
 <body>
 
-<!-- FINANCIAL SECURITY NOTICE -->
-<div class="fintech-notice">
-  🔒 <strong>Financial Security Notice:</strong> Secure login required for all account access. Unauthorized access is prohibited.
+<!-- SECURITY BANNER -->
+<div class="security-banner">
+  🔒 <strong>Secure Financial Platform</strong> | 256-bit SSL Encryption | Session Timeout: 15 minutes
 </div>
 
 <section class="auth-hero">
-  <h1>Secure Login | Trust ZedFund</h1>
-  <p>Access your investment dashboard with enhanced security protocols.</p>
+  <h1>Secure Account Access</h1>
+  <p>Login to manage your investments, view portfolio, and execute trades.</p>
 </section>
 
 <div class="auth-wrapper">
   <form id="loginForm" class="auth-card">
-    <h2>Login to Your Account</h2>
+    <h2>Account Login</h2>
     
     <div id="loginSuccess" class="success-message" style="display: none;"></div>
     <div id="loginError" class="error-message" style="display: none;"></div>
     
     <!-- Check for logout message -->
     <div id="logoutMessage" class="info-message" style="display: none;">
-      <strong>✓ Secure Logout Successful</strong><br>
-      Your session has been terminated. Please login again to continue.
+      <strong>✓ Secure Logout Complete</strong><br>
+      Your session has been terminated. Please login to continue.
+    </div>
+    
+    <!-- Check for session timeout -->
+    <div id="sessionTimeout" class="session-timeout" style="display: none;">
+      <strong>⚠️ Session Expired</strong><br>
+      Your previous session has ended. Please login again.
     </div>
 
     <div class="form-group">
       <label for="loginEmail">Email Address *</label>
       <input class="input" id="loginEmail" type="email" placeholder="you@example.com" required />
-      <div class="form-hint">Enter your registered email address</div>
+      <div class="form-hint">Your registered email address</div>
     </div>
 
     <div class="form-group">
@@ -145,43 +185,50 @@
         <span class="toggle-eye" onclick="togglePassword('loginPassword')">👀</span>
       </div>
       <div class="form-hint">
-        <a href="forgot-password.html" style="float: right;">Forgot Password?</a>
+        <a href="forgot-password.html">Forgot Password?</a>
+        <span style="float: right;">Case sensitive</span>
       </div>
+    </div>
+
+    <div class="login-help">
+      <h4>Account Access Notes:</h4>
+      <ul>
+        <li>New accounts: You must login after registration</li>
+        <li>Sessions automatically expire after 15 minutes</li>
+        <li>Multiple failed attempts will temporarily lock account</li>
+        <li>Contact support if you suspect unauthorized access</li>
+      </ul>
     </div>
 
     <button type="submit" class="primary-btn" id="loginBtn">
       🔐 Secure Login
     </button>
 
-    <div class="security-note" style="margin: 15px 0; padding: 10px; background: #f8fafc; border-radius: 6px;">
-      <p style="font-size: 13px; color: #6b7280; margin: 0;">
-        <strong>Important:</strong> For security reasons, please logout after each session.
-      </p>
-    </div>
-
     <div class="auth-divider">
-      <span>New to Trust ZedFund?</span>
+      <span>Need an account?</span>
     </div>
 
     <div class="alternative-action">
       <a href="register.html" class="secondary-btn">
-        Create Secure Account
+        Register New Account
       </a>
     </div>
 
     <p class="auth-note">
-      * Required fields. All login activities are monitored and logged for security purposes.
+      * Required fields. All login attempts are logged and monitored. 
+      <a href="security.html">Learn about our security measures</a>.
     </p>
   </form>
 </div>
 
 <footer class="auth-footer">
-  <p>© 2026 Trust ZedFund. Member FDIC. Secure login with 256-bit SSL encryption.</p>
+  <p>© 2026 Trust ZedFund. Member FDIC. FINRA/SIPC. Accounts protected up to $500,000.</p>
   <p class="footer-links">
     <a href="security.html">Security</a> • 
+    <a href="compliance.html">Compliance</a> • 
     <a href="contact.html">Support</a> • 
     <a href="privacy.html">Privacy</a> • 
-    <a href="compliance.html">Compliance</a>
+    <a href="disclosures.html">Disclosures</a>
   </p>
 </footer>
 
@@ -201,44 +248,68 @@
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    // Check for logout success message
     const params = new URLSearchParams(window.location.search);
-    const logoutSuccess = params.get("logout");
     
+    // Check for logout success message
+    const logoutSuccess = params.get("logout");
     if (logoutSuccess === "success") {
       const logoutMessage = document.getElementById('logoutMessage');
       if (logoutMessage) {
         logoutMessage.style.display = 'block';
       }
-      
-      // Clear URL parameters
-      if (window.history.replaceState) {
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
-      }
     }
     
-    // Check for redirect parameter
+    // Check for redirect parameter (session timeout)
     const redirectPage = params.get("redirect");
     if (redirectPage) {
-      console.log("Redirected from:", redirectPage);
-      const errorEl = document.getElementById('loginError');
-      if (errorEl) {
-        errorEl.innerHTML = `<strong>Session Security Alert:</strong> Please re-authenticate to access ${redirectPage}`;
-        errorEl.style.display = 'block';
+      const sessionTimeout = document.getElementById('sessionTimeout');
+      if (sessionTimeout) {
+        sessionTimeout.style.display = 'block';
+        sessionTimeout.innerHTML = `
+          <strong>⚠️ Authentication Required</strong><br>
+          Please login to access ${redirectPage.replace('.html', '')}.
+        `;
       }
     }
     
-    // Auto-fill email from localStorage if available
-    const savedEmail = localStorage.getItem('lastLoginEmail');
+    // Check for signup success
+    const signupSuccess = params.get("signup");
+    const email = params.get("email");
+    if (signupSuccess === "success" && email) {
+      // Already handled in auth.js, but we can add visual cue
+      const successEl = document.getElementById('loginSuccess');
+      if (successEl && successEl.innerHTML.includes('Account Created')) {
+        successEl.style.display = 'block';
+      }
+    }
+    
+    // Auto-fill email from localStorage or URL
     const emailInput = document.getElementById('loginEmail');
-    if (savedEmail && emailInput && !emailInput.value) {
-      emailInput.value = savedEmail;
+    if (emailInput) {
+      // First check URL parameter
+      if (email) {
+        emailInput.value = decodeURIComponent(email);
+      }
+      // Then check localStorage
+      else {
+        const savedEmail = localStorage.getItem('lastLoginEmail');
+        if (savedEmail && !emailInput.value) {
+          emailInput.value = savedEmail;
+        }
+      }
     }
     
     // Focus on password field if email is pre-filled
     if (emailInput && emailInput.value) {
       document.getElementById('loginPassword')?.focus();
+    } else {
+      emailInput?.focus();
+    }
+    
+    // Clear URL parameters
+    if (window.history.replaceState) {
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
     }
   });
 </script>
