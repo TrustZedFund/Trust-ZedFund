@@ -16,39 +16,38 @@ import {
 const auth = getAuth();
 const db = getDatabase();
 
-/* -------------------- DOM -------------------- */
+/* ================= SIGN UP ================= */
 const signupForm = document.getElementById("signupForm");
-const loginForm = document.getElementById("loginForm");
 
-const fullNameInput = document.getElementById("fullNameInput");
-const emailInput = document.getElementById("emailInput");
-const passwordInput = document.getElementById("passwordInput");
-const referralCodeInput = document.getElementById("referralCodeInput");
-
-/* -------------------- HELPERS -------------------- */
-function generateReferralCode(uid) {
-  return uid.slice(0, 6).toUpperCase();
-}
-
-/* -------------------- SIGN UP -------------------- */
 if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const fullName = fullNameInput.value.trim();
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-    const referredBy = referralCodeInput?.value.trim() || null;
+    const name = document.getElementById("name")?.value.trim();
+    const email = document.getElementById("email")?.value.trim();
+    const password = document.getElementById("password")?.value;
+    const referral = document.getElementById("referral")?.value.trim() || null;
+
+    const errorEl = document.getElementById("signupError");
+    const successEl = document.getElementById("signupSuccess");
+
+    if (errorEl) errorEl.textContent = "";
+    if (successEl) successEl.textContent = "";
+
+    if (!name || !email || !password) {
+      if (errorEl) errorEl.textContent = "All required fields must be filled";
+      return;
+    }
 
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const user = cred.user;
 
-      const referralCode = generateReferralCode(user.uid);
+      const referralCode = "TZF" + user.uid.slice(0, 6).toUpperCase();
 
       await set(ref(db, `users/${user.uid}`), {
         profile: {
-          fullName,
+          name,
           email,
           createdAt: Date.now()
         },
@@ -59,54 +58,73 @@ if (signupForm) {
         },
         referral: {
           code: referralCode,
-          referredBy
+          referredBy: referral
         }
       });
 
       await push(ref(db, `notifications/${user.uid}`), {
         message: "🎉 Welcome to Trust ZedFund!",
         read: false,
-        time: Date.now(),
-        type: "welcome"
+        time: Date.now()
       });
 
-      window.location.href = "dashboard.html";
+      if (successEl) successEl.textContent = "Account created. Redirecting…";
+
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1200);
 
     } catch (err) {
-      alert(err.message);
+      if (errorEl) errorEl.textContent = err.message;
+      console.error(err);
     }
   });
 }
 
-/* -------------------- LOGIN -------------------- */
+/* ================= LOGIN ================= */
+const loginForm = document.getElementById("loginForm");
+
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
+    const email = document.getElementById("loginEmail")?.value.trim();
+    const password = document.getElementById("loginPassword")?.value;
+
+    const errorEl = document.getElementById("loginError");
+    if (errorEl) errorEl.textContent = "";
+
+    if (!email || !password) {
+      if (errorEl) errorEl.textContent = "Email and password required";
+      return;
+    }
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
       window.location.href = "dashboard.html";
     } catch (err) {
-      alert(err.message);
+      if (errorEl) errorEl.textContent = err.message;
     }
   });
 }
 
-/* -------------------- LOGOUT -------------------- */
+/* ================= LOGOUT ================= */
 window.logout = async function () {
   await signOut(auth);
   window.location.href = "login.html";
 };
 
-/* -------------------- AUTH GUARD -------------------- */
+/* ================= AUTH GUARD ================= */
 onAuthStateChanged(auth, (user) => {
-  const protectedPages = ["dashboard.html", "wallet.html", "investments.html"];
-  const currentPage = location.pathname.split("/").pop();
+  const protectedPages = [
+    "dashboard.html",
+    "wallet.html",
+    "investments.html"
+  ];
 
-  if (!user && protectedPages.includes(currentPage)) {
+  const page = location.pathname.split("/").pop();
+
+  if (!user && protectedPages.includes(page)) {
     window.location.href = "login.html";
   }
 });
