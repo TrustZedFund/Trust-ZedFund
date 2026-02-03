@@ -27,52 +27,65 @@ body {
 
 /* NAVBAR */
 .navbar {
-  background: white;
-  padding: 14px 18px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 64px;
+  background: #0f3d2e; /* same as footer cards */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;          /* ✅ added */
-  gap: 12px;                /* ✅ added */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  padding: 0 18px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
-.logo {
+/* Logo area */
+.navbar .logo {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.logo span {
+  color: #ffffff;
+  font-size: 16px;
   font-weight: 700;
-  font-size: 18px;
-  color: var(--green-dark);
 }
 
+.navbar .logo img {
+  width: 42px;
+  height: auto;
+}
+
+/* Right actions */
 .nav-actions {
-  display: flex;            /* ✅ added */
-  align-items: center;      /* ✅ added */
-  gap: 12px;                /* ✅ added */
-  white-space: nowrap;      /* ✅ added */
+  display: flex;
+  gap: 14px;
 }
 
-.nav-actions a {
-  padding: 10px 18px;
-  border-radius: 24px;
+/* Login button */
+.nav-actions .login {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.nav-actions .login:hover {
+  opacity: 1;
+}
+
+/* Signup button */
+.nav-actions .signup {
+  background: #f5c542;
+  color: #0b2e1f;
+  padding: 8px 14px;
+  border-radius: 20px;
   text-decoration: none;
   font-weight: 600;
+  font-size: 14px;
 }
 
-.login {
-  color: var(--green-dark);
-}
-
-.signup {
-  background: linear-gradient(90deg, var(--green-light), var(--green-main));
-  color: #00352f;
+.nav-actions .signup:hover {
+  background: #ffd45c;
 }
 
 /* HERO */
