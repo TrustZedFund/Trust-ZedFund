@@ -53,12 +53,28 @@ if (signupForm) {
       // Disable button and show loading
       const submitBtn = document.getElementById('signupBtn');
       if (submitBtn) {
+        const originalText = submitBtn.textContent;
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="loader"></span> Creating Account...';
+        
+        // Store original button state to restore on error
+        submitBtn.dataset.originalText = originalText;
       }
 
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      const user = cred.user;
+      // IMPORTANT: Create a NEW auth instance for signup to prevent auto-login
+      // We'll use the existing auth but ensure proper signout
+      
+      // Force sign out any existing user first
+      try {
+        await signOut(auth);
+        console.log("Signed out any existing user before signup");
+      } catch (signOutError) {
+        console.log("No user to sign out:", signOutError.message);
+      }
+
+      // Create the new user account
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
       console.log("User created successfully:", user.uid);
 
       const referralCode = "TZF" + user.uid.slice(0, 6).toUpperCase();
@@ -98,7 +114,6 @@ if (signupForm) {
       // Update referral if provided
       if (referral) {
         console.log("Processing referral code:", referral);
-        // Add referral tracking logic here
         await push(ref(db, `referralTracking`), {
           referrerCode: referral,
           referredEmail: email,
@@ -107,9 +122,18 @@ if (signupForm) {
         });
       }
 
-      // Auto sign-out after account creation (security best practice)
+      // CRITICAL: Force immediate sign out after account creation
+      console.log("Force signing out after account creation...");
       await signOut(auth);
-      console.log("User signed out after account creation");
+      console.log("User signed out successfully");
+      
+      // Clear any auth state from localStorage/sessionStorage
+      localStorage.removeItem('userLoggedIn');
+      localStorage.removeItem('userEmail');
+      sessionStorage.clear();
+      
+      // Force auth state refresh
+      auth.currentUser = null;
 
       if (successEl) {
         successEl.innerHTML = `
@@ -143,6 +167,7 @@ if (signupForm) {
         
         if (countdown <= 0) {
           clearInterval(countdownInterval);
+          // Redirect to login with signup success flag
           window.location.href = "login.html?signup=success&email=" + encodeURIComponent(email);
         }
       }, 1000);
@@ -150,12 +175,13 @@ if (signupForm) {
       // Also provide manual redirect button
       setTimeout(() => {
         const manualRedirect = document.createElement('div');
+        manualRedirect.className = 'manual-redirect';
         manualRedirect.style.marginTop = '15px';
         manualRedirect.innerHTML = `
-          <p style="margin-bottom: 10px;">Not redirecting?</p>
+          <p style="margin-bottom: 10px;">Not redirecting automatically?</p>
           <a href="login.html?signup=success&email=${encodeURIComponent(email)}" 
              class="primary-btn" 
-             style="padding: 10px 20px; font-size: 14px;">
+             style="padding: 10px 20px; font-size: 14px; display: inline-block; width: auto;">
             Go to Login Now
           </a>
         `;
@@ -164,6 +190,16 @@ if (signupForm) {
         }
       }, 2000);
 
+      // IMPORTANT: Prevent any further auth state changes from redirecting
+      // Temporarily override the auth state change handler
+      const originalOnAuthStateChanged = auth.onAuthStateChanged;
+      auth.onAuthStateChanged = () => {}; // Temporarily disable
+
+      // Restore after redirect
+      setTimeout(() => {
+        auth.onAuthStateChanged = originalOnAuthStateChanged;
+      }, 3000);
+
     } catch (err) {
       console.error("Signup error:", err);
       
@@ -171,7 +207,7 @@ if (signupForm) {
       const submitBtn = document.getElementById('signupBtn');
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.textContent = "Create Account";
+        submitBtn.textContent = submitBtn.dataset.originalText || "Create Account";
       }
       
       if (errorEl) {
@@ -186,8 +222,6 @@ if (signupForm) {
           errorMessage = "Please enter a valid email address.";
         } else if (err.code === 'auth/network-request-failed') {
           errorMessage = "Network error. Please check your internet connection.";
-        } else if (err.code === 'auth/operation-not-allowed') {
-          errorMessage = "Email/password accounts are not enabled. Please contact support.";
         }
         
         errorEl.innerHTML = `<strong>✗ Error:</strong> ${errorMessage}`;
@@ -209,7 +243,7 @@ if (loginForm) {
     const password = document.getElementById("loginPassword")?.value;
 
     const errorEl = document.getElementById("loginError");
-    const successEl = document.getElementById("loginSuccess"); // Added success message for signup redirect
+    const successEl = document.getElementById("loginSuccess");
 
     if (errorEl) errorEl.textContent = "";
     if (successEl) successEl.textContent = "";
@@ -225,8 +259,10 @@ if (loginForm) {
       // Disable button during login attempt
       const submitBtn = document.getElementById('loginBtn');
       if (submitBtn) {
+        const originalText = submitBtn.textContent;
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="loader"></span> Logging in...';
+        submitBtn.dataset.originalText = originalText;
       }
 
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -237,9 +273,13 @@ if (loginForm) {
       // Update last login time in database
       await set(ref(db, `users/${user.uid}/profile/lastLogin`), Date.now());
       
+      // Store login state
+      localStorage.setItem('userLoggedIn', 'true');
+      localStorage.setItem('userEmail', email);
+      
       // Show success message briefly before redirect
       if (successEl) {
-        successEl.innerHTML = '<strong>✓ Login successful! Redirecting...</strong>';
+        successEl.innerHTML = '<strong>✓ Login successful! Redirecting to dashboard...</strong>';
         successEl.style.display = 'block';
       }
       
@@ -255,7 +295,7 @@ if (loginForm) {
       const submitBtn = document.getElementById('loginBtn');
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.textContent = "Login";
+        submitBtn.textContent = submitBtn.dataset.originalText || "Login";
       }
       
       if (errorEl) {
@@ -270,8 +310,6 @@ if (loginForm) {
           errorMessage = "Too many failed attempts. Please try again later.";
         } else if (err.code === 'auth/network-request-failed') {
           errorMessage = "Network error. Please check your internet connection.";
-        } else if (err.code === 'auth/user-disabled') {
-          errorMessage = "This account has been disabled. Please contact support.";
         }
         
         errorEl.innerHTML = `<strong>✗ Error:</strong> ${errorMessage}`;
@@ -297,6 +335,7 @@ window.logout = async function () {
       
       // Clear any cached data
       localStorage.removeItem('userLoggedIn');
+      localStorage.removeItem('userEmail');
       sessionStorage.clear();
       
       // Redirect to login with logout message
@@ -309,35 +348,42 @@ window.logout = async function () {
 };
 
 /* ================= AUTH GUARD ================= */
-onAuthStateChanged(auth, (user) => {
-  console.log("Auth state changed:", user ? `User: ${user.email}` : "No user");
-  
+// This should only run on protected pages
+function setupAuthGuard() {
   const currentPage = window.location.pathname.split("/").pop();
   const protectedPages = ["dashboard.html", "wallet.html", "investments.html", "profile.html"];
   const authPages = ["login.html", "register.html", "forgot-password.html"];
   
-  // Update login state in localStorage (optional)
-  if (user) {
-    localStorage.setItem('userLoggedIn', 'true');
-    localStorage.setItem('userEmail', user.email || '');
-    
-    // Redirect logged-in users away from auth pages
-    if (authPages.includes(currentPage)) {
-      console.log("User already logged in, redirecting to dashboard");
-      window.location.href = "dashboard.html";
-      return;
-    }
-  } else {
-    localStorage.removeItem('userLoggedIn');
-    localStorage.removeItem('userEmail');
-    
-    // Redirect non-logged-in users from protected pages
-    if (protectedPages.includes(currentPage)) {
-      console.log("No user, redirecting to login");
-      window.location.href = "login.html?redirect=" + encodeURIComponent(currentPage);
-    }
+  // Only set up auth guard on relevant pages
+  if (protectedPages.includes(currentPage) || authPages.includes(currentPage)) {
+    onAuthStateChanged(auth, (user) => {
+      console.log("Auth state changed on", currentPage + ":", user ? `User: ${user.email}` : "No user");
+      
+      if (user) {
+        localStorage.setItem('userLoggedIn', 'true');
+        localStorage.setItem('userEmail', user.email || '');
+        
+        // Redirect logged-in users away from auth pages
+        if (authPages.includes(currentPage)) {
+          console.log("User already logged in, redirecting to dashboard");
+          window.location.href = "dashboard.html";
+        }
+      } else {
+        localStorage.removeItem('userLoggedIn');
+        localStorage.removeItem('userEmail');
+        
+        // Redirect non-logged-in users from protected pages
+        if (protectedPages.includes(currentPage)) {
+          console.log("No user, redirecting to login");
+          window.location.href = "login.html?redirect=" + encodeURIComponent(currentPage);
+        }
+      }
+    });
   }
-});
+}
+
+// Initialize auth guard
+setupAuthGuard();
 
 /* ================= CHECK SIGNUP SUCCESS ================= */
 // This function checks URL parameters for signup success
@@ -351,6 +397,10 @@ function checkSignupSuccess() {
     const emailInput = document.getElementById("loginEmail");
     if (emailInput) {
       emailInput.value = decodeURIComponent(email);
+      // Auto-focus on password field
+      setTimeout(() => {
+        document.getElementById("loginPassword")?.focus();
+      }, 100);
     }
     
     // Show success message
@@ -367,7 +417,7 @@ function checkSignupSuccess() {
     successEl.innerHTML = `
       <div class="success-message">
         <strong>✓ Account Created Successfully!</strong><br>
-        Please login with your credentials to continue.
+        Please login with your password to continue.
       </div>
     `;
     successEl.style.display = 'block';
@@ -383,4 +433,38 @@ function checkSignupSuccess() {
 // Run check on login page load
 if (window.location.pathname.includes("login.html")) {
   document.addEventListener('DOMContentLoaded', checkSignupSuccess);
+}
+
+// Additional: Check for logout message
+if (window.location.pathname.includes("login.html")) {
+  document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    const logoutSuccess = params.get("logout");
+    
+    if (logoutSuccess === "success") {
+      const successEl = document.getElementById("loginSuccess") || document.createElement("div");
+      if (!successEl.id) {
+        successEl.id = "loginSuccess";
+        successEl.className = "success-text";
+        const form = document.getElementById("loginForm");
+        if (form) {
+          form.insertBefore(successEl, form.firstChild);
+        }
+      }
+      
+      successEl.innerHTML = `
+        <div class="success-message">
+          <strong>✓ Logged out successfully!</strong><br>
+          You have been logged out of your account.
+        </div>
+      `;
+      successEl.style.display = 'block';
+      
+      // Clear URL parameters
+      if (window.history.replaceState) {
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+    }
+  });
 }
