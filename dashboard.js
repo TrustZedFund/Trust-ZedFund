@@ -153,7 +153,12 @@ auth.onAuthStateChanged(async (user) => {
   const userSnap = await get(ref(db, "users/" + userId));
   const userData = userSnap.val();
 
-  document.getElementById("depositWallet").textContent = 
+ auth.onAuthStateChanged((user) => {
+  if (user) {
+    loadNotifications(user.uid);
+  }
+});
+ document.getElementById("depositWallet").textContent = 
       `ZMK ${(userData.balance || 0).toFixed(2)}`;
 });
 import { auth, db } from "./firebase.js";
