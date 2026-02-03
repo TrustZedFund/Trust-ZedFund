@@ -184,6 +184,16 @@
       });
     }
   });
+// Instead of complex signout logic, just redirect immediately after account creation
+if (successEl) successEl.textContent = "Account created. Redirecting to login...";
+
+// Redirect immediately without waiting for auth state
+setTimeout(() => {
+  // Force sign out
+  signOut(auth).catch(() => {});
+  // Redirect to login
+  window.location.href = "login.html?signup=success&email=" + encodeURIComponent(email);
+}, 1500);
 </script>
 
 <!-- Load scripts in correct order -->
