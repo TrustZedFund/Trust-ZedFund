@@ -201,3 +201,4 @@ push(ref(db, "notifications/" + user.uid), {
   time: Date.now(),
   type: "deposit"
 });
+set(...) or push(...)  // your deposit save logic
