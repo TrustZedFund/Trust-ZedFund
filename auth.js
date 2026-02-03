@@ -66,6 +66,23 @@ if (signupForm) {
   });
 }
 
+
+/* Save user */
+await set(ref(db, "users/" + user.uid), {
+  name,
+  email,
+  referralUsed: referral || null,
+  createdAt: Date.now()
+});
+
+/* 🔔 Welcome notification */
+await push(ref(db, "notifications/" + user.uid), {
+  message: "🎉 Welcome to Trust ZedFund! Start investing wisely.",
+  read: false,
+  time: Date.now(),
+  type: "welcome"
+});
+
 /* =========================
    LOGIN
 ========================= */
