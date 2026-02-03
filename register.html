@@ -5,6 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Create Account | Trust ZedFund</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Additional styles for better UX */
+    .auth-card button:disabled {
+      background-color: #4ade80;
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
+    
+    .loader {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .success-text {
+      color: #10b981;
+      font-weight: 500;
+      padding: 10px;
+      background-color: #d1fae5;
+      border-radius: 8px;
+      margin: 10px 0;
+      text-align: center;
+    }
+    
+    .error-text {
+      color: #ef4444;
+      font-weight: 500;
+      padding: 10px;
+      background-color: #fee2e2;
+      border-radius: 8px;
+      margin: 10px 0;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
@@ -22,23 +66,42 @@
   <form id="signupForm" class="auth-card">
     <h2>Create Account</h2>
 
-    <input class="input" id="name" placeholder="Full Name" required />
-    <input class="input" id="email" type="email" placeholder="Email Address" required />
-
-    <div class="password-wrap">
-      <input class="input" id="password" type="password" placeholder="Password (min 6 chars)" required />
-      <span class="toggle-eye" onclick="togglePassword('password')">👀</span>
+    <div class="form-group">
+      <input class="input" id="name" placeholder="Full Name" required />
+      <div class="form-hint">Enter your full legal name</div>
     </div>
 
-    <input class="input" id="referral" placeholder="Referral Code (optional)" />
+    <div class="form-group">
+      <input class="input" id="email" type="email" placeholder="Email Address" required />
+      <div class="form-hint">We'll send important updates to this email</div>
+    </div>
+
+    <div class="form-group">
+      <div class="password-wrap">
+        <input class="input" id="password" type="password" placeholder="Password (min 6 characters)" required minlength="6" />
+        <span class="toggle-eye" onclick="togglePassword('password')">👀</span>
+      </div>
+      <div class="form-hint">Must be at least 6 characters long</div>
+    </div>
+
+    <div class="form-group">
+      <input class="input" id="referral" placeholder="Referral Code (optional)" />
+      <div class="form-hint">Enter if someone referred you</div>
+    </div>
 
     <div id="signupError" class="error-text"></div>
     <div id="signupSuccess" class="success-text"></div>
 
-    <!-- ✅ THIS WAS THE MAIN FIX -->
-    <button type="submit" class="primary-btn">
+    <button type="submit" class="primary-btn" id="signupBtn">
       Create Account
     </button>
+
+    <div class="terms-agreement">
+      <input type="checkbox" id="terms" required />
+      <label for="terms">
+        I agree to the <a href="terms.html" target="_blank">Terms of Service</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>
+      </label>
+    </div>
 
     <p class="auth-switch">
       Already have an account?
@@ -52,33 +115,89 @@
 </footer>
 
 <script>
+  // Password toggle function
   function togglePassword(id) {
     const input = document.getElementById(id);
-    input.type = input.type === "password" ? "text" : "password";
-  }
-</script>
-
-<!-- Load firebase.js FIRST -->
-<script type="module" src="firebase.js"></script>
-<script type="module" src="auth.js"></script>
-<script>
-  window.onerror = function(msg, url, line) {
-    console.error('Error: ' + msg + '\nURL: ' + url + '\nLine: ' + line);
-    alert('JavaScript Error: ' + msg);
-    return true;
-  };
-// Auto-fill referral code from URL
-  const params = new URLSearchParams(window.location.search);
-  const refCode = params.get("ref");
-
-  if (refCode) {
-    const referralInput = document.getElementById("referral");
-    if (referralInput) {
-      referralInput.value = refCode;
-      referralInput.readOnly = true; // optional but professional
+    const eye = input.nextElementSibling || input.parentElement.querySelector('.toggle-eye');
+    
+    if (input.type === "password") {
+      input.type = "text";
+      eye.textContent = "🙈";
+    } else {
+      input.type = "password";
+      eye.textContent = "👀";
     }
   }
 
+  // Auto-fill referral code from URL
+  document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    const refCode = params.get("ref");
+    
+    if (refCode) {
+      const referralInput = document.getElementById("referral");
+      if (referralInput) {
+        referralInput.value = refCode;
+        // Optional: show a note about the referral
+        const hint = referralInput.parentElement.querySelector('.form-hint');
+        if (hint) {
+          hint.textContent = `Referred by: ${refCode}`;
+          hint.style.color = "#10b981";
+        }
+      }
+    }
+    
+    // Form validation feedback
+    const form = document.getElementById('signupForm');
+    if (form) {
+      const inputs = form.querySelectorAll('input[required]');
+      inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+          if (!this.value.trim()) {
+            this.style.borderColor = '#ef4444';
+          } else {
+            this.style.borderColor = '#d1d5db';
+          }
+        });
+        
+        input.addEventListener('input', function() {
+          if (this.value.trim()) {
+            this.style.borderColor = '#d1d5db';
+          }
+        });
+      });
+    }
+    
+    // Terms agreement validation
+    const termsCheckbox = document.getElementById('terms');
+    const submitBtn = document.getElementById('signupBtn');
+    
+    if (termsCheckbox && submitBtn) {
+      termsCheckbox.addEventListener('change', function() {
+        if (!this.checked) {
+          submitBtn.disabled = true;
+          submitBtn.title = "Please agree to the terms first";
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.title = "";
+        }
+      });
+    }
+  });
+
+  // Global error handler
+  window.addEventListener('error', function(e) {
+    console.error('Global error caught:', e.error);
+    const errorEl = document.getElementById('signupError');
+    if (errorEl) {
+      errorEl.textContent = 'An unexpected error occurred. Please try again.';
+    }
+  });
 </script>
+
+<!-- Load scripts in correct order -->
+<script type="module" src="firebase.js"></script>
+<script type="module" src="auth.js"></script>
+
 </body>
 </html>
