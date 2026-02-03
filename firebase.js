@@ -1,13 +1,11 @@
-import {
-  getStorage,
-  ref as storageRef,
-  uploadBytesResumable,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import {
-  getAuth
-} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+/* ================= FIREBASE IMPORTS ================= */
+
+import { initializeApp } from
+  "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+
+import { getAuth } from
+  "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
 import {
   getDatabase,
   ref,
@@ -16,7 +14,16 @@ import {
   get,
   onValue,
   push
-} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+} from
+  "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+import {
+  getStorage,
+  ref as storageRef,
+  uploadBytesResumable,
+  getDownloadURL
+} from
+  "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
 
 /* ================= FIREBASE CONFIG ================= */
 
@@ -25,19 +32,20 @@ const firebaseConfig = {
   authDomain: "trust-zedfund.firebaseapp.com",
   databaseURL: "https://trust-zedfund-default-rtdb.firebaseio.com",
   projectId: "trust-zedfund",
-  storageBucket: "trust-zedfund.firebasestorage.app",
+  storageBucket: "trust-zedfund.appspot.com", // ✅ FIXED
   messagingSenderId: "129257684900",
   appId: "1:129257684900:web:95e94293366a26f9448b31"
 };
 
+/* ================= INITIALIZE ================= */
+
 const app = initializeApp(firebaseConfig);
-export const storage = getStorage(app);
 
 export const auth = getAuth(app);
 export const db = getDatabase(app);
 export const storage = getStorage(app);
 
-console.log("🔥 Firebase initialized");
+console.log("🔥 Firebase initialized successfully");
 
 /* ===================================================
    USER BALANCES
@@ -67,7 +75,7 @@ export function onBalanceChange(uid, callback) {
 }
 
 /* ===================================================
-   INVESTMENTS (DAILY PROFIT ENGINE)
+   INVESTMENTS
 =================================================== */
 
 export async function createInvestment(uid, plan, amount) {
@@ -76,7 +84,6 @@ export async function createInvestment(uid, plan, amount) {
     throw new Error("Minimum investment is ZMK 500");
   }
 
-  // 1️⃣ Load balances
   const balRef = ref(db, `users/${uid}/balances`);
   const balSnap = await get(balRef);
 
@@ -90,18 +97,14 @@ export async function createInvestment(uid, plan, amount) {
     throw new Error("Insufficient deposit balance");
   }
 
-  // 2️⃣ Deduct deposit
   await update(balRef, {
     deposit: balances.deposit - amount
   });
 
-  // 3️⃣ Daily profit logic
   const dailyProfit = (amount / 500) * 10;
-
   const now = Date.now();
   const maturityTime = now + plan.days * 86400000;
 
-  // 4️⃣ Save investment
   const invRef = push(ref(db, `users/${uid}/investments`));
 
   await set(invRef, {
@@ -115,7 +118,6 @@ export async function createInvestment(uid, plan, amount) {
     status: "active"
   });
 
-  // 5️⃣ Transaction log
   await set(push(ref(db, `users/${uid}/transactions`)), {
     type: "Investment",
     plan: plan.name,
@@ -124,21 +126,17 @@ export async function createInvestment(uid, plan, amount) {
     date: new Date().toISOString()
   });
 
-  return {
-    investmentId: invRef.key,
-    dailyProfit
-  };
+  return { investmentId: invRef.key, dailyProfit };
 }
 
 /* ===================================================
-   PROFIT ACCRUAL (RUN ON DASHBOARD LOAD)
+   PROFIT ACCRUAL
 =================================================== */
 
 export async function processInvestmentProfits(uid) {
 
   const invRef = ref(db, `users/${uid}/investments`);
   const snap = await get(invRef);
-
   if (!snap.exists()) return;
 
   const investments = snap.val();
@@ -148,26 +146,23 @@ export async function processInvestmentProfits(uid) {
     const inv = investments[id];
     if (inv.status !== "active") continue;
 
-    const elapsedMs = now - inv.lastProfitCalc;
-    const daysPassed = Math.floor(elapsedMs / 86400000);
+    const elapsed = now - inv.lastProfitCalc;
+    const days = Math.floor(elapsed / 86400000);
+    if (days <= 0) continue;
 
-    if (daysPassed <= 0) continue;
+    const profit = days * inv.dailyProfit;
 
-    const profitToAdd = daysPassed * inv.dailyProfit;
-
-    // Credit earnings
     const earnRef = ref(db, `users/${uid}/balances/earnings`);
     const earnSnap = await get(earnRef);
     const current = earnSnap.exists() ? Number(earnSnap.val()) : 0;
 
     await update(ref(db, `users/${uid}/balances`), {
-      earnings: current + profitToAdd
+      earnings: current + profit
     });
 
-    // Update investment record
     await update(ref(db, `users/${uid}/investments/${id}`), {
-      lastProfitCalc: inv.lastProfitCalc + daysPassed * 86400000,
-      totalEarned: (inv.totalEarned || 0) + profitToAdd,
+      lastProfitCalc: inv.lastProfitCalc + days * 86400000,
+      totalEarned: (inv.totalEarned || 0) + profit,
       matured: now >= inv.maturityTime
     });
   }
@@ -182,31 +177,37 @@ export function onUserInvestments(uid, callback) {
     callback(snap.exists() ? snap.val() : {});
   });
 }
+
 /* ===================================================
-   DEPOSIT PROOF UPLOAD
+   DEPOSIT PROOF UPLOAD (🔥 FIXED)
 =================================================== */
 
 export async function submitDepositProof(uid, data, file, onProgress) {
+
   if (!uid) throw new Error("User not authenticated");
   if (!file) throw new Error("No proof file selected");
 
   const filePath = `depositProofs/${uid}/${Date.now()}_${file.name}`;
   const proofRef = storageRef(storage, filePath);
 
-  // 🔄 Upload with progress
   const uploadTask = uploadBytesResumable(proofRef, file);
 
   return new Promise((resolve, reject) => {
+
     uploadTask.on(
       "state_changed",
+
       snapshot => {
         const percent =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         if (onProgress) onProgress(Math.round(percent));
       },
+
       error => reject(error),
+
       async () => {
-        const proofURL = await getDownloadURL(uploadTask.snapshot.ref);
+        const proofURL =
+          await getDownloadURL(uploadTask.snapshot.ref);
 
         const depositRef = push(ref(db, `depositRequests`));
         await set(depositRef, {
