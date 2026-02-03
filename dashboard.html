@@ -4,68 +4,61 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trust ZedFund Dashboard</title>
+<link rel="stylesheet" href="styles.css">
 
 <style>
-/* ================= NAVBAR ================= */
+/* NAVBAR VISIBILITY FIX */
 .navbar {
-  background: #ffffff;
+  background: #ffffff !important;
   border-bottom: 1px solid rgba(0,0,0,0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
+  position: relative;
+  z-index: 100;
 }
 
+.navbar,
 .navbar * {
-  color: #0a2540;
+  color: #0a2540 !important;
 }
 
-.logo {
-  font-weight: 700;
-}
-
-/* ================= PROFILE MENU ================= */
+/* PROFILE MENU FIX */
 .profile-menu {
   position: relative;
 }
 
-#profileBtn {
-  background: none;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-}
-
 /* DROPDOWN */
 .profile-dropdown {
-  position: absolute;
-  top: 42px;
-  right: 0;
-  min-width: 230px;
   background: #ffffff;
   border: 1px solid rgba(0,0,0,0.1);
   border-radius: 14px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  position: absolute;
+  top: 46px;
+  right: 0;
+  min-width: 220px;
   display: none;
   z-index: 9999;
 }
 
-/* SHOW CLASS */
+/* SHOW STATE */
 .profile-dropdown.show {
   display: block;
 }
 
 .profile-dropdown button,
 .profile-dropdown a {
-  width: 100%;
+  color: #0a2540 !important;
+  background: transparent;
   padding: 12px 16px;
-  background: none;
-  border: none;
   text-align: left;
+  width: 100%;
+  border: none;
   cursor: pointer;
-  text-decoration: none;
-  color: #0a2540;
   display: block;
+  text-decoration: none;
 }
 
 .profile-dropdown button:hover,
@@ -76,15 +69,14 @@
 .profile-dropdown hr {
   border: none;
   border-top: 1px solid rgba(0,0,0,0.08);
-  margin: 6px 0;
 }
 
 .logout-btn {
-  color: #b42318;
+  color: #b42318 !important;
   font-weight: 600;
 }
 
-/* ================= NOTIFICATIONS ================= */
+/* NOTIFICATIONS */
 .notif-bell {
   background: none;
   border: none;
@@ -106,7 +98,7 @@
 
 .notif-panel {
   position: absolute;
-  top: 60px;
+  top: 70px;
   right: 16px;
   width: 260px;
   background: #0f3d2e;
@@ -114,41 +106,52 @@
   border-radius: 12px;
   padding: 12px;
   display: none;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
   z-index: 999;
 }
 
-/* ================= DASHBOARD ================= */
-.dashboard-hero {
-  padding: 20px;
+.notif-item {
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
 }
 
-.btn-primary {
-  background: #0f3d2e;
-  color: white;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 10px;
-  cursor: pointer;
+.notif-item.unread {
+  background: rgba(255,255,255,0.1);
+  font-weight: 600;
+}
+
+.notif-item:hover {
+  background: rgba(255,255,255,0.15);
 }
 </style>
 </head>
 
 <body>
 
+<!-- NAVBAR -->
 <header class="navbar">
   <div class="logo">Trust ZedFund</div>
 
-  <div style="display:flex; gap:12px; align-items:center;">
+  <nav style="display:flex; gap:12px; align-items:center;">
     <div class="profile-menu">
-      <button id="profileBtn">👤 Profile ▼</button>
+      <button id="profileBtn">
+        👤 Profile ▼
+      </button>
 
       <div class="profile-dropdown" id="profileDropdown">
         <button onclick="toggleNotifications()">🔔 Notifications</button>
         <button onclick="goAbout()">ℹ️ About Us</button>
         <button onclick="goRefer()">🎁 Refer & Earn</button>
 
-        <a href="https://t.me/Trust_ZedFund" target="_blank">💬 Get Help / Support</a>
-        <a href="https://t.me/Trust_ZedFund" target="_blank">📞 Contact Us</a>
+        <a href="https://t.me/Trust_ZedFund" target="_blank">
+          💬 Get Help / Support
+        </a>
+
+        <a href="https://t.me/Trust_ZedFund" target="_blank">
+          📞 Contact Us
+        </a>
 
         <hr>
         <button id="logoutBtn" class="logout-btn">🚪 Logout</button>
@@ -158,45 +161,109 @@
     <button class="notif-bell" onclick="toggleNotifications()">
       🔔 <span id="notifCount" class="notif-count">2</span>
     </button>
-  </div>
+  </nav>
 </header>
 
+<!-- NOTIFICATION PANEL -->
 <div class="notif-panel" id="notifPanel">
   <h4>Notifications</h4>
-  <div class="notif-item unread">💰 Withdrawal request received</div>
-  <div class="notif-item unread">🎁 You earned a referral bonus</div>
+  <div class="notif-item unread" onclick="markRead(this)">💰 Withdrawal request received</div>
+  <div class="notif-item unread" onclick="markRead(this)">🎁 You earned a referral bonus</div>
+  <div class="notif-item">📢 New investment opportunity</div>
 </div>
 
+<!-- HERO -->
 <section class="dashboard-hero">
-  <h1 id="heroHeading">Welcome back!</h1>
+  <h1 id="heroHeading">Hello, User</h1>
+  <p id="heroSubheading">Welcome to your portfolio</p>
 </section>
 
+<!-- DASHBOARD CARDS -->
+<section class="dashboard-cards">
+  <div class="card-grid">
+
+    <div class="card card-deposit">
+      <h3>Deposit Wallet</h3>
+      <p id="depositWallet">ZMK 0.00</p>
+      <small>For investments only</small>
+      <button class="btn-primary" onclick="goWallet()">Deposit</button>
+    </div>
+
+    <div class="card card-earnings">
+      <h3>Earnings Wallet</h3>
+      <p id="earningsWallet">ZMK 0.00</p>
+      <small>Available to withdraw</small>
+      <button class="btn-primary" onclick="goWithdraw()">Withdraw</button>
+    </div>
+
+    <div class="card card-returns">
+      <h3>Returns Earnings</h3>
+      <p id="returnsWallet">ZMK 0.00</p>
+      <button class="btn-primary" onclick="goInvestments()">Invest Now</button>
+    </div>
+
+    <div class="card card-referral">
+      <h3>Referral Bonuses</h3>
+      <p id="referralWallet">ZMK 0.00</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ACTIVE INVESTMENTS -->
+<section class="dashboard-investments">
+  <h3>Active Investments</h3>
+  <p id="activeInvestments">No active investments yet</p>
+  <button class="btn-primary" onclick="goInvestments()">Start Investing</button>
+</section>
+
+<!-- FOOTER -->
+<footer class="dashboard-footer">
+  <button class="footer-btn" onclick="goHome()">Home</button>
+  <button class="footer-btn" onclick="goRefer()">Refer & Earn</button>
+  <button class="footer-btn" onclick="goInvestments()">Invest</button>
+  <button class="footer-btn" onclick="goWallet()">Wallet</button>
+</footer>
+
 <script>
-/* ================= PROFILE DROPDOWN ================= */
-document.addEventListener("DOMContentLoaded", () => {
-  const profileBtn = document.getElementById("profileBtn");
-  const dropdown = document.getElementById("profileDropdown");
+/* PROFILE DROPDOWN */
+const profileBtn = document.getElementById("profileBtn");
+const profileDropdown = document.getElementById("profileDropdown");
 
-  profileBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    dropdown.classList.toggle("show");
-  });
-
-  document.addEventListener("click", () => {
-    dropdown.classList.remove("show");
-  });
+profileBtn.addEventListener("click", e => {
+  e.stopPropagation();
+  profileDropdown.classList.toggle("show");
 });
 
-/* ================= NOTIFICATIONS ================= */
+document.addEventListener("click", e => {
+  if (!profileDropdown.contains(e.target)) {
+    profileDropdown.classList.remove("show");
+  }
+});
+
+/* NOTIFICATIONS */
 function toggleNotifications() {
   const panel = document.getElementById("notifPanel");
   panel.style.display = panel.style.display === "block" ? "none" : "block";
 }
 
-/* ================= NAVIGATION ================= */
+function markRead(item) {
+  item.classList.remove("unread");
+  const unread = document.querySelectorAll(".notif-item.unread").length;
+  const badge = document.getElementById("notifCount");
+  badge.textContent = unread;
+  if (unread === 0) badge.style.display = "none";
+}
+
+/* NAVIGATION */
+function goHome(){ location.href="index.html"; }
 function goRefer(){ location.href="refer.html"; }
+function goInvestments(){ location.href="investments.html"; }
+function goWallet(){ location.href="wallet.html"; }
+function goWithdraw(){ location.href="withdraw.html"; }
 function goAbout(){ location.href="about.html"; }
 </script>
 
+<script type="module" src="dashboard.js"></script>
 </body>
 </html>
