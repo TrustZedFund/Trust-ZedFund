@@ -133,9 +133,53 @@ button {
     <div id="starterResult" class="note"></div>
   </div>
 
-  <button onclick="invest('Starter Plan',30,10,'starterAmount')">
-    Invest
-  </button>
+  <button onclick="invest('Starter Plan',30,10,'starterAmount')">Invest</button>
+</div>
+
+<!-- GROWTH PLAN -->
+<div class="plan">
+  <h3>Growth Plan</h3>
+  <small>60 days • Payout at maturity</small>
+
+  <div class="grid">
+    <div>Minimum<br><strong>ZMW 500</strong></div>
+    <div>Daily Profit<br><strong>ZMW 10 / 500</strong></div>
+    <div>Total Days<br>60</div>
+    <div>Payout<br>Once</div>
+  </div>
+
+  <div class="calc">
+    <label>Try your amount</label>
+    <input id="growthAmount" type="number" min="500"
+      placeholder="Minimum ZMW 500"
+      oninput="calculate(this.value,10,60,'growthResult')" />
+    <div id="growthResult" class="note"></div>
+  </div>
+
+  <button onclick="invest('Growth Plan',60,10,'growthAmount')">Invest</button>
+</div>
+
+<!-- PREMIUM PLAN -->
+<div class="plan">
+  <h3>Premium Plan</h3>
+  <small>90 days • Payout at maturity</small>
+
+  <div class="grid">
+    <div>Minimum<br><strong>ZMW 500</strong></div>
+    <div>Daily Profit<br><strong>ZMW 10 / 500</strong></div>
+    <div>Total Days<br>90</div>
+    <div>Payout<br>Once</div>
+  </div>
+
+  <div class="calc">
+    <label>Try your amount</label>
+    <input id="premiumAmount" type="number" min="500"
+      placeholder="Minimum ZMW 500"
+      oninput="calculate(this.value,10,90,'premiumResult')" />
+    <div id="premiumResult" class="note"></div>
+  </div>
+
+  <button onclick="invest('Premium Plan',90,10,'premiumAmount')">Invest</button>
 </div>
 
 </div>
@@ -170,27 +214,22 @@ const db = getDatabase(app);
 let currentUser = null;
 let depositBalance = 0;
 
-/* AUTH + REAL BALANCE */
 onAuthStateChanged(auth, user => {
   if (!user) {
-    alert("Please login first");
     window.location.href = "login.html";
     return;
   }
 
   currentUser = user;
 
-  const balRef = ref(db, `users/${user.uid}/balances`);
-  onValue(balRef, snap => {
+  onValue(ref(db, `users/${user.uid}/balances`), snap => {
     const data = snap.exists() ? snap.val() : {};
     depositBalance = Number(data.deposit || 0);
-
     document.getElementById("walletBalance").textContent =
       depositBalance.toFixed(2);
   });
 });
 
-/* INVEST */
 window.invest = async function(plan, days, dailyRate, inputId) {
   const amount = Number(document.getElementById(inputId).value);
 
@@ -199,16 +238,13 @@ window.invest = async function(plan, days, dailyRate, inputId) {
     return;
   }
 
-  // 🚫 INSUFFICIENT → REDIRECT TO WALLET
   if (depositBalance < amount) {
     alert("Insufficient balance. Please deposit first.");
     window.location.href = "wallet.html";
     return;
   }
 
-  // ✅ CREATE INVESTMENT
   const dailyProfit = (amount / 500) * dailyRate;
-  const totalProfit = dailyProfit * days;
 
   await update(ref(db, `users/${currentUser.uid}/balances`), {
     deposit: depositBalance - amount
@@ -218,7 +254,6 @@ window.invest = async function(plan, days, dailyRate, inputId) {
     plan,
     amount,
     dailyProfit,
-    totalProfit,
     days,
     startTime: Date.now(),
     maturityTime: Date.now() + days * 86400000,
