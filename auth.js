@@ -6,9 +6,11 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  sendEmailVerification,
   ref,
   set,
-  push
+  push,
+  get
 } from "./firebase.js";
 
 /* ================= SIGN UP ================= */
@@ -17,7 +19,7 @@ const signupForm = document.getElementById("signupForm");
 if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("Signup form submitted");
+    console.log("Signup form submitted - FinTech Secure Flow");
 
     const name = document.getElementById("name")?.value.trim();
     const email = document.getElementById("email")?.value.trim();
@@ -30,25 +32,22 @@ if (signupForm) {
     if (errorEl) errorEl.textContent = "";
     if (successEl) successEl.textContent = "";
 
-    // Validation
     if (!name || !email || !password) {
       if (errorEl) errorEl.textContent = "All required fields must be filled";
       return;
     }
 
-    if (password.length < 8) { // Changed from 6 to 8 for FinTech
-      if (errorEl) errorEl.textContent = "Password must be at least 8 characters with uppercase, lowercase, and number";
+    if (password.length < 8) {
+      if (errorEl) errorEl.textContent = "Password must be at least 8 characters";
       return;
     }
 
-    // Check password strength for FinTech
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!passwordRegex.test(password)) {
       if (errorEl) errorEl.textContent = "Password must include uppercase, lowercase letters, and numbers";
       return;
     }
 
-    // Check terms agreement
     const termsCheckbox = document.getElementById('terms');
     if (termsCheckbox && !termsCheckbox.checked) {
       if (errorEl) errorEl.textContent = "Please agree to the Terms of Service";
@@ -58,34 +57,31 @@ if (signupForm) {
     try {
       console.log("Creating user with email:", email);
       
-      // Disable button and show loading
       const submitBtn = document.getElementById('signupBtn');
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="loader"></span> Creating Account...';
       }
 
-      // Create user in Firebase (email verification will be required)
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const user = cred.user;
       console.log("User created successfully:", user.uid);
 
-      // Send email verification - CRITICAL FOR FINTECH
+      // SEND EMAIL VERIFICATION - CRITICAL
       await sendEmailVerification(user);
       console.log("Verification email sent");
 
       const referralCode = "TZF" + user.uid.slice(0, 6).toUpperCase();
 
-      // Create user data in database
       await set(ref(db, `users/${user.uid}`), {
         profile: {
           name,
           email,
           createdAt: Date.now(),
-          emailVerified: false, // Track verification status
+          emailVerified: false,
           lastLogin: null,
-          accountStatus: "pending_verification", // Add account status
-          kycStatus: "not_started" // KYC tracking for FinTech
+          accountStatus: "pending_verification",
+          kycStatus: "not_started"
         },
         balances: {
           deposit: 0,
@@ -105,13 +101,17 @@ if (signupForm) {
           referrals: []
         },
         restrictions: {
-          canTrade: false, // Don't allow trading until verified
-          canWithdraw: false, // Don't allow withdrawals until verified
-          canDeposit: false // Don't allow deposits until verified
+          canTrade: false,
+          canWithdraw: false,
+          canDeposit: false,
+          accountLocked: false
+        },
+        settings: {
+          theme: "light",
+          notifications: true
         }
       });
 
-      // Add welcome notification
       await push(ref(db, `notifications/${user.uid}`), {
         message: "🎉 Welcome to Trust ZedFund! Please verify your email to activate your account.",
         read: false,
@@ -120,16 +120,14 @@ if (signupForm) {
         priority: "high"
       });
 
-      // Add email verification notification
       await push(ref(db, `notifications/${user.uid}`), {
-        message: "📧 Verification email sent. Please check your inbox.",
+        message: "📧 Verification email sent. Please check your inbox and spam folder.",
         read: false,
         time: Date.now(),
         type: "verification",
         priority: "high"
       });
 
-      // Update referral if provided
       if (referral) {
         console.log("Processing referral code:", referral);
         await push(ref(db, `referralTracking`), {
@@ -141,34 +139,31 @@ if (signupForm) {
         });
       }
 
-      // Sign out user immediately for security
+      // SIGN USER OUT FOR SECURITY
       await signOut(auth);
       console.log("User signed out for security");
 
-      // Show success message with verification instructions
       if (successEl) {
         successEl.innerHTML = `
           <div class="success-message">
             <strong>✓ Account Created Successfully!</strong><br>
             <p>A verification email has been sent to <strong>${email}</strong>.</p>
-            <p style="margin-top: 10px;"><strong>Important:</strong> You must verify your email before you can:</p>
+            <p style="margin-top: 10px;"><strong>Important Security Notice:</strong></p>
             <ul style="margin: 10px 0 10px 20px;">
-              <li>Login to your account</li>
-              <li>Make deposits</li>
-              <li>Start trading</li>
-              <li>Withdraw funds</li>
+              <li>You must verify your email before logging in</li>
+              <li>Check your spam folder if email not received</li>
+              <li>No trading or withdrawals allowed until verified</li>
+              <li>Account will be activated after email verification</li>
             </ul>
-            <p>Check your spam folder if you don't see the email within 5 minutes.</p>
+            <p>You will be redirected to login page shortly.</p>
           </div>
         `;
         successEl.style.display = 'block';
       }
 
-      // Clear form
       signupForm.reset();
 
-      // Show countdown to redirect to login page
-      let countdown = 10;
+      let countdown = 8;
       const countdownEl = document.createElement('div');
       countdownEl.className = 'countdown-text';
       countdownEl.style.marginTop = '15px';
@@ -190,10 +185,25 @@ if (signupForm) {
         }
       }, 1000);
 
+      setTimeout(() => {
+        const manualRedirect = document.createElement('div');
+        manualRedirect.style.marginTop = '15px';
+        manualRedirect.innerHTML = `
+          <p style="margin-bottom: 10px;">Not redirecting?</p>
+          <a href="login.html?signup=success&email=${encodeURIComponent(email)}" 
+             class="primary-btn" 
+             style="padding: 10px 20px; font-size: 14px;">
+            Go to Login Now
+          </a>
+        `;
+        if (successEl) {
+          successEl.appendChild(manualRedirect);
+        }
+      }, 2000);
+
     } catch (err) {
       console.error("Signup error:", err);
       
-      // Re-enable button
       const submitBtn = document.getElementById('signupBtn');
       if (submitBtn) {
         submitBtn.disabled = false;
@@ -203,19 +213,16 @@ if (signupForm) {
       if (errorEl) {
         let errorMessage = err.message;
         
-        // Enhanced error messages for FinTech
         if (err.code === 'auth/email-already-in-use') {
-          errorMessage = "This email is already registered. Please login or use a different email.";
+          errorMessage = "This email is already registered. Please login instead.";
         } else if (err.code === 'auth/weak-password') {
-          errorMessage = "Password is too weak. Use at least 8 characters with uppercase, lowercase letters, and numbers.";
+          errorMessage = "Password must be at least 8 characters with uppercase, lowercase letters, and numbers.";
         } else if (err.code === 'auth/invalid-email') {
           errorMessage = "Please enter a valid email address.";
         } else if (err.code === 'auth/network-request-failed') {
-          errorMessage = "Network error. Please check your internet connection and try again.";
+          errorMessage = "Network error. Please check your internet connection.";
         } else if (err.code === 'auth/operation-not-allowed') {
           errorMessage = "Email/password accounts are not enabled. Please contact support.";
-        } else if (err.code === 'auth/too-many-requests') {
-          errorMessage = "Too many attempts. Please try again later.";
         }
         
         errorEl.innerHTML = `<strong>✗ Security Error:</strong> ${errorMessage}`;
@@ -224,11 +231,14 @@ if (signupForm) {
     }
   });
 }
+
 /* ================= LOGIN ================= */
+const loginForm = document.getElementById("loginForm");
+
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("Login form submitted");
+    console.log("Login form submitted - FinTech Secure Flow");
 
     const email = document.getElementById("loginEmail")?.value.trim();
     const password = document.getElementById("loginPassword")?.value;
@@ -247,7 +257,6 @@ if (loginForm) {
     try {
       console.log("Attempting login for:", email);
       
-      // Disable button during login attempt
       const submitBtn = document.getElementById('loginBtn');
       if (submitBtn) {
         submitBtn.disabled = true;
@@ -259,57 +268,66 @@ if (loginForm) {
       
       console.log("Login successful for:", user.email);
       
-      // Check if email is verified - CRITICAL FOR FINTECH
+      // CHECK EMAIL VERIFICATION - CRITICAL
       if (!user.emailVerified) {
-        await signOut(auth); // Sign out immediately
-        throw {
-          code: 'auth/email-not-verified',
-          message: 'Email not verified. Please verify your email before logging in.'
-        };
-      }
-      
-      // Check account restrictions in database
-      const userRef = ref(db, `users/${user.uid}/restrictions`);
-      const snapshot = await get(userRef);
-      const restrictions = snapshot.val();
-      
-      if (restrictions?.accountLocked) {
         await signOut(auth);
-        throw {
-          code: 'auth/account-locked',
-          message: 'Account is locked. Please contact support.'
-        };
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Login";
+        }
+        
+        errorEl.innerHTML = `
+          <strong>✗ Email Verification Required</strong><br>
+          Your email address has not been verified. Please check your inbox for the verification email.<br>
+          <button onclick="location.href='login.html?resend=${encodeURIComponent(email)}'" 
+                  style="margin-top: 10px; padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Resend Verification Email
+          </button>
+        `;
+        errorEl.style.display = 'block';
+        return;
       }
       
-      // Update last login time in database
+      // Check if account is locked in database
+      const userRef = ref(db, `users/${user.uid}`);
+      const snapshot = await get(userRef);
+      const userData = snapshot.val();
+      
+      if (userData?.restrictions?.accountLocked) {
+        await signOut(auth);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Login";
+        }
+        errorEl.textContent = "Account is locked. Please contact support.";
+        errorEl.style.display = 'block';
+        return;
+      }
+      
       await set(ref(db, `users/${user.uid}/profile/lastLogin`), Date.now());
+      await set(ref(db, `users/${user.uid}/profile/emailVerified`), true);
+      await set(ref(db, `users/${user.uid}/restrictions/canTrade`), true);
+      await set(ref(db, `users/${user.uid}/restrictions/canDeposit`), true);
       
-      // Reset login attempts on successful login
-      await set(ref(db, `users/${user.uid}/security/loginAttempts`), 0);
-      
-      // Log the login
       await push(ref(db, `securityLogs/${user.uid}`), {
         action: 'login',
         timestamp: Date.now(),
-        ip: await getIP(),
-        userAgent: navigator.userAgent
+        userAgent: navigator.userAgent,
+        status: 'success'
       });
       
-      // Show success message
       if (successEl) {
         successEl.innerHTML = '<strong>✓ Security verification successful! Redirecting...</strong>';
         successEl.style.display = 'block';
       }
       
-      // Short delay for security confirmation
       setTimeout(() => {
         window.location.href = "dashboard.html";
-      }, 1500);
+      }, 1000);
 
     } catch (err) {
       console.error("Login error:", err);
       
-      // Re-enable button
       const submitBtn = document.getElementById('loginBtn');
       if (submitBtn) {
         submitBtn.disabled = false;
@@ -319,30 +337,19 @@ if (loginForm) {
       if (errorEl) {
         let errorMessage = err.message;
         
-        // Enhanced error handling for FinTech
-        if (err.code === 'auth/email-not-verified') {
-          errorMessage = `
-            Email not verified.<br>
-            <a href="#" onclick="resendVerificationEmail('${email}')" style="color: #3b82f6; text-decoration: underline;">
-              Click here to resend verification email
-            </a>
-          `;
-        } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+        if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
           errorMessage = "Invalid email or password. Please try again.";
-          // Track failed attempts here (implement rate limiting)
         } else if (err.code === 'auth/user-not-found') {
-          errorMessage = "No verified account found with this email. Please sign up or check your verification email.";
+          errorMessage = "No account found with this email. Please sign up.";
         } else if (err.code === 'auth/too-many-requests') {
-          errorMessage = "Too many failed attempts. Please try again in 15 minutes or reset your password.";
+          errorMessage = "Too many failed attempts. Please try again later.";
         } else if (err.code === 'auth/network-request-failed') {
           errorMessage = "Network error. Please check your internet connection.";
         } else if (err.code === 'auth/user-disabled') {
-          errorMessage = "This account has been disabled for security reasons. Please contact support.";
-        } else if (err.code === 'auth/account-locked') {
-          errorMessage = "Account is temporarily locked. Please contact customer support.";
+          errorMessage = "This account has been disabled. Please contact support.";
         }
         
-        errorEl.innerHTML = `<strong>✗ Security Alert:</strong> ${errorMessage}`;
+        errorEl.innerHTML = `<strong>✗ Error:</strong> ${errorMessage}`;
         errorEl.style.display = 'block';
       }
     }
@@ -352,7 +359,6 @@ if (loginForm) {
 /* ================= LOGOUT ================= */
 window.logout = async function () {
   try {
-    // Show confirmation dialog
     if (confirm("Are you sure you want to logout?")) {
       const logoutBtn = document.querySelector('.logout-btn');
       if (logoutBtn) {
@@ -360,14 +366,21 @@ window.logout = async function () {
         logoutBtn.innerHTML = '<span class="loader"></span> Logging out...';
       }
       
+      const user = auth.currentUser;
+      if (user) {
+        await push(ref(db, `securityLogs/${user.uid}`), {
+          action: 'logout',
+          timestamp: Date.now(),
+          status: 'success'
+        });
+      }
+      
       await signOut(auth);
       console.log("User logged out");
       
-      // Clear any cached data
       localStorage.removeItem('userLoggedIn');
       sessionStorage.clear();
       
-      // Redirect to login with logout message
       window.location.href = "login.html?logout=success";
     }
   } catch (err) {
@@ -377,21 +390,33 @@ window.logout = async function () {
 };
 
 /* ================= AUTH GUARD ================= */
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   console.log("Auth state changed:", user ? `User: ${user.email}` : "No user");
   
   const currentPage = window.location.pathname.split("/").pop();
-  const protectedPages = ["dashboard.html", "wallet.html", "investments.html", "profile.html"];
+  const protectedPages = ["dashboard.html", "wallet.html", "investments.html", "profile.html", "trading.html", "withdraw.html"];
   const authPages = ["login.html", "register.html", "forgot-password.html"];
   
-  // Update login state in localStorage (optional)
   if (user) {
+    // Check if email is verified when trying to access protected pages
+    if (!user.emailVerified && protectedPages.includes(currentPage)) {
+      console.log("User not verified, redirecting to login");
+      await signOut(auth);
+      window.location.href = "login.html?verify=required";
+      return;
+    }
+    
+    // Update user data if verified
+    if (user.emailVerified) {
+      await set(ref(db, `users/${user.uid}/profile/emailVerified`), true);
+    }
+    
     localStorage.setItem('userLoggedIn', 'true');
     localStorage.setItem('userEmail', user.email || '');
     
-    // Redirect logged-in users away from auth pages
-    if (authPages.includes(currentPage)) {
-      console.log("User already logged in, redirecting to dashboard");
+    // Redirect verified users away from auth pages
+    if (authPages.includes(currentPage) && user.emailVerified) {
+      console.log("Verified user already logged in, redirecting to dashboard");
       window.location.href = "dashboard.html";
       return;
     }
@@ -408,24 +433,24 @@ onAuthStateChanged(auth, (user) => {
 });
 
 /* ================= CHECK SIGNUP SUCCESS ================= */
-// This function checks URL parameters for signup success
 function checkSignupSuccess() {
   const params = new URLSearchParams(window.location.search);
   const signupSuccess = params.get("signup");
   const email = params.get("email");
+  const verifyRequired = params.get("verify");
+  const resendEmail = params.get("resend");
   
+  // Show signup success message
   if (signupSuccess === "success" && email) {
-    // Auto-fill the email in login form
     const emailInput = document.getElementById("loginEmail");
     if (emailInput) {
       emailInput.value = decodeURIComponent(email);
     }
     
-    // Show success message
     const successEl = document.getElementById("loginSuccess") || document.createElement("div");
     if (!successEl.id) {
       successEl.id = "loginSuccess";
-      successEl.className = "success-text";
+      successEl.className = "success-message";
       const form = document.getElementById("loginForm");
       if (form) {
         form.insertBefore(successEl, form.firstChild);
@@ -435,16 +460,70 @@ function checkSignupSuccess() {
     successEl.innerHTML = `
       <div class="success-message">
         <strong>✓ Account Created Successfully!</strong><br>
-        Please login with your credentials to continue.
+        Please check your email (<strong>${decodeURIComponent(email)}</strong>) for verification link.<br>
+        <small>You must verify your email before you can login.</small>
       </div>
     `;
     successEl.style.display = 'block';
     
-    // Clear the URL parameters
+    // Clear URL parameters
     if (window.history.replaceState) {
       const cleanUrl = window.location.pathname;
       window.history.replaceState({}, document.title, cleanUrl);
     }
+  }
+  
+  // Show verification required message
+  if (verifyRequired === "required") {
+    const errorEl = document.getElementById("loginError") || document.createElement("div");
+    if (!errorEl.id) {
+      errorEl.id = "loginError";
+      errorEl.className = "error-message";
+      const form = document.getElementById("loginForm");
+      if (form) {
+        form.insertBefore(errorEl, form.firstChild);
+      }
+    }
+    
+    errorEl.innerHTML = `
+      <strong>✗ Email Verification Required</strong><br>
+      You must verify your email address before accessing protected pages.<br>
+      Please check your email for the verification link.
+    `;
+    errorEl.style.display = 'block';
+    
+    if (window.history.replaceState) {
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  }
+  
+  // Auto-fill email for resend verification
+  if (resendEmail) {
+    const emailInput = document.getElementById("loginEmail");
+    if (emailInput) {
+      emailInput.value = decodeURIComponent(resendEmail);
+    }
+    
+    const errorEl = document.getElementById("loginError") || document.createElement("div");
+    if (!errorEl.id) {
+      errorEl.id = "loginError";
+      errorEl.className = "error-message";
+      const form = document.getElementById("loginForm");
+      if (form) {
+        form.insertBefore(errorEl, form.firstChild);
+      }
+    }
+    
+    errorEl.innerHTML = `
+      <strong>✗ Email Verification Required</strong><br>
+      Email address <strong>${decodeURIComponent(resendEmail)}</strong> is not verified.<br>
+      <button onclick="resendVerification('${decodeURIComponent(resendEmail)}')" 
+              style="margin-top: 10px; padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer;">
+        Click here to resend verification email
+      </button>
+    `;
+    errorEl.style.display = 'block';
   }
 }
 
@@ -453,70 +532,31 @@ if (window.location.pathname.includes("login.html")) {
   document.addEventListener('DOMContentLoaded', checkSignupSuccess);
 }
 
-onAuthStateChanged(auth, async (user) => {
-  console.log("Auth state changed:", user ? `User: ${user.email}` : "No user");
-  
-  const currentPage = window.location.pathname.split("/").pop();
-  const protectedPages = ["dashboard.html", "wallet.html", "investments.html", "profile.html", "trading.html"];
-  const authPages = ["login.html", "register.html", "forgot-password.html"];
-  
-  // If user exists
-  if (user) {
-    // Check email verification for FinTech
-    if (!user.emailVerified && protectedPages.includes(currentPage)) {
-      console.log("User not verified, redirecting to verification page");
-      await signOut(auth);
-      window.location.href = "verify-email.html?email=" + encodeURIComponent(user.email);
-      return;
-    }
-    
-    localStorage.setItem('userLoggedIn', 'true');
-    localStorage.setItem('userEmail', user.email || '');
-    
-    // Redirect logged-in, verified users away from auth pages
-    if (authPages.includes(currentPage) && user.emailVerified) {
-      console.log("Verified user already logged in, redirecting to dashboard");
-      window.location.href = "dashboard.html";
-      return;
-    }
-    
-  } else {
-    localStorage.removeItem('userLoggedIn');
-    localStorage.removeItem('userEmail');
-    
-    // Redirect non-logged-in users from protected pages
-    if (protectedPages.includes(currentPage)) {
-      console.log("No authenticated user, redirecting to login");
-      window.location.href = "login.html?redirect=" + encodeURIComponent(currentPage);
-    }
-  }
-});
-
-/* ================= EMAIL VERIFICATION ================= */
-// Function to resend verification email
-window.resendVerificationEmail = async function(email) {
+/* ================= RESEND VERIFICATION ================= */
+window.resendVerification = async function(email) {
   try {
-    // Create a temporary user credential to resend verification
-    const actionCodeSettings = {
-      url: window.location.origin + '/login.html',
-      handleCodeInApp: true
-    };
+    console.log("Resending verification to:", email);
     
-    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-    alert('Verification email resent. Please check your inbox.');
+    // Get current user or sign in temporarily
+    const user = auth.currentUser;
+    
+    if (user && user.email === email) {
+      await sendEmailVerification(user);
+      alert('✓ Verification email resent. Please check your inbox and spam folder.');
+    } else {
+      // For security, we need the user to login first to resend verification
+      const errorEl = document.getElementById("loginError");
+      if (errorEl) {
+        errorEl.innerHTML = `
+          <strong>✗ Action Required</strong><br>
+          Please login first, then we can resend the verification email.<br>
+          <small>For security reasons, we need to verify your password.</small>
+        `;
+        errorEl.style.display = 'block';
+      }
+    }
   } catch (err) {
-    console.error('Error resending verification:', err);
-    alert('Could not resend verification. Please try again or contact support.');
+    console.error("Resend verification error:", err);
+    alert("Failed to resend verification email. Please try logging in again.");
   }
 };
-
-// Function to check verification status
-async function checkEmailVerification(user) {
-  try {
-    await user.reload();
-    return user.emailVerified;
-  } catch (err) {
-    console.error('Error checking verification:', err);
-    return false;
-  }
-}
