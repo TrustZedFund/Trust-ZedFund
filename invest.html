@@ -1,111 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Invest</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Investment Plans</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #0c3b2e;
-  color: #fff;
+:root {
+  --card: linear-gradient(135deg, #10c7a7, #0b5f56);
+  --accent: #22ff9a;
+  --text: #ffffff;
+  --muted: #d6f1ec;
 }
+
+* { box-sizing:border-box; font-family:system-ui,sans-serif; }
+body { margin:0; background:#f4f7f7; padding-bottom:70px; }
 
 header {
-  padding: 18px;
-  text-align: center;
-  background: #06281f;
-  font-size: 20px;
-  font-weight: bold;
+  padding:22px;
+  background:#083a34;
+  color:white;
 }
+
+.balance {
+  margin-top:8px;
+  font-weight:700;
+  color:#22ff9a;
+}
+
+.container { padding:16px; }
 
 .plan {
-  margin: 16px;
-  padding: 16px;
-  background: #135c47;
-  border-radius: 14px;
+  background:var(--card);
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:18px;
+  color:var(--text);
 }
 
-.plan h3 {
-  margin: 0 0 6px;
+.plan h3 { margin:0 0 6px; }
+.plan small { color:var(--muted); }
+
+.grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:14px;
+  font-size:14px;
 }
 
-.plan small {
-  opacity: 0.85;
+.calc {
+  margin-top:14px;
+  background:rgba(255,255,255,0.15);
+  border-radius:14px;
+  padding:14px;
 }
 
-.plan input {
-  width: 100%;
-  margin-top: 12px;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
-  font-size: 16px;
+.calc input {
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
 }
 
-.plan button {
-  width: 100%;
-  margin-top: 14px;
-  padding: 14px;
-  border-radius: 30px;
-  border: none;
-  font-size: 16px;
-  font-weight: 600;
-  background: linear-gradient(90deg, #22ff9a, #00d4ff);
-  color: #00352f;
-  cursor: pointer;
+.note {
+  font-size:13px;
+  margin-top:8px;
+  color:#e8fffb;
+}
+
+button {
+  width:100%;
+  padding:14px;
+  border-radius:30px;
+  border:none;
+  font-weight:600;
+  background:linear-gradient(90deg,var(--accent),#00d4ff);
+  color:#00352f;
+  cursor:pointer;
+  margin-top:16px;
+}
+
+/* FOOTER */
+.footer {
+  position:fixed;
+  bottom:0; left:0; right:0;
+  height:64px;
+  background:#fff;
+  border-top:1px solid #ddd;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+}
+
+.footer a {
+  text-decoration:none;
+  color:#083a34;
+  font-weight:600;
 }
 </style>
 </head>
 
 <body>
 
-<header>Investment Plans</header>
+<header>
+  <h2>Investment Plans</h2>
+  <p>Earn daily • Get paid at maturity</p>
+  <div class="balance">
+    Wallet Balance: ZMW <span id="walletBalance">0.00</span>
+  </div>
+</header>
 
+<div class="container">
+
+<!-- STARTER PLAN -->
 <div class="plan">
   <h3>Starter Plan</h3>
-  <small>30 days • Daily profit ZMW 10 / 500</small>
-  <input id="starterAmt" type="number" placeholder="Minimum 500">
-  <button onclick="invest('Starter Plan', 30, starterAmt.value)">Invest</button>
+  <small>30 days • Payout at maturity</small>
+
+  <div class="grid">
+    <div>Minimum<br><strong>ZMW 500</strong></div>
+    <div>Daily Profit<br><strong>ZMW 10 / 500</strong></div>
+    <div>Total Days<br>30</div>
+    <div>Payout<br>Once</div>
+  </div>
+
+  <div class="calc">
+    <label>Try your amount</label>
+    <input id="starterAmount" type="number" min="500"
+      placeholder="Minimum ZMW 500"
+      oninput="calculate(this.value,10,30,'starterResult')" />
+    <div id="starterResult" class="note"></div>
+  </div>
+
+  <button onclick="invest('Starter Plan',30,10,'starterAmount')">
+    Invest
+  </button>
 </div>
 
-<div class="plan">
-  <h3>Growth Plan</h3>
-  <small>60 days • Daily profit ZMW 10 / 500</small>
-  <input id="growthAmt" type="number" placeholder="Minimum 500">
-  <button onclick="invest('Growth Plan', 60, growthAmt.value)">Invest</button>
 </div>
 
-<div class="plan">
-  <h3>Premium Plan</h3>
-  <small>90 days • Daily profit ZMW 10 / 500</small>
-  <input id="premiumAmt" type="number" placeholder="Minimum 500">
-  <button onclick="invest('Premium Plan', 90, premiumAmt.value)">Invest</button>
-</div>
+<nav class="footer">
+  <a href="dashboard.html">🏠 Home</a>
+  <a href="invest.html">💼 Invest</a>
+  <a href="wallet.html">💰 Wallet</a>
+  <a href="profile.html">👤 Profile</a>
+</nav>
 
+<!-- ================= FIREBASE ================= -->
 <script type="module">
-import { auth, createInvestment } from "./firebase.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { getDatabase, ref, onValue, update, push, set } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-const user = auth.currentUser || JSON.parse(localStorage.getItem("user"));
-if (!user) location.href = "login.html";
-
-window.invest = async (name, days, amount) => {
-  try {
-    await createInvestment(user.uid, { name, days }, Number(amount));
-    alert("Investment successful");
-    location.href = "dashboard.html";
-  } catch (e) {
-    if (e.message.includes("Insufficient")) {
-      location.href = "wallet.html";
-    } else {
-      alert(e.message);
-    }
-  }
+const firebaseConfig = {
+  apiKey: "AIzaSyDvkMDvK5d7P7p2zatUjIsJNGhBf18yeTQ",
+  authDomain: "trust-zedfund.firebaseapp.com",
+  databaseURL: "https://trust-zedfund-default-rtdb.firebaseio.com",
+  projectId: "trust-zedfund",
+  storageBucket: "trust-zedfund.firebasestorage.app",
+  messagingSenderId: "129257684900",
+  appId: "1:129257684900:web:95e94293366a26f9448b31"
 };
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let currentUser = null;
+let depositBalance = 0;
+
+/* AUTH + REAL BALANCE */
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    alert("Please login first");
+    window.location.href = "login.html";
+    return;
+  }
+
+  currentUser = user;
+
+  const balRef = ref(db, `users/${user.uid}/balances`);
+  onValue(balRef, snap => {
+    const data = snap.exists() ? snap.val() : {};
+    depositBalance = Number(data.deposit || 0);
+
+    document.getElementById("walletBalance").textContent =
+      depositBalance.toFixed(2);
+  });
+});
+
+/* INVEST */
+window.invest = async function(plan, days, dailyRate, inputId) {
+  const amount = Number(document.getElementById(inputId).value);
+
+  if (!amount || amount < 500) {
+    alert("Minimum investment is ZMW 500");
+    return;
+  }
+
+  // 🚫 INSUFFICIENT → REDIRECT TO WALLET
+  if (depositBalance < amount) {
+    alert("Insufficient balance. Please deposit first.");
+    window.location.href = "wallet.html";
+    return;
+  }
+
+  // ✅ CREATE INVESTMENT
+  const dailyProfit = (amount / 500) * dailyRate;
+  const totalProfit = dailyProfit * days;
+
+  await update(ref(db, `users/${currentUser.uid}/balances`), {
+    deposit: depositBalance - amount
+  });
+
+  await set(push(ref(db, `users/${currentUser.uid}/investments`)), {
+    plan,
+    amount,
+    dailyProfit,
+    totalProfit,
+    days,
+    startTime: Date.now(),
+    maturityTime: Date.now() + days * 86400000,
+    status: "active"
+  });
+
+  alert("Investment successful!");
+  window.location.href = "dashboard.html";
+};
+</script>
+
+<script>
+function calculate(amount, dailyRate, days, outputId) {
+  amount = Number(amount);
+
+  if (!amount || amount < 500) {
+    document.getElementById(outputId).innerHTML =
+      "Minimum investment is ZMW 500";
+    return;
+  }
+
+  const dailyProfit = (amount / 500) * dailyRate;
+  const totalProfit = dailyProfit * days;
+
+  document.getElementById(outputId).innerHTML = `
+    Daily profit: <strong>ZMW ${dailyProfit.toFixed(2)}</strong><br>
+    Total profit (${days} days): ZMW ${totalProfit.toFixed(2)}<br>
+    You receive: <strong>ZMW ${(amount + totalProfit).toFixed(2)}</strong>
+  `;
+}
 </script>
 
 </body>
 </html>
-. 
