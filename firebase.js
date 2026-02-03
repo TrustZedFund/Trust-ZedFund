@@ -232,3 +232,18 @@ export async function submitDepositProof(uid, data, file, onProgress) {
     );
   });
 }
+// Add these imports to your firebase.js
+import { 
+  // ... existing imports
+  sendEmailVerification,
+  sendSignInLinkToEmail,
+  verifyBeforeUpdateEmail
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+// Export them
+export {
+  // ... existing exports
+  sendEmailVerification,
+  sendSignInLinkToEmail,
+  verifyBeforeUpdateEmail
+};
