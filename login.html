@@ -6,7 +6,6 @@
   <title>Login | Trust ZedFund</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* Additional styles for login page */
     .success-message {
       padding: 15px;
       background: #d1fae5;
@@ -93,14 +92,36 @@
     .secondary-btn:hover {
       background: #eff6ff;
     }
+    
+    .security-notice {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 15px 0;
+      font-size: 14px;
+      color: #92400e;
+    }
+    
+    .verification-required {
+      background: #fef2f2;
+      border: 1px solid #dc2626;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+    }
   </style>
 </head>
 <body>
 
 <section class="auth-hero">
-  <h1>Welcome Back to Trust ZedFund</h1>
-  <p>Access your investment dashboard and manage your portfolio.</p>
+  <h1>Secure Login | Trust ZedFund</h1>
+  <p>Access your investment dashboard with enhanced security verification.</p>
 </section>
+
+<div class="security-notice" style="max-width: 500px; margin: 20px auto;">
+  🔒 <strong>Security Notice:</strong> All accounts require email verification before login. Check your inbox and spam folder.
+</div>
 
 <div class="auth-wrapper">
   <form id="loginForm" class="auth-card">
@@ -109,7 +130,6 @@
     <div id="loginSuccess" class="success-message" style="display: none;"></div>
     <div id="loginError" class="error-message" style="display: none;"></div>
     
-    <!-- Check for logout message -->
     <div id="logoutMessage" class="info-message" style="display: none;">
       <strong>✓ You have been logged out successfully.</strong><br>
       Please login again to continue.
@@ -133,8 +153,18 @@
     </div>
 
     <button type="submit" class="primary-btn" id="loginBtn">
-      Login to Dashboard
+      Secure Login
     </button>
+
+    <div class="verification-help" style="margin-top: 15px; font-size: 14px; color: #6b7280;">
+      <p><strong>Not receiving verification email?</strong></p>
+      <ol style="text-align: left; margin: 10px 0 10px 20px;">
+        <li>Check your spam/junk folder</li>
+        <li>Ensure you entered the correct email</li>
+        <li>Wait 5 minutes and try again</li>
+        <li><a href="contact.html">Contact support</a> if issues persist</li>
+      </ol>
+    </div>
 
     <div class="auth-divider">
       <span>Don't have an account?</span>
@@ -147,13 +177,13 @@
     </div>
 
     <p class="auth-note">
-      * Required fields. Ensure you're logging in from a secure device.
+      * Email verification required. Unverified accounts cannot trade or withdraw funds.
     </p>
   </form>
 </div>
 
 <footer class="auth-footer">
-  <p>© 2026 Trust ZedFund. Secure login with 256-bit SSL encryption.</p>
+  <p>© 2026 Trust ZedFund. Secure login with 256-bit SSL encryption & email verification.</p>
   <p class="footer-links">
     <a href="security.html">Security</a> • 
     <a href="contact.html">Support</a> • 
@@ -162,7 +192,6 @@
 </footer>
 
 <script>
-  // Password toggle function
   function togglePassword(id) {
     const input = document.getElementById(id);
     const eye = input.nextElementSibling || input.parentElement.querySelector('.toggle-eye');
@@ -177,7 +206,6 @@
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    // Check for logout success message
     const params = new URLSearchParams(window.location.search);
     const logoutSuccess = params.get("logout");
     
@@ -187,39 +215,33 @@
         logoutMessage.style.display = 'block';
       }
       
-      // Clear URL parameters
       if (window.history.replaceState) {
         const cleanUrl = window.location.pathname;
         window.history.replaceState({}, document.title, cleanUrl);
       }
     }
     
-    // Check for redirect parameter
     const redirectPage = params.get("redirect");
     if (redirectPage) {
-      console.log("Redirected from:", redirectPage);
       const errorEl = document.getElementById('loginError');
       if (errorEl) {
-        errorEl.innerHTML = `<strong>Session Expired:</strong> Please login again to access ${redirectPage}`;
+        errorEl.innerHTML = `<strong>Session Expired:</strong> Please login to access your account`;
         errorEl.style.display = 'block';
       }
     }
     
-    // Auto-fill email from localStorage if available
     const savedEmail = localStorage.getItem('lastLoginEmail');
     const emailInput = document.getElementById('loginEmail');
     if (savedEmail && emailInput && !emailInput.value) {
       emailInput.value = savedEmail;
     }
     
-    // Focus on password field if email is pre-filled
     if (emailInput && emailInput.value) {
       document.getElementById('loginPassword')?.focus();
     }
   });
 </script>
 
-<!-- Load scripts in correct order -->
 <script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
 
