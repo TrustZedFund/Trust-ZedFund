@@ -4,56 +4,159 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login | Trust ZedFund</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 400px;
+    }
+    
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+      font-weight: bold;
+    }
+    
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #4CAF50;
+    }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    
+    button:hover {
+      background: #45a049;
+    }
+    
+    button:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+    
+    .error {
+      color: #d32f2f;
+      background: #ffebee;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      display: none;
+    }
+    
+    .success {
+      color: #388e3c;
+      background: #e8f5e9;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      display: none;
+    }
+    
+    .links {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+    }
+    
+    .links a {
+      color: #4CAF50;
+      text-decoration: none;
+      display: block;
+      margin: 5px 0;
+    }
+    
+    .links a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <main class="auth-wrapper">
-    <form id="loginForm" class="auth-card">
-      <h2>Welcome Back</h2>
+  <div class="container">
+    <div class="card">
+      <h2>Login to Your Account</h2>
       
-      <div id="loginError" class="error-text"></div>
-      <div id="loginSuccess" class="success-text"></div>
+      <div id="loginError" class="error"></div>
+      <div id="loginSuccess" class="success"></div>
       
-      <div class="form-group">
-        <label for="loginEmail">Email Address *</label>
-        <input type="email" id="loginEmail" class="input" placeholder="Enter your email" required>
-      </div>
-      
-      <div class="form-group">
-        <label for="loginPassword">Password *</label>
-        <div class="password-wrap">
-          <input type="password" id="loginPassword" class="input" placeholder="Enter your password" required>
-          <span class="toggle-eye" onclick="togglePassword('loginPassword')">👁️</span>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">Email Address *</label>
+          <input type="email" id="loginEmail" placeholder="Enter your email" required>
         </div>
-      </div>
+        
+        <div class="form-group">
+          <label for="loginPassword">Password *</label>
+          <input type="password" id="loginPassword" placeholder="Enter your password" required>
+        </div>
+        
+        <button type="submit" id="loginBtn">Login</button>
+      </form>
       
-      <button type="submit" class="primary-btn" id="loginBtn">
-        Login to Dashboard
-      </button>
-      
-      <div class="auth-switch">
+      <div class="links">
         <a href="forgot-password.html">Forgot Password?</a>
-        <br><br>
-        Don't have an account? <a href="register.html">Sign up here</a>
+        <a href="register.html">Don't have an account? Sign up</a>
       </div>
-    </form>
-  </main>
+    </div>
+  </div>
+
+  <!-- IMPORTANT: Load Firebase SDK FIRST -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   
-  <script>
-    function togglePassword(id) {
-      const input = document.getElementById(id);
-      const eye = input.parentElement.querySelector('.toggle-eye');
-      if (input.type === 'password') {
-        input.type = 'text';
-        eye.textContent = '👁️‍🗨️';
-      } else {
-        input.type = 'password';
-        eye.textContent = '👁️';
-      }
-    }
-  </script>
-  
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="auth.js"></script>
+  <!-- Then load our scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="auth-system.js"></script>
 </body>
 </html>
