@@ -72,6 +72,17 @@
       referralInput.readOnly = true; // optional but professional
     }
   }
+const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+const user = userCredential.user;
+
+// 🔔 CREATE WELCOME NOTIFICATION
+push(ref(db, "notifications/" + user.uid), {
+  message: "🎉 Welcome to Trust ZedFund! Start investing wisely.",
+  read: false,
+  time: Date.now(),
+  type: "welcome"
+});
+
 </script>
 </body>
 </html>
