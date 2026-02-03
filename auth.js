@@ -1,3 +1,9 @@
+// Import from your firebase.js module instead
+import { auth, db } from "./firebase.js";
+
+// REMOVE THESE LINES:
+// const auth = getAuth();
+// const db = getDatabase();
 import {
   getAuth,
   createUserWithEmailAndPassword,
