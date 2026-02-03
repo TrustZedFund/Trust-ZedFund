@@ -167,7 +167,11 @@ h2 {
 <!-- Upload -->
 <div class="upload-card">
   <h3>Upload Transaction Proof</h3>
-
+<div id="previewBox" style="display:none;margin-bottom:12px;">
+  <p style="font-size:13px;color:#a7ffcf;">Selected proof:</p>
+  <img id="imagePreview" style="max-width:100%;border-radius:8px;display:none;">
+  <p id="filePreview" style="font-size:13px;"></p>
+</div>
   <label>Payment Method Used</label>
   <select id="method">
     <option value="">Select method</option>
@@ -202,6 +206,33 @@ const submitBtn = document.getElementById("submitBtn");
 const methodEl = document.getElementById("method");
 const amountEl = document.getElementById("amount");
 const proofEl  = document.getElementById("proof");
+const previewBox   = document.getElementById("previewBox");
+const imagePreview = document.getElementById("imagePreview");
+const filePreview  = document.getElementById("filePreview");
+
+proofEl.addEventListener("change", () => {
+  const file = proofEl.files[0];
+
+  if (!file) {
+    previewBox.style.display = "none";
+    return;
+  }
+
+  previewBox.style.display = "block";
+  imagePreview.style.display = "none";
+  filePreview.textContent = "";
+
+  if (file.type.startsWith("image/")) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      imagePreview.src = e.target.result;
+      imagePreview.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  } else {
+    filePreview.textContent = `📄 ${file.name}`;
+  }
+});
 
 onAuthStateChanged(auth, user => {
   if (!user) {
