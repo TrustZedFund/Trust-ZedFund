@@ -109,6 +109,25 @@
   background: rgba(255,255,255,0.15);
 }
 
+.profile-menu {
+  position: relative;
+}
+
+/* Hide by default */
+.profile-dropdown {
+  display: none;
+  position: absolute;
+  top: 48px;
+  right: 0;
+  min-width: 220px;
+  z-index: 1000;
+}
+
+/* Show when toggled */
+.profile-dropdown.show {
+  display: block;
+}
+
 </style>
 </head>
 <body>
