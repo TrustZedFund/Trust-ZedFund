@@ -98,6 +98,51 @@ button {
   color:#083a34;
   font-weight:600;
 }
+.dashboard-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background: #0f3d2e;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.35);
+  z-index: 999;
+}
+
+/* Button base */
+.footer-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+/* Alignments */
+.footer-btn.left {
+  margin-right: auto;
+}
+
+.footer-btn.center {
+  margin: 0 auto;
+  color: #f5c542;
+}
+
+.footer-btn.right {
+  margin-left: auto;
+}
+
+/* Tap feedback */
+.footer-btn:active {
+  transform: scale(0.95);
+}
+
 </style>
 </head>
 
@@ -187,10 +232,10 @@ button {
 
 <!-- FOOTER BUTTONS -->
 <footer class="dashboard-footer">
-  <button class="footer-btn" onclick="goHome()">Home</button>
-  <button class="footer-btn" onclick="goRefer()">Refer & Earn</button>
-  <button class="footer-btn" onclick="goInvestments()">Invest</button>
-  <button class="footer-btn" onclick="goWallet()">Wallet</button>
+  <button class="footer-btn left" onclick="goWithdraw()">Withdraw</button>
+  <button class="footer-btn left" onclick="goWallet()">Wallet</button>
+  <button class="footer-btn center" onclick="goRefer()">Refer & Earn</button>
+  <button class="footer-btn right" onclick="goHome()">Home</button>
 </footer>
 
 <!-- ================= FIREBASE ================= -->
@@ -295,8 +340,8 @@ function calculate(amount, dailyRate, days, outputId) {
     window.location.href = "refer.html";
   }
 
-  function goInvestments() {
-    window.location.href = "invest.html";
+  function goWithdraw() {
+    window.location.href = "withdraw.html";
   }
 
   function goWallet() {
