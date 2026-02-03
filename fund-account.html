@@ -254,27 +254,31 @@ submitBtn.addEventListener("click", async () => {
     return;
   }
 
-  try {
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Uploading...";
-    status.textContent = "";
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Uploading 0%";
+  status.textContent = "⏳ Uploading transaction proof…";
 
+  try {
     await submitDepositProof(
       currentUser.uid,
       { method, amount },
-      file
+      file,
+      percent => {
+        submitBtn.textContent = `Uploading ${percent}%`;
+      }
     );
 
-    status.textContent = "✅ Deposit submitted. Await approval.";
-    submitBtn.textContent = "Submitted";
+    submitBtn.textContent = "✔ Submitted";
+    status.textContent = "✅ Deposit submitted successfully. Await approval.";
 
   } catch (err) {
     console.error(err);
-    status.textContent = "❌ " + err.message;
-    submitBtn.textContent = "Submit Proof";
     submitBtn.disabled = false;
+    submitBtn.textContent = "Submit Proof";
+    status.textContent = "❌ " + err.message;
   }
 });
+
 </script>
 <script>
 function copyText(id) {
