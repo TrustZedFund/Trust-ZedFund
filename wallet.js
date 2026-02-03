@@ -195,3 +195,9 @@ function resetDepositFlow() {
   currentDepositAmount = 0;
   selectedProvider = "";
 }
+push(ref(db, "notifications/" + user.uid), {
+  message: "💰 Deposit submitted. Awaiting confirmation.",
+  read: false,
+  time: Date.now(),
+  type: "deposit"
+});
