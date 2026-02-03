@@ -7,10 +7,31 @@
   <link rel="stylesheet" href="styles.css" />
   <style>
     /* Additional styles for login page */
-    .auth-card button:disabled {
-      background-color: #3b82f6;
-      opacity: 0.8;
-      cursor: not-allowed;
+    .success-message {
+      padding: 15px;
+      background: #d1fae5;
+      border: 1px solid #10b981;
+      border-radius: 8px;
+      color: #065f46;
+      margin: 15px 0;
+    }
+    
+    .error-message {
+      padding: 15px;
+      background: #fee2e2;
+      border: 1px solid #ef4444;
+      border-radius: 8px;
+      color: #991b1b;
+      margin: 15px 0;
+    }
+    
+    .info-message {
+      padding: 15px;
+      background: #dbeafe;
+      border: 1px solid #3b82f6;
+      border-radius: 8px;
+      color: #1e40af;
+      margin: 15px 0;
     }
     
     .loader {
@@ -19,8 +40,8 @@
       height: 16px;
       border: 2px solid rgba(255,255,255,0.3);
       border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 1s ease-in-out infinite;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
       margin-right: 8px;
       vertical-align: middle;
     }
@@ -29,112 +50,115 @@
       to { transform: rotate(360deg); }
     }
     
-    .error-text {
-      color: #ef4444;
-      font-weight: 500;
-      padding: 10px;
-      background-color: #fee2e2;
-      border-radius: 8px;
-      margin: 10px 0;
+    .auth-divider {
       text-align: center;
-    }
-    
-    .forgot-link {
-      text-align: right;
-      margin-top: -10px;
-      margin-bottom: 20px;
-    }
-    
-    .forgot-link a {
-      color: #3b82f6;
-      text-decoration: none;
-      font-size: 14px;
-    }
-    
-    .forgot-link a:hover {
-      text-decoration: underline;
-    }
-    
-    .demo-credentials {
-      background-color: #f3f4f6;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      padding: 15px;
       margin: 20px 0;
-      font-size: 14px;
+      position: relative;
     }
     
-    .demo-credentials h4 {
-      margin-top: 0;
-      color: #374151;
-      font-size: 14px;
-      margin-bottom: 10px;
+    .auth-divider:before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #e5e7eb;
     }
     
-    .demo-credentials p {
-      margin: 5px 0;
+    .auth-divider span {
+      background: white;
+      padding: 0 15px;
       color: #6b7280;
+      font-size: 14px;
     }
     
-    .demo-credentials code {
-      background-color: #e5e7eb;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: monospace;
+    .alternative-action {
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .secondary-btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: white;
+      color: #3b82f6;
+      border: 1px solid #3b82f6;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .secondary-btn:hover {
+      background: #eff6ff;
     }
   </style>
 </head>
 <body>
 
 <section class="auth-hero">
-  <h1>Welcome Back</h1>
-  <p>Log in to manage your investments and earnings securely.</p>
+  <h1>Welcome Back to Trust ZedFund</h1>
+  <p>Access your investment dashboard and manage your portfolio.</p>
 </section>
 
 <div class="auth-wrapper">
   <form id="loginForm" class="auth-card">
     <h2>Login to Your Account</h2>
-
-    <div class="form-group">
-      <input class="input" id="loginEmail" type="email" placeholder="Email Address" required />
-      <div class="form-hint">Enter your registered email address</div>
+    
+    <div id="loginSuccess" class="success-message" style="display: none;"></div>
+    <div id="loginError" class="error-message" style="display: none;"></div>
+    
+    <!-- Check for logout message -->
+    <div id="logoutMessage" class="info-message" style="display: none;">
+      <strong>✓ You have been logged out successfully.</strong><br>
+      Please login again to continue.
     </div>
 
     <div class="form-group">
+      <label for="loginEmail">Email Address *</label>
+      <input class="input" id="loginEmail" type="email" placeholder="you@example.com" required />
+      <div class="form-hint">Enter your registered email</div>
+    </div>
+
+    <div class="form-group">
+      <label for="loginPassword">Password *</label>
       <div class="password-wrap">
-        <input class="input" id="loginPassword" type="password" placeholder="Password" required />
+        <input class="input" id="loginPassword" type="password" placeholder="••••••••" required />
         <span class="toggle-eye" onclick="togglePassword('loginPassword')">👀</span>
       </div>
-      <div class="form-hint">Enter your secure password</div>
+      <div class="form-hint">
+        <a href="forgot-password.html" style="float: right;">Forgot Password?</a>
+      </div>
     </div>
-
-    <div class="forgot-link">
-      <a href="forgot-password.html">Forgot Password?</a>
-    </div>
-
-    <div id="loginError" class="error-text"></div>
 
     <button type="submit" class="primary-btn" id="loginBtn">
-      Login
+      Login to Dashboard
     </button>
 
-    <!-- Demo credentials for testing (remove in production) -->
-    <div class="demo-credentials">
-      <h4>⚠️ Testing Demo Credentials:</h4>
-      <p>Email: <code>demo@trustzedfund.com</code></p>
-      <p>Password: <code>demo123</code></p>
-      <p><small>Use these for testing only. Replace with real credentials.</small></p>
+    <div class="auth-divider">
+      <span>Don't have an account?</span>
     </div>
 
-    <p class="auth-switch">
-      Don't have an account?
-      <a href="register.html">Sign Up</a>
+    <div class="alternative-action">
+      <a href="register.html" class="secondary-btn">
+        Create New Account
+      </a>
+    </div>
+
+    <p class="auth-note">
+      * Required fields. Ensure you're logging in from a secure device.
     </p>
   </form>
 </div>
 
 <footer class="auth-footer">
-  © 2026 Trust ZedFund. All rights reserved.
+  <p>© 2026 Trust ZedFund. Secure login with 256-bit SSL encryption.</p>
+  <p class="footer-links">
+    <a href="security.html">Security</a> • 
+    <a href="contact.html">Support</a> • 
+    <a href="privacy.html">Privacy</a>
+  </p>
 </footer>
 
 <script>
@@ -152,86 +176,45 @@
     }
   }
 
-  // Auto-fill demo credentials for testing (remove in production)
   document.addEventListener('DOMContentLoaded', function() {
-    // Auto-fill demo credentials for easier testing
-    const emailInput = document.getElementById('loginEmail');
-    const passwordInput = document.getElementById('loginPassword');
-    
-    if (emailInput && passwordInput) {
-      // Comment out these lines in production
-      emailInput.value = 'demo@trustzedfund.com';
-      passwordInput.value = 'demo123';
-      
-      // Form validation feedback
-      const inputs = document.querySelectorAll('#loginForm input[required]');
-      inputs.forEach(input => {
-        input.addEventListener('blur', function() {
-          if (!this.value.trim()) {
-            this.style.borderColor = '#ef4444';
-          } else {
-            this.style.borderColor = '#d1d5db';
-          }
-        });
-        
-        input.addEventListener('input', function() {
-          if (this.value.trim()) {
-            this.style.borderColor = '#d1d5db';
-          }
-        });
-      });
-    }
-    
-    // Check if user is already logged in
-    if (localStorage.getItem('userLoggedIn') === 'true') {
-      console.log('User appears to be logged in (from localStorage)');
-    }
-    
-    // Handle Enter key submission
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-      loginForm.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          const submitBtn = document.getElementById('loginBtn');
-          if (submitBtn && !submitBtn.disabled) {
-            submitBtn.click();
-          }
-        }
-      });
-    }
-  });
-
-  // Remember login state (optional)
-  function rememberLogin(email) {
-    localStorage.setItem('lastLoginEmail', email);
-    localStorage.setItem('lastLoginTime', new Date().toISOString());
-  }
-
-  // Global error handler
-  window.addEventListener('error', function(e) {
-    console.error('Global error caught:', e.error);
-    const errorEl = document.getElementById('loginError');
-    if (errorEl) {
-      errorEl.textContent = 'An unexpected error occurred. Please try again.';
-    }
-  });
-  
-  // Check for error messages in URL (e.g., from redirects)
-  window.addEventListener('load', function() {
+    // Check for logout success message
     const params = new URLSearchParams(window.location.search);
-    const error = params.get('error');
-    if (error) {
-      const errorEl = document.getElementById('loginError');
-      if (errorEl) {
-        errorEl.textContent = decodeURIComponent(error);
+    const logoutSuccess = params.get("logout");
+    
+    if (logoutSuccess === "success") {
+      const logoutMessage = document.getElementById('logoutMessage');
+      if (logoutMessage) {
+        logoutMessage.style.display = 'block';
+      }
+      
+      // Clear URL parameters
+      if (window.history.replaceState) {
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
       }
     }
     
-    // Clear URL parameters after displaying error
-    if (window.history.replaceState && error) {
-      const cleanUrl = window.location.pathname;
-      window.history.replaceState({}, document.title, cleanUrl);
+    // Check for redirect parameter
+    const redirectPage = params.get("redirect");
+    if (redirectPage) {
+      console.log("Redirected from:", redirectPage);
+      const errorEl = document.getElementById('loginError');
+      if (errorEl) {
+        errorEl.innerHTML = `<strong>Session Expired:</strong> Please login again to access ${redirectPage}`;
+        errorEl.style.display = 'block';
+      }
+    }
+    
+    // Auto-fill email from localStorage if available
+    const savedEmail = localStorage.getItem('lastLoginEmail');
+    const emailInput = document.getElementById('loginEmail');
+    if (savedEmail && emailInput && !emailInput.value) {
+      emailInput.value = savedEmail;
+    }
+    
+    // Focus on password field if email is pre-filled
+    if (emailInput && emailInput.value) {
+      document.getElementById('loginPassword')?.focus();
     }
   });
 </script>
