@@ -240,6 +240,11 @@ body {
 </footer>
 
 <script type="module">
+const profileBtn = document.getElementById("profileBtn");
+const profileDropdown = document.getElementById("profileDropdown");
+const profileName = document.getElementById("profileName");
+const heroHeading = document.getElementById("heroHeading");
+
 import { auth } from "./firebase.js";
 import { onAuthStateChanged, signOut } from
   "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
