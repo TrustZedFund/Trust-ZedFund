@@ -6,162 +6,177 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: #f4f6f9;
-      margin: 0;
-      padding: 0;
-      color: #222;
-    }
+:root {
+  --tzf-bg-dark: #0a1f1c;
+  --tzf-green-main: #0f6f61;
+  --tzf-green-light: #1aa08a;
+  --tzf-accent-gold: #f1e17b;
+  --tzf-text-light: #e6f4f1;
+  --tzf-text-muted: #9bbfba;
+  --tzf-white: #ffffff;
+}
 
-    .wallet-container {
-      max-width: 500px;
-      margin: auto;
-      padding: 20px;
-    }
+/* PAGE */
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: var(--tzf-bg-dark);
+  margin: 0;
+  padding: 0;
+  color: var(--tzf-text-light);
+}
 
-    h2 {
-      text-align: center;
-      margin-bottom: 5px;
-    }
+.wallet-container {
+  max-width: 520px;
+  margin: auto;
+  padding: 26px 18px 50px;
+}
 
-    .subtext {
-      text-align: center;
-      color: #777;
-      margin-bottom: 20px;
-    }
+h2 {
+  text-align: center;
+  margin-bottom: 6px;
+}
 
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 18px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
+.subtext {
+  text-align: center;
+  color: var(--tzf-text-muted);
+  margin-bottom: 22px;
+}
 
-    .card h3 {
-      margin-top: 0;
-      font-size: 18px;
-    }
+.card {
+  background: linear-gradient(
+    180deg,
+    rgba(15,111,97,0.9),
+    rgba(10,31,28,0.95)
+  );
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(26,160,138,0.25);
+}
 
-    input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      margin-top: 10px;
-      font-size: 15px;
-    }
+.amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--tzf-accent-gold);
+}
 
-    button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 12px;
-    }
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(26,160,138,0.4);
+  margin-top: 12px;
+  font-size: 15px;
+  background: #fff;
+}
 
-    .btn-primary { background: #2e7dff; color: #fff; }
-    .btn-airtel { background: #e60000; color: #fff; }
-    .btn-mtn { background: #ffcc00; color: #000; }
+button {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: none;
+  margin-top: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
 
-    .provider-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-    }
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--tzf-green-light),
+    var(--tzf-green-main)
+  );
+  color: var(--tzf-white);
+}
 
-    .provider-buttons button { flex: 1; }
+.provider-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
 
-    .hidden { display: none; }
-    .center { text-align: center; }
+.btn-airtel {
+  background: #e60000;
+  color: #fff;
+}
 
-    .list-item {
-      padding: 10px 0;
-      border-bottom: 1px solid #eee;
-      font-size: 14px;
-    }
+.btn-mtn {
+  background: #ffcc00;
+  color: #1f1f1f;
+}
 
-    .amount {
-      font-size: 22px;
-      font-weight: bold;
-    }
+.hidden {
+  display: none;
+}
+
+.list-item {
+  padding: 10px 0;
+  border-bottom: 1px dashed rgba(255,255,255,0.15);
+  font-size: 14px;
+  color: var(--tzf-text-muted);
+}
   </style>
 </head>
 
 <body>
 
-  <div class="wallet-container">
+<div class="wallet-container">
 
-    <h2>Withdraw Funds</h2>
-    <div class="subtext">Request payout from your earnings wallet</div>
+  <h2>Withdraw Funds</h2>
+  <div class="subtext">Request payout from your earnings wallet</div>
 
-    <!-- BALANCE -->
-    <div class="card">
-      <h3>Earnings Wallet</h3>
-      <div class="amount" id="earningsBalance">ZMK 0.00</div>
-      <small>Available to withdraw</small>
-    </div>
-
-    <!-- WITHDRAW FORM -->
-    <div class="card">
-      <h3>Withdraw Funds</h3>
-
-      <input type="number" id="withdrawAmount" placeholder="Enter amount in ZMK"/>
-
-      <button class="btn-primary" id="chooseProviderBtn">
-        Continue
-      </button>
-
-      <!-- PROVIDER SELECTION -->
-      <div id="providerSection" class="hidden center">
-        <p><strong>Select your Mobile Wallet Provider:</strong></p>
-
-        <div class="provider-buttons">
-          <button class="btn-airtel" id="airtelBtn">Airtel Money</button>
-          <button class="btn-mtn" id="mtnBtn">MTN Mobile Money</button>
-        </div>
-      </div>
-
-      <!-- PAYMENT DETAILS -->
-      <div id="paymentDetails" class="hidden">
-        <h4 id="selectedProviderTitle"></h4>
-
-        <p><strong>You will receive:</strong></p>
-        <p id="payAmount"></p>
-
-        <input type="text" id="receiverNumber" placeholder="Enter your mobile number"/>
-
-        <button class="btn-primary" id="confirmWithdrawBtn">
-          Confirm Withdrawal
-        </button>
-      </div>
-
-    </div>
-
-    <!-- PENDING WITHDRAWALS -->
-    <div class="card">
-      <h3>Pending Withdrawals</h3>
-      <div id="activeWithdrawalsList">
-        <p class="subtext">No pending withdrawals</p>
-      </div>
-    </div>
-
-    <!-- TRANSACTION HISTORY -->
-    <div class="card">
-      <h3>Transaction History</h3>
-      <div id="transactionHistoryList">
-        <p class="subtext">No transactions yet</p>
-      </div>
-    </div>
-
+  <!-- BALANCE -->
+  <div class="card">
+    <h3>Earnings Wallet</h3>
+    <div class="amount" id="earningsBalance">ZMK 0.00</div>
   </div>
 
-  <!-- Scripts -->
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="withdraw.js"></script>
+  <!-- WITHDRAW -->
+  <div class="card">
+    <h3>Withdraw Amount</h3>
 
+    <input type="number" id="withdrawAmount" placeholder="Enter amount in ZMK" />
+
+    <button class="btn-primary" id="chooseProviderBtn">
+      Continue
+    </button>
+
+    <!-- PROVIDERS -->
+    <div id="providerSection" class="hidden">
+      <p><strong>Select Mobile Wallet Provider</strong></p>
+
+      <div class="provider-buttons">
+        <button class="btn-airtel" id="airtelBtn">Airtel Money</button>
+        <button class="btn-mtn" id="mtnBtn">MTN Mobile Money</button>
+      </div>
+    </div>
+
+    <!-- DETAILS -->
+    <div id="paymentDetails" class="hidden">
+      <h4 id="selectedProviderTitle"></h4>
+
+      <p><strong>You will receive:</strong></p>
+      <p id="payAmount"></p>
+
+      <input type="text" id="receiverNumber" placeholder="Enter your mobile number" />
+
+      <button class="btn-primary" id="confirmWithdrawBtn">
+        Confirm Withdrawal
+      </button>
+    </div>
+  </div>
+
+  <!-- PENDING -->
+  <div class="card">
+    <h3>Pending Withdrawals</h3>
+    <div id="activeWithdrawalsList">
+      <p class="subtext">No pending withdrawals</p>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="withdraw.js"></script>
 </body>
 </html>
