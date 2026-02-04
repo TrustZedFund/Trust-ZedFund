@@ -252,10 +252,15 @@ const heroHeading = document.getElementById("heroHeading");
 profileBtn.onclick = () =>
   profileDropdown.classList.toggle("show");
 
-/* AUTH */
+/* 🔁 TOGGLE DROPDOWN — ALWAYS WORKS */
+profileBtn.addEventListener("click", () => {
+  profileDropdown.classList.toggle("show");
+});
+
+/* 🔐 AUTH USER */
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    location.href = "login.html";
+    window.location.href = "login.html";
     return;
   }
 
@@ -268,13 +273,13 @@ onAuthStateChanged(auth, (user) => {
   profileName.textContent = firstName;
 });
 
-/* LOGOUT */
-logoutBtn.onclick = async () => {
+/* 🚪 LOGOUT */
+document.getElementById("logoutBtn").addEventListener("click", async () => {
   await signOut(auth);
-  location.href = "index.html";
-};
+  window.location.href = "index.html";
+});
 
-/* NAV */
+/* 🌍 NAV */
 window.goHome = () => location.href = "index.html";
 window.goWallet = () => location.href = "wallet.html";
 window.goWithdraw = () => location.href = "withdraw.html";
