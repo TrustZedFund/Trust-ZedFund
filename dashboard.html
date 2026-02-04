@@ -308,6 +308,22 @@ document.addEventListener("click", e => {
     document.getElementById("profileDropdown").classList.remove("show");
   }
 });
+import { auth } from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) return;
+
+  const firstName =
+    user.displayName
+      ? user.displayName.split(" ")[0]
+      : "User";
+
+  const hero = document.getElementById("heroHeading");
+  if (hero) {
+    hero.textContent = `Hello, ${firstName}`;
+  }
+});
 </script>
 
 </body>
