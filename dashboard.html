@@ -7,29 +7,29 @@
 
 <style>
 :root {
-  --bg: #0b2e1f;
-  --card: #123d2a;
-  --accent: #22c55e;
-  --accent-2: #facc15;
-  --danger: #ef4444;
-  --text: #ffffff;
-  --muted: #cbd5e1;
+  --tzf-bg-dark: #0a1f1c;
+  --tzf-green-main: #0f6f61;
+  --tzf-green-light: #1aa08a;
+  --tzf-accent-gold: #f1e17b;
+  --tzf-text-light: #e6f4f1;
+  --tzf-text-muted: #9bbfba;
+  --tzf-white: #ffffff;
 }
 
-/* RESET */
 * { box-sizing: border-box; }
+
 body {
+  font-family: "Segoe UI", sans-serif;
+  background: var(--tzf-bg-dark);
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
   padding-bottom: 90px;
+  color: var(--tzf-text-light);
 }
 
 /* NAVBAR */
 .navbar {
-  background: #0f3a27;
-  padding: 15px 20px;
+  background: var(--tzf-green-main);
+  padding: 14px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -39,14 +39,14 @@ body {
 }
 
 .logo {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--tzf-accent-gold);
 }
 
 .navbar nav {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
 }
 
@@ -56,7 +56,7 @@ body {
   border: none;
   font-size: 22px;
   cursor: pointer;
-  color: white;
+  color: var(--tzf-text-light);
   position: relative;
 }
 
@@ -64,53 +64,35 @@ body {
   position: absolute;
   top: -4px;
   right: -6px;
-  background: var(--danger);
+  background: #ef4444;
   font-size: 11px;
   padding: 2px 6px;
   border-radius: 50%;
   display: none;
 }
 
-/* NOTIFICATION PANEL */
-.notif-panel {
-  position: absolute;
-  right: 20px;
-  top: 65px;
-  width: 280px;
-  background: #134734;
-  border-radius: 12px;
-  display: none;
-  box-shadow: 0 15px 30px rgba(0,0,0,.5);
-}
-
-.notif-panel h4 {
-  margin: 0;
-  padding: 12px;
-  border-bottom: 1px solid rgba(255,255,255,.1);
-}
-
-/* PROFILE */
+/* PROFILE MENU */
 .profile-menu { position: relative; }
 
 #profileBtn {
-  background: #134734;
-  border: 1px solid rgba(255,255,255,.15);
-  color: white;
-  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid var(--tzf-green-light);
+  color: var(--tzf-text-light);
+  padding: 7px 12px;
   border-radius: 8px;
   cursor: pointer;
 }
 
-/* DROPDOWN */
+/* PROFILE DROPDOWN */
 .profile-dropdown {
   position: absolute;
   right: 0;
   top: 110%;
-  background: #134734;
+  background: var(--tzf-green-main);
   border-radius: 12px;
   min-width: 220px;
   display: none;
-  box-shadow: 0 15px 30px rgba(0,0,0,.5);
+  box-shadow: 0 12px 30px rgba(0,0,0,.5);
 }
 
 .profile-dropdown.show { display: block; }
@@ -122,31 +104,45 @@ body {
   padding: 12px 16px;
   background: none;
   border: none;
-  color: white;
+  color: var(--tzf-text-light);
   text-decoration: none;
   width: 100%;
   cursor: pointer;
+  text-align: left;
 }
 
 .profile-dropdown button:hover,
 .profile-dropdown a:hover {
-  background: rgba(255,255,255,.08);
+  background: var(--tzf-green-light);
+}
+
+.profile-dropdown hr {
+  border: none;
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+  margin: 6px 0;
 }
 
 .logout-btn {
-  color: var(--danger);
-  font-weight: bold;
+  color: #ffb4b4;
+  font-weight: 600;
 }
 
 /* HERO */
 .dashboard-hero {
+  padding: 28px 20px;
   text-align: center;
-  padding: 35px 20px;
 }
 
 #heroHeading {
-  font-size: 30px;
-  color: var(--accent);
+  font-size: 26px;
+  color: var(--tzf-accent-gold);
+  margin-bottom: 6px;
+}
+
+#heroSubheading {
+  color: var(--tzf-text-muted);
+  font-size: 14px;
 }
 
 /* CARDS */
@@ -156,24 +152,37 @@ body {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+  gap: 18px;
 }
 
 .card {
-  background: var(--card);
+  background: var(--tzf-green-main);
   border-radius: 16px;
   padding: 22px;
-  box-shadow: 0 10px 25px rgba(0,0,0,.35);
 }
 
-.card h3 { color: var(--muted); margin: 0 0 10px; }
-.card p { font-size: 28px; margin: 0 0 10px; }
+.card h3 {
+  color: var(--tzf-text-muted);
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+
+.card p {
+  font-size: 26px;
+  margin: 0 0 12px;
+  color: var(--tzf-white);
+}
+
+.card small {
+  font-size: 13px;
+  color: var(--tzf-text-muted);
+}
 
 .btn-primary {
   width: 100%;
-  background: var(--accent);
-  color: #052e16;
+  background: var(--tzf-accent-gold);
+  color: #063b34;
   border: none;
   padding: 12px;
   border-radius: 10px;
@@ -183,8 +192,8 @@ body {
 
 /* INVESTMENTS */
 .dashboard-investments {
-  margin: 30px 20px;
-  background: var(--card);
+  margin: 28px 20px;
+  background: var(--tzf-green-main);
   border-radius: 16px;
   padding: 22px;
 }
@@ -195,7 +204,7 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: #0f3a27;
+  background: var(--tzf-green-main);
   display: flex;
   justify-content: space-around;
   padding: 12px 0;
@@ -204,8 +213,9 @@ body {
 .footer-btn {
   background: none;
   border: none;
-  color: white;
-  font-size: 13px;
+  color: var(--tzf-text-light);
+  font-size: 12px;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -216,16 +226,15 @@ body {
   <div class="logo">Trust ZedFund</div>
 
   <nav>
-    <button class="notif-bell" onclick="toggleNotifications()">
-      🔔 <span id="notifCount" class="notif-count">0</span>
-    </button>
+    <button class="notif-bell">🔔 <span id="notifCount" class="notif-count">0</span></button>
 
     <div class="profile-menu">
       <button id="profileBtn" onclick="toggleProfile()">👤 Profile ▾</button>
 
       <div class="profile-dropdown" id="profileDropdown">
-        <button onclick="goRefer()">🎁 Refer & Earn</button>
+        <button onclick="goNotifications()">🔔 Notifications</button>
         <button onclick="goAbout()">ℹ️ About Us</button>
+        <button onclick="goRefer()">🎁 Refer & Earn</button>
         <a href="https://t.me/Trust_ZedFund" target="_blank">💬 Support</a>
         <hr>
         <button class="logout-btn">🚪 Logout</button>
@@ -236,7 +245,7 @@ body {
 
 <section class="dashboard-hero">
   <h1 id="heroHeading">Hello, User</h1>
-  <p>Welcome to your portfolio</p>
+  <p id="heroSubheading">Welcome to your portfolio</p>
 </section>
 
 <section class="dashboard-cards">
@@ -245,24 +254,27 @@ body {
     <div class="card">
       <h3>Deposit Wallet</h3>
       <p>ZMK 0.00</p>
+      <small>For investments only</small>
       <button class="btn-primary" onclick="goWallet()">Deposit</button>
     </div>
 
     <div class="card">
       <h3>Earnings Wallet</h3>
       <p>ZMK 0.00</p>
+      <small>Available to withdraw</small>
       <button class="btn-primary" onclick="goWithdraw()">Withdraw</button>
     </div>
 
     <div class="card">
-      <h3>Returns</h3>
+      <h3>Returns Earnings</h3>
       <p>ZMK 0.00</p>
-      <button class="btn-primary" onclick="goInvest()">Invest</button>
+      <button class="btn-primary" onclick="goInvest()">Invest Now</button>
     </div>
 
     <div class="card">
-      <h3>Referral Bonus</h3>
+      <h3>Referral Bonuses</h3>
       <p>ZMK 0.00</p>
+      <small>Earn 5% from referrals</small>
     </div>
 
   </div>
@@ -275,6 +287,7 @@ body {
 
 <footer class="dashboard-footer">
   <button class="footer-btn" onclick="goHome()">🏠 Home</button>
+  <button class="footer-btn" onclick="goRefer()">🎁 Refer & Earn</button>
   <button class="footer-btn" onclick="goInvest()">💰 Invest</button>
   <button class="footer-btn" onclick="goWallet()">💳 Wallet</button>
 </footer>
@@ -283,19 +296,13 @@ body {
 function toggleProfile() {
   document.getElementById("profileDropdown").classList.toggle("show");
 }
-
-function toggleNotifications() {
-  const n = document.getElementById("notifPanel");
-  if (n) n.style.display = n.style.display === "block" ? "none" : "block";
-}
-
 function goHome(){location.href="index.html"}
 function goWallet(){location.href="wallet.html"}
 function goWithdraw(){location.href="withdraw.html"}
 function goInvest(){location.href="invest.html"}
 function goRefer(){location.href="refer.html"}
 function goAbout(){location.href="about.html"}
-
+function goNotifications(){}
 document.addEventListener("click", e => {
   if (!e.target.closest(".profile-menu")) {
     document.getElementById("profileDropdown").classList.remove("show");
