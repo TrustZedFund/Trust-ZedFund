@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Trust ZedFund Dashboard</title>
+<title>Dashboard | Trust ZedFund</title>
 
 <style>
 :root {
@@ -21,13 +21,13 @@ body {
   font-family: "Segoe UI", sans-serif;
   background: var(--tzf-bg-dark);
   margin: 0;
-  padding: 0;
+  padding-bottom: 90px;
   color: var(--tzf-text-light);
 }
 
 /* NAVBAR */
 .navbar {
-  background: var(--tzf-green-main);
+  background: linear-gradient(135deg, var(--tzf-green-main), #083a33);
   padding: 14px 18px;
   display: flex;
   justify-content: space-between;
@@ -35,119 +35,144 @@ body {
   position: sticky;
   top: 0;
   z-index: 1000;
+  box-shadow: 0 6px 20px rgba(0,0,0,.35);
 }
 
 .logo {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--tzf-accent-gold);
 }
 
-/* PROFILE MENU */
+/* PROFILE */
 .profile-menu {
   position: relative;
 }
 
 #profileBtn {
-  background: var(--tzf-green-light);
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.2);
   color: var(--tzf-white);
-  border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 8px 14px;
   cursor: pointer;
-  font-size: 14px;
 }
 
-/* DROPDOWN */
 .profile-dropdown {
   position: absolute;
   right: 0;
-  top: 110%;
-  background: #0d2a25;
-  border-radius: 10px;
-  min-width: 200px;
+  top: 48px;
+  background: #0f2e2a;
+  border-radius: 14px;
+  min-width: 220px;
   display: none;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  box-shadow: 0 12px 28px rgba(0,0,0,.45);
+  overflow: hidden;
+}
+
+.profile-dropdown.show {
+  display: block;
 }
 
 .profile-dropdown button,
 .profile-dropdown a {
+  display: block;
   width: 100%;
-  padding: 12px;
+  padding: 12px 16px;
   background: none;
   border: none;
-  text-align: left;
   color: var(--tzf-text-light);
-  font-size: 14px;
+  text-align: left;
   cursor: pointer;
   text-decoration: none;
 }
 
 .profile-dropdown button:hover,
 .profile-dropdown a:hover {
-  background: rgba(255,255,255,0.05);
-}
-
-.profile-dropdown hr {
-  border: none;
-  height: 1px;
-  background: rgba(255,255,255,0.1);
-  margin: 6px 0;
+  background: rgba(255,255,255,.05);
 }
 
 .logout-btn {
-  color: #ff6b6b;
+  color: #ff7b7b;
+  font-weight: 600;
 }
 
 /* HERO */
 .dashboard-hero {
-  padding: 30px 20px;
+  text-align: center;
+  padding: 32px 16px;
 }
 
-.dashboard-hero h1 {
-  margin: 0;
-  font-size: 26px;
+#heroHeading {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--tzf-accent-gold);
 }
 
-.dashboard-hero p {
+#heroSubheading {
   color: var(--tzf-text-muted);
+  font-size: 15px;
 }
 
 /* CARDS */
-.cards {
-  padding: 0 20px;
+.dashboard-cards {
+  padding: 0 16px;
+}
+
+.card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
 }
 
 .card {
-  background: #0d2a25;
-  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(15,111,97,.85), rgba(10,31,28,.95));
+  border-radius: 18px;
   padding: 18px;
-  border-left: 4px solid var(--tzf-green-light);
+  border: 1px solid rgba(26,160,138,.3);
+  box-shadow: 0 10px 28px rgba(0,0,0,.35);
 }
 
 .card h3 {
-  margin: 0;
-  color: var(--tzf-text-muted);
   font-size: 14px;
+  color: var(--tzf-text-muted);
+  margin: 0;
 }
 
 .card p {
-  margin: 10px 0;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
+  color: var(--tzf-accent-gold);
+  margin: 10px 0;
 }
 
 .card button {
-  background: var(--tzf-green-light);
-  border: none;
-  border-radius: 8px;
-  padding: 10px;
   width: 100%;
-  color: white;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--tzf-green-light), var(--tzf-green-main));
+  color: var(--tzf-white);
+  font-weight: 600;
   cursor: pointer;
+}
+
+/* INVESTMENTS */
+.dashboard-investments {
+  margin: 24px 16px;
+  background: linear-gradient(180deg, rgba(15,111,97,.85), rgba(10,31,28,.95));
+  border-radius: 18px;
+  padding: 20px;
+  border: 1px solid rgba(26,160,138,.3);
+}
+
+.dashboard-investments h3 {
+  margin-top: 0;
+  color: var(--tzf-accent-gold);
+}
+
+#investments {
+  margin-top: 12px;
 }
 
 /* FOOTER */
@@ -156,19 +181,23 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: #0d2a25;
+  background: #0b2e1f;
+  border-top: 1px solid rgba(255,255,255,.1);
   display: flex;
   justify-content: space-around;
-  padding: 10px 0;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  padding: 12px 0;
 }
 
 .footer-btn {
   background: none;
   border: none;
   color: var(--tzf-text-muted);
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
+}
+
+.footer-btn:hover {
+  color: var(--tzf-accent-gold);
 }
 </style>
 </head>
@@ -177,44 +206,51 @@ body {
 
 <header class="navbar">
   <div class="logo">Trust ZedFund</div>
-
-  <!-- ORIGINAL PROFILE MENU -->
   <div class="profile-menu">
-    <button id="profileBtn" onclick="toggleProfile()">👤 Profile ▾</button>
-
+    <button id="profileBtn">👤 Profile</button>
     <div class="profile-dropdown" id="profileDropdown">
-      <button onclick="goNotifications()">🔔 Notifications</button>
-      <button onclick="goAbout()">ℹ️ About Us</button>
       <button onclick="goRefer()">🎁 Refer & Earn</button>
       <a href="https://t.me/Trust_ZedFund" target="_blank">💬 Support</a>
-      <hr>
-      <button class="logout-btn">🚪 Logout</button>
+      <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
     </div>
   </div>
 </header>
 
 <section class="dashboard-hero">
-  <h1 id="heroName">Hello</h1>
-  <p>Welcome back to your dashboard</p>
+  <h1 id="heroHeading">Hello</h1>
+  <p id="heroSubheading">Welcome to your dashboard</p>
 </section>
 
-<section class="cards">
-  <div class="card">
-    <h3>Deposit Wallet</h3>
-    <p>ZMK 0.00</p>
-    <button onclick="goWallet()">Deposit</button>
-  </div>
+<section class="dashboard-cards">
+  <div class="card-grid">
+    <div class="card">
+      <h3>Deposit Wallet</h3>
+      <p id="depositWallet">ZMK 0.00</p>
+      <button onclick="goWallet()">Deposit</button>
+    </div>
 
-  <div class="card">
-    <h3>Earnings Wallet</h3>
-    <p>ZMK 0.00</p>
-    <button onclick="goWithdraw()">Withdraw</button>
-  </div>
+    <div class="card">
+      <h3>Earnings Wallet</h3>
+      <p id="earningsWallet">ZMK 0.00</p>
+      <button onclick="goWithdraw()">Withdraw</button>
+    </div>
 
-  <div class="card">
-    <h3>Referral Bonus</h3>
-    <p>ZMK 0.00</p>
+    <div class="card">
+      <h3>Returns</h3>
+      <p id="returnsWallet">ZMK 0.00</p>
+      <button onclick="goInvest()">Invest</button>
+    </div>
+
+    <div class="card">
+      <h3>Referral Bonus</h3>
+      <p id="referralWallet">ZMK 0.00</p>
+    </div>
   </div>
+</section>
+
+<section class="dashboard-investments">
+  <h3>Active Investments</h3>
+  <div id="investments">No active investments yet</div>
 </section>
 
 <footer class="dashboard-footer">
@@ -224,29 +260,76 @@ body {
   <button class="footer-btn" onclick="goWallet()">💳 Wallet</button>
 </footer>
 
-<script>
-function toggleProfile() {
-  const dd = document.getElementById("profileDropdown");
-  dd.style.display = dd.style.display === "block" ? "none" : "block";
-}
+<script type="module">
+import { auth } from "./firebase.js";
+import { onAuthStateChanged, signOut } from
+  "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-/* REAL USER NAME */
-document.addEventListener("DOMContentLoaded", () => {
-  const name = localStorage.getItem("userFirstName");
-  if (name) {
-    document.getElementById("heroName").textContent = "Hello, " + name;
-  }
+const profileBtn = document.getElementById("profileBtn");
+const profileDropdown = document.getElementById("profileDropdown");
+const profileName = document.getElementById("profileName");
+const heroHeading = document.getElementById("heroHeading");
+
+/* 🔁 TOGGLE DROPDOWN — ALWAYS WORKS */
+profileBtn.addEventListener("click", () => {
+  profileDropdown.classList.toggle("show");
 });
 
-/* NAV */
-function goHome(){location.href="index.html"}
-function goWallet(){location.href="wallet.html"}
-function goWithdraw(){location.href="withdraw.html"}
-function goInvest(){location.href="invest.html"}
-function goRefer(){location.href="refer.html"}
-function goAbout(){location.href="about.html"}
-function goNotifications(){alert("Notifications")}
+/* 🔐 AUTH USER */
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const firstName =
+    user.displayName?.split(" ")[0] ||
+    localStorage.getItem("userFirstName") ||
+    "User";
+
+  heroHeading.textContent = `Hello, ${firstName}`;
+  profileName.textContent = firstName;
+});
+
+/* 🚪 LOGOUT */
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await signOut(auth);
+  window.location.href = "index.html";
+});
+
+/* 🌍 NAV */
+window.goHome = () => location.href = "index.html";
+window.goWallet = () => location.href = "wallet.html";
+window.goWithdraw = () => location.href = "withdraw.html";
+window.goInvest = () => location.href = "invest.html";
+window.goRefer = () => location.href = "refer.html";
+
+import { auth } from "./firebase.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) return;
+  const name = user.displayName
+    ? user.displayName.split(" ")[0]
+    : localStorage.getItem("userFirstName") || "User";
+  document.getElementById("heroHeading").textContent = `Hello, ${name}`;
+});
+
+document.getElementById("profileBtn").onclick = () =>
+  document.getElementById("profileDropdown").classList.toggle("show");
+
+document.getElementById("logoutBtn").onclick = async () => {
+  await signOut(auth);
+  window.location.href = "index.html";
+};
+
+window.goHome = () => location.href = "index.html";
+window.goWallet = () => location.href = "wallet.html";
+window.goWithdraw = () => location.href = "withdraw.html";
+window.goInvest = () => location.href = "invest.html";
+window.goRefer = () => location.href = "refer.html";
 </script>
 
+<script type="module" src="dashboard.js"></script>
 </body>
 </html>
