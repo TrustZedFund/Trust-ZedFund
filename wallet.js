@@ -103,38 +103,43 @@ function showPaymentDetails(provider) {
    CONFIRM DEPOSIT
 ========================= */
 confirmDepositBtn.addEventListener("click", async () => {
-  const senderNumber = senderNumberInput.value.trim();
-  const txId = transactionIdInput.value.trim();
+  const senderNumber = senderNumberInput.value.trim();
+  const txId = transactionIdInput.value.trim();
 
-  if (!senderNumber || !txId) {
-    alert("Enter your mobile number and transaction ID");
-    return;
-  }
+  if (!senderNumber || !txId) {
+    alert("Enter your mobile number and transaction ID");
+    return;
+  }
 
-  const depositId = "d_" + Date.now();
-  const depositData = {
-    uid: currentUserId,
-    amount: currentDepositAmount,
-    provider: selectedProvider,
-    senderNumber,
-    transactionId: txId,
-    status: "pending",
-    timestamp: Date.now()
-  };
+  const depositId = "d_" + Date.now();
+  const depositData = {
+    uid: currentUserId,
+    amount: currentDepositAmount,
+    provider: selectedProvider,
+    senderNumber,
+    transactionId: txId,
+    status: "pending",
+    timestamp: Date.now()
+  };
 
-  try {
-    // 1. Save deposit to user
-    await set(ref(db, `users/${currentUserId}/deposits/${depositId}`), depositData);
+  try {
+    await set(ref(db, `users/${currentUserId}/deposits/${depositId}`), depositData);
+    await set(ref(db, `depositRequests/${depositId}`), depositData);
 
-    // 2. Save deposit to admin queue
-    await set(ref(db, `depositRequests/${depositId}`), depositData);
+    // ✅ SAFE notification
+    await push(ref(db, `notifications/${currentUserId}`), {
+      message: "💰 Deposit submitted. Awaiting confirmation.",
+      read: false,
+      time: Date.now(),
+      type: "deposit"
+    });
 
-    resetDepositFlow();
-    alert("Deposit submitted successfully. Pending confirmation.");
-  } catch (err) {
-    console.error(err);
-    alert("Failed to submit deposit. Try again.");
-  }
+    resetDepositFlow();
+    alert("Deposit submitted successfully. Pending confirmation.");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to submit deposit. Try again.");
+  }
 });
 
 /* =========================
