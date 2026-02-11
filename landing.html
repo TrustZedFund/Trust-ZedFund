@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School of Financial Systems (SOFS)</title>
+
+<style>
+:root {
+  --bg: #0f1720;
+  --card: #17212b;
+  --accent: #22c55e;
+  --text: #e6edf3;
+  --muted: #9ca3af;
+  --border: #1f2937;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+header {
+  padding: 20px 8%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  margin-left: 20px;
+  font-size: 14px;
+}
+
+nav a:hover {
+  color: var(--accent);
+}
+
+.hero {
+  padding: 100px 8%;
+  max-width: 900px;
+}
+
+.hero h1 {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 18px;
+  color: var(--muted);
+  margin-bottom: 30px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 22px;
+  background: var(--accent);
+  color: #000;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.section {
+  padding: 80px 8%;
+  border-top: 1px solid var(--border);
+}
+
+.section h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+.section p {
+  color: var(--muted);
+  margin-bottom: 20px;
+  max-width: 800px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.card {
+  background: var(--card);
+  padding: 25px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.card h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.card p {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.pricing {
+  background: var(--card);
+  padding: 40px;
+  border-radius: 6px;
+  max-width: 500px;
+  margin-top: 30px;
+  border: 1px solid var(--border);
+}
+
+.price {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+footer {
+  padding: 40px 8%;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 30px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">SOFS — School of Financial Systems</div>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#curriculum">Curriculum</a>
+    <a href="#pricing">Tuition</a>
+    <a href="#apply">Apply</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Understand How Money Systems Actually Work</h1>
+  <p>
+    The School of Financial Systems teaches where money comes from, who controls it, 
+    how it moves, how it grows, and what happens when it fails — 
+    so you can stop guessing and start thinking clearly.
+  </p>
+  <a href="#apply" class="btn">Apply for Foundations</a>
+</section>
+
+<section id="about" class="section">
+  <h2>What Is SOFS?</h2>
+  <p>
+    SOFS is an independent financial education institution focused on systems thinking.
+    We do not give financial advice. We do not sell investments.
+    We teach structural understanding.
+  </p>
+  <p>
+    Our purpose is simple: reduce financial confusion at the individual,
+    community, and societal level.
+  </p>
+</section>
+
+<section id="curriculum" class="section">
+  <h2>Foundations of Financial Systems</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>Week 1–2</h3>
+      <p>Understanding what money really is and how financial systems are structured.</p>
+    </div>
+    <div class="card">
+      <h3>Week 3–4</h3>
+      <p>Money creation, control, power, and institutional influence.</p>
+    </div>
+    <div class="card">
+      <h3>Week 5–6</h3>
+      <p>Capital, growth, compounding, and systemic fragility.</p>
+    </div>
+    <div class="card">
+      <h3>Week 7–8</h3>
+      <p>Failure, risk absorption, and personal financial system design.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="section">
+  <h2>Tuition</h2>
+  <p>
+    SOFS is priced to protect seriousness, not maximize volume.
+    This is tuition — not a purchase of outcomes.
+  </p>
+  <div class="pricing">
+    <div class="price">$1,000</div>
+    <p>8-Week Foundations Program</p>
+    <p>Structured curriculum • Cohort access • Guided seminars</p>
+  </div>
+</section>
+
+<section id="apply" class="section">
+  <h2>Apply to Join</h2>
+  <p>
+    Admission is selective. We look for intellectual honesty,
+    responsibility, and willingness to think deeply.
+  </p>
+  <a href="#" class="btn">Start Application</a>
+</section>
+
+<footer>
+  © 2026 School of Financial Systems (SOFS)  
+  Independent Financial Education Institution  
+  No financial advice provided.
+</footer>
+
+</body>
+</html>
