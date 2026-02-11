@@ -7,24 +7,25 @@
 
 <style>
 :root {
-  --bg: #0f1720;
-  --card: #17212b;
-  --accent: #22c55e;
-  --text: #e6edf3;
-  --muted: #9ca3af;
-  --border: #1f2937;
+  --navy: #0b1f3a;
+  --royal: #123c73;
+  --gold: #f5c242;
+  --gold-dark: #d4a017;
+  --green: #1db954;
+  --white: #ffffff;
+  --soft: #cfd8e3;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
+  background: linear-gradient(135deg, var(--navy), var(--royal));
+  color: var(--white);
   line-height: 1.6;
 }
 
@@ -33,64 +34,74 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .logo {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 18px;
   letter-spacing: 1px;
+  color: var(--gold);
 }
 
 nav a {
-  color: var(--muted);
+  color: var(--soft);
   text-decoration: none;
-  margin-left: 20px;
+  margin-left: 25px;
   font-size: 14px;
+  transition: 0.3s ease;
 }
 
 nav a:hover {
-  color: var(--accent);
+  color: var(--gold);
 }
 
 .hero {
   padding: 100px 8%;
-  max-width: 900px;
+  max-width: 950px;
 }
 
 .hero h1 {
-  font-size: 42px;
+  font-size: 44px;
   margin-bottom: 20px;
+  color: var(--gold);
 }
 
 .hero p {
   font-size: 18px;
-  color: var(--muted);
+  color: var(--soft);
   margin-bottom: 25px;
 }
 
 .btn {
   display: inline-block;
-  padding: 12px 22px;
-  background: var(--accent);
+  padding: 14px 28px;
+  background: linear-gradient(45deg, var(--gold), var(--gold-dark));
   color: #000;
-  text-decoration: none;
   font-weight: 600;
-  border-radius: 4px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
 }
 
 .section {
   padding: 80px 8%;
-  border-top: 1px solid var(--border);
+  background: rgba(0,0,0,0.15);
 }
 
 .section h2 {
-  margin-bottom: 20px;
   font-size: 28px;
+  margin-bottom: 20px;
+  color: var(--gold);
 }
 
 .section p {
-  color: var(--muted);
+  color: var(--soft);
   margin-bottom: 20px;
   max-width: 900px;
 }
@@ -98,46 +109,55 @@ nav a:hover {
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  gap: 25px;
   margin-top: 30px;
 }
 
 .card {
-  background: var(--card);
+  background: rgba(255,255,255,0.05);
   padding: 25px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
 }
 
 .card h3 {
-  margin-bottom: 10px;
-  font-size: 18px;
+  margin-bottom: 12px;
+  color: var(--gold);
 }
 
 .card p {
   font-size: 14px;
-  color: var(--muted);
+  color: var(--soft);
 }
 
 .pricing-box {
-  background: var(--card);
+  background: rgba(255,255,255,0.06);
   padding: 40px;
-  border-radius: 6px;
+  border-radius: 10px;
   max-width: 500px;
   margin-top: 30px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .price {
-  font-size: 32px;
+  font-size: 34px;
   margin-bottom: 10px;
+  color: var(--green);
+  font-weight: 700;
 }
 
 footer {
   padding: 40px 8%;
-  border-top: 1px solid var(--border);
-  color: var(--muted);
+  background: var(--navy);
+  color: var(--soft);
   font-size: 14px;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
@@ -168,8 +188,8 @@ footer {
     Very few are taught how the system behind money actually works.
   </p>
   <p>
-    The School of Financial Systems exists to reduce financial confusion —
-    at the individual, community, and institutional level.
+    SOFS exists to bring structural clarity to individuals,
+    communities, institutions, and leaders.
   </p>
   <a href="#apply" class="btn">Apply for Foundations</a>
 </section>
@@ -177,98 +197,82 @@ footer {
 <section id="about" class="section">
   <h2>What SOFS Is</h2>
   <p>
-    SOFS is an independent financial education institution focused on systems thinking.
-    We do not sell investments. We do not offer financial advice.
-    We teach structural understanding.
-  </p>
-  <p>
-    Our goal is simple: help people understand the architecture of money
-    so they stop operating blindly within it.
+    An independent institution focused on financial systems education.
+    We teach structure, not shortcuts.
+    Architecture, not hype.
   </p>
 </section>
 
 <section id="offerings" class="section">
-  <h2>Who We Teach & Our Solutions</h2>
+  <h2>Who We Teach</h2>
 
   <div class="grid">
-
     <div class="card">
-      <h3>People Working Hard but Feeling Stuck</h3>
-      <p>We help you understand why effort alone does not create stability. Learn how systems shape your income, risk, and long-term security.</p>
+      <h3>Working Professionals Feeling Stuck</h3>
+      <p>Understand structural money flows and why effort alone does not guarantee stability.</p>
     </div>
 
     <div class="card">
-      <h3>Builders & Early Entrepreneurs (Not Hustlers)</h3>
-      <p>Design financial structures that survive pressure. Understand cashflow, capital, risk absorption, and institutional resilience.</p>
+      <h3>Builders & Early Entrepreneurs</h3>
+      <p>Design sustainable capital systems and reduce structural fragility.</p>
     </div>
 
     <div class="card">
-      <h3>Young People Before the Traps Close</h3>
-      <p>Learn the rules early. Avoid debt traps, fragile income dependence, and structural financial blind spots.</p>
+      <h3>Young People Before Debt Traps</h3>
+      <p>Learn the financial architecture early before patterns harden.</p>
     </div>
 
     <div class="card">
       <h3>Adults Never Taught the Rules</h3>
-      <p>Rebuild your financial understanding from the ground up. Replace confusion with clarity and structural awareness.</p>
+      <p>Rebuild your financial understanding from foundation level.</p>
     </div>
-
   </div>
 </section>
 
 <section id="institutions" class="section">
-  <h2>Institutional & Community Programs</h2>
+  <h2>Institutional Programs</h2>
 
   <div class="grid">
-
     <div class="card">
       <h3>Communities & Cooperatives</h3>
-      <p>Design resilient collective financial systems. Improve governance, reduce vulnerability, and strengthen long-term stability.</p>
+      <p>Strengthen governance, capital structure, and collective resilience.</p>
     </div>
 
     <div class="card">
       <h3>Schools, Churches & NGOs</h3>
-      <p>Understand financial structure, transparency, risk, and sustainability at the institutional level.</p>
+      <p>Design financial transparency and sustainability systems.</p>
     </div>
 
     <div class="card">
       <h3>Founders & Leaders</h3>
-      <p>Learn how to build financial architecture inside organizations that aligns incentives and protects against collapse.</p>
+      <p>Align incentives and build durable financial architecture.</p>
     </div>
 
     <div class="card">
       <h3>Policy-Minded Thinkers</h3>
-      <p>Explore how financial systems influence society, governance, stability, and long-term economic behavior.</p>
+      <p>Study how financial systems shape society and stability.</p>
     </div>
-
   </div>
 </section>
 
 <section id="tuition" class="section">
   <h2>Tuition</h2>
-  <p>
-    SOFS is priced to protect seriousness and intellectual independence.
-    This is tuition — not a purchase of outcomes.
-  </p>
   <div class="pricing-box">
     <div class="price">$1,000</div>
-    <p>8-Week Foundations Program</p>
-    <p>Structured curriculum • Cohort access • Systems analysis work</p>
+    <p>8-Week Foundations Cohort</p>
+    <p>Structured curriculum • Systems analysis • Cohort discussions</p>
   </div>
 </section>
 
 <section id="apply" class="section">
-  <h2>Apply to Join</h2>
-  <p>
-    Admission is selective. We look for intellectual honesty,
-    responsibility, and willingness to think independently.
-  </p>
+  <h2>Apply</h2>
+  <p>Selective admission. We look for responsibility and independent thinking.</p>
   <a href="#" class="btn">Start Application</a>
 </section>
 
 <footer>
   © 2026 School of Financial Systems (SOFS)  
-  Independent Financial Education Institution  
-  No financial advice provided.
+  Independent Financial Education Institution
 </footer>
 
 </body>
