@@ -156,6 +156,33 @@ footer {
     font-size: 30px;
   }
 }
+.pathway {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 6px 12px;
+  font-size: 12px;
+  background: rgba(245,194,66,0.15);
+  color: var(--gold);
+  border: 1px solid var(--gold-dark);
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+.track-btn {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 13px;
+  text-decoration: none;
+  color: var(--green);
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.track-btn:hover {
+  color: var(--gold);
+  transform: translateX(4px);
+}
+
 </style>
 </head>
 
@@ -186,12 +213,65 @@ footer {
 
 <section id="about" class="section">
   <h2>What SOFS Is</h2>
+
   <p>
-    An independent institution focused on financial systems education.
-    We teach structure, not shortcuts.
-    Architecture, not hype.
-    Clarity, not promises.
+    SOFS is an independent financial systems institution.
+    We teach how money actually works — structurally, institutionally, and systemically.
+    Not budgeting tricks. Not hustle tactics.
+    Financial architecture.
   </p>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>For Professionals & Individuals Rebuilding Clarity</h3>
+      <p>
+        Professionals, young adults, and adults rebuilding their financial direction.
+        SOFS provides a personal financial systems framework — helping individuals
+        understand income structure, capital flow, risk exposure, leverage, and protection.
+      </p>
+
+      <span class="pathway">Program Pathway: Foundations Track</span><br>
+      <a href="#offerings" class="track-btn">View Track →</a>
+    </div>
+
+    <div class="card">
+      <h3>For Early-Stage Founders</h3>
+      <p>
+        Builders creating real ventures who need capital structure,
+        sustainability blueprints, and long-term financial architecture —
+        not hype-driven entrepreneurship.
+      </p>
+
+      <span class="pathway">Program Pathway: Venture Architecture Track</span><br>
+      <a href="#offerings" class="track-btn">View Track →</a>
+    </div>
+
+    <div class="card">
+      <h3>For Communities & Cooperatives</h3>
+      <p>
+        Groups managing collective capital who require governance models,
+        capital protection systems, transparency frameworks,
+        and resilience structures.
+      </p>
+
+      <span class="pathway">Program Pathway: Governance & Capital Protection Track</span><br>
+      <a href="#institutions" class="track-btn">View Track →</a>
+    </div>
+
+    <div class="card">
+      <h3>For Leaders & Policy Thinkers</h3>
+      <p>
+        Institutional leaders and high-responsibility decision makers seeking
+        advanced financial systems modeling, macro-level clarity,
+        and structural risk awareness.
+      </p>
+
+      <span class="pathway">Program Pathway: Advanced Systems Modeling Track</span><br>
+      <a href="#institutions" class="track-btn">View Track →</a>
+    </div>
+
+  </div>
 </section>
 
 <section id="solutions" class="section">
